@@ -1,0 +1,2 @@
+flask
+pydirectinput; sys_platform == 'win32'

@@ -1,7 +1,24 @@
 from flask import Flask, jsonify, render_template_string
-import pydirectinput
 import json
 import os
+import sys
+import platform
+import subprocess
+
+# Platform-specific input handling
+if sys.platform == 'linux':
+    def press_key(key):
+        """Send keypress on Linux using xdotool"""
+        try:
+            # xdotool key sends the key
+            subprocess.run(['xdotool', 'key', key], check=False)
+        except FileNotFoundError:
+            print("Error: xdotool not found. Install it with: sudo apt install xdotool")
+else:
+    import pydirectinput
+    def press_key(key):
+        """Send keypress on Windows using pydirectinput"""
+        pydirectinput.press(key)
 
 app = Flask(__name__)
 
@@ -252,18 +269,38 @@ def index():
 @app.route('/action/<komut_adi>')
 def action(komut_adi):
     if komut_adi in KOMUTLAR:
-        pydirectinput.press(KOMUTLAR[komut_adi])
+        press_key(KOMUTLAR[komut_adi])
         return "OK"
     return "Hata", 400
 
 @app.route('/status')
 def get_status():
-    path = os.path.expanduser(r"~\Saved Games\Frontier Developments\Elite Dangerous\Status.json")
-    try:
-        with open(path, 'r', encoding='utf-8') as f:
-            return jsonify(json.load(f))
-    except:
-        return jsonify({"hata": "Error"})
+    # Platform-specific paths to Status.json
+    if sys.platform == 'linux':
+        possible_paths = [
+            # Proton/Steam (common path)
+            os.path.expanduser("~/.steam/root/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous/Status.json"),
+            # Alternative Proton paths
+            os.path.expanduser("~/.steamapps/compatdata/626690/pfx/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous/Status.json"),
+            # Standard Wine paths
+            os.path.expanduser("~/.wine/drive_c/users") + "*/Saved Games/Frontier Developments/Elite Dangerous/Status.json",
+        ]
+    else:
+        possible_paths = [
+            os.path.expanduser(r"~\Saved Games\Frontier Developments\Elite Dangerous\Status.json"),
+        ]
+    
+    # Try to find the Status.json file
+    for path in possible_paths:
+        expanded_path = os.path.expanduser(path)
+        if os.path.exists(expanded_path):
+            try:
+                with open(expanded_path, 'r', encoding='utf-8') as f:
+                    return jsonify(json.load(f))
+            except Exception as e:
+                return jsonify({"hata": f"Error reading file: {str(e)}"})
+    
+    return jsonify({"hata": "Status.json not found. Please check Elite Dangerous data path."})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
