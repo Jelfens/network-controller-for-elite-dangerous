@@ -208,43 +208,18 @@ HTML = """
             
             <!-- SEARCH FORM VIEW -->
             <div id="near-search-view" class="bg-[#0a0a0a] p-3 rounded border border-gray-800 mb-4 flex-1 flex flex-col min-h-0">
-                <div class="text-xs text-gray-400 mb-2 font-bold tracking-widest text-center border-b border-gray-800 pb-2">SEARCH NEAREST (SPANSH NETWORK)</div>
+                <div class="text-xs text-gray-400 mb-4 font-bold tracking-widest text-center border-b border-gray-800 pb-2 uppercase">Station Database</div>
                 
-                <div class="grid grid-cols-1 gap-2 mb-4">
-                    <div>
-                        <div class="text-[9px] text-gray-500 mb-1 font-bold tracking-wider uppercase">Current System</div>
-                        <input type="text" id="near-sys-input" placeholder="e.g. Sol" class="w-full bg-[#050505] border border-gray-700 text-gray-300 rounded p-2 text-xs focus:border-[#ff8c00] focus:outline-none">
-                        <div id="recent-systems" class="flex gap-1.5 mt-2 overflow-x-auto pb-1 empty:hidden"></div>
-                    </div>
-                    <div>
-                        <div class="text-[9px] text-gray-500 mb-1 font-bold tracking-wider uppercase">Looking for Service</div>
-                        <div class="grid grid-cols-2 gap-1.5" id="service-btns">
-                            <button onclick="setService('Outfitting')" class="svc-btn active bg-[#050505] border border-gray-700 text-gray-400 rounded py-1.5 px-2 text-[9px] font-bold hover:text-white transition-all">OUTFITTING</button>
-                            <button onclick="setService('Shipyard')" class="svc-btn bg-[#050505] border border-gray-700 text-gray-400 rounded py-1.5 px-2 text-[9px] font-bold hover:text-white transition-all">SHIPYARD</button>
-                            <button onclick="setService('Material Trader')" class="svc-btn bg-[#050505] border border-gray-700 text-gray-400 rounded py-1.5 px-2 text-[9px] font-bold hover:text-white transition-all">MAT. TRADER</button>
-                            <button onclick="setService('Technology Broker')" class="svc-btn bg-[#050505] border border-gray-700 text-gray-400 rounded py-1.5 px-2 text-[9px] font-bold hover:text-white transition-all">TECH BROKER</button>
-                            <button onclick="setService('Interstellar Factors Contact')" class="svc-btn bg-[#050505] border border-gray-700 text-gray-400 rounded py-1.5 px-2 text-[9px] font-bold hover:text-white transition-all">INT. FACTORS</button>
-                            <button onclick="setService('Black Market')" class="svc-btn bg-[#050505] border border-gray-700 text-gray-400 rounded py-1.5 px-2 text-[9px] font-bold hover:text-white transition-all">BLACK MARKET</button>
-                        </div>
-                        <input type="hidden" id="near-service-input" value="Outfitting">
-                    </div>
+                <div class="mb-4">
+                    <div class="text-[9px] text-gray-500 mb-1 font-bold tracking-wider uppercase">Reference System</div>
+                    <input type="text" id="near-sys-input" placeholder="e.g. Sol" class="w-full bg-[#050505] border border-gray-700 text-gray-300 rounded p-3 text-sm focus:border-[#ff8c00] focus:outline-none">
+                    <div id="recent-systems" class="flex gap-1.5 mt-2 overflow-x-auto pb-1 empty:hidden"></div>
+                    <input type="hidden" id="near-service-input" value="">
                 </div>
-
-                <div class="grid grid-cols-2 gap-2 mb-4">
-                    <button onclick="openFilters()" class="w-full bg-[#111] border border-gray-700 text-gray-400 hover:text-[#ff8c00] hover:border-[#ff8c00]/50 transition-colors rounded py-2 text-[10px] font-bold flex flex-col items-center">
-                        <span class="text-[14px] mb-0.5">⚙</span>
-                        <span>STATION FILTERS</span>
-                    </button>
-                    <button onclick="openModuleFinder()" class="w-full bg-[#111] border border-gray-700 text-gray-400 hover:text-[#ff8c00] hover:border-[#ff8c00]/50 transition-colors rounded py-2 text-[10px] font-bold flex flex-col items-center">
-                        <span class="text-[14px] mb-0.5">🚀</span>
-                        <span>OUTFITTING</span>
-                    </button>
-                </div>
-                <div id="filter-summary" class="text-[9px] text-[#ff8c00] mt-[-8px] mb-4 font-bold hidden text-center tracking-widest"></div>
                 
-                <button onclick="searchNearest()" class="btn w-full border border-[#ff8c00] bg-orange-900/20 text-[#ff8c00] rounded p-2 text-xs font-bold mb-3 shadow-[0_0_10px_rgba(255,140,0,0.1)]">FIND NEAREST</button>
+                <button onclick="searchNearest()" class="btn w-full border border-[#ff8c00] bg-orange-900/20 text-[#ff8c00] rounded p-3 text-xs font-bold mb-3 shadow-[0_0_10px_rgba(255,140,0,0.1)] uppercase tracking-widest">Search Database</button>
                 
-                <div id="near-loading" class="hidden text-center text-xs text-orange-500 py-4 font-black tracking-widest animate-pulse">CALCULATING ROUTES...</div>
+                <div id="near-loading" class="hidden text-center text-xs text-orange-500 py-4 font-black tracking-widest animate-pulse">ACCESSING DATABASE...</div>
             </div>
 
             <!-- FILTER VIEW -->
@@ -398,7 +373,7 @@ HTML = """
         </button>
         <button onclick="switchPage('inara')" id="tab-inara" class="tab-btn py-3 border-t-2 border-transparent text-gray-600">
             <div class="tab-icon text-lg mb-0.5">🌐</div>
-            <div class="text-[10px] font-black tracking-widest">NEAREST</div>
+            <div class="text-[10px] font-black tracking-widest">DATABASE</div>
         </button>
     </div>
 
@@ -861,11 +836,15 @@ HTML = """
             const mappedService = service;
 
             const payload = {
-                filters: { services: { values: [mappedService] } },
+                filters: {},
                 sort: [{ distance: { direction: "asc" } }],
                 size: 50,
                 reference_system: system
             };
+
+            if (mappedService && mappedService !== "Any") {
+                payload.filters.services = { values: [mappedService] };
+            }
 
             if (pad === 'large') payload.filters.has_large_pad = { value: true };
             if (surface === 'no') payload.filters.is_planetary = { value: false };
@@ -981,7 +960,7 @@ HTML = """
 
                         return `
                         <div onclick="openStationDetails(${i})" class="bg-[#111] p-3 border border-gray-800 rounded relative flex flex-col cursor-pointer hover:border-gray-600 transition-colors">
-                            <div class="text-[#ff8c00] font-black text-sm mb-1">${r.system_name.toUpperCase()} <span class="text-gray-500 text-xs font-normal ml-1">${dist} Ly</span></div>
+                            <div class="text-[#ff8c00] font-black text-sm mb-1">${r.system_name.toUpperCase()}</div>
                             <div class="text-gray-300 font-bold mb-1">${r.name.toUpperCase()}</div>
                             <div class="grid grid-cols-2 gap-1 text-[10px] text-gray-500 mt-2 border-t border-gray-800 pt-2">
                                 <div>TYPE: <span class="text-white">${r.type || 'Unknown'}</span></div>
