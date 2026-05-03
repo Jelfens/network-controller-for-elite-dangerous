@@ -373,7 +373,7 @@ HTML = """
         <!-- ==================== AUX ==================== -->
         <div id="page-aux" class="page overflow-y-auto no-scrollbar h-full p-3">
             <div class="flex flex-col gap-3">
-                <div class="text-[9px] text-orange-600 font-black tracking-[0.3em] uppercase border-b border-orange-900/20 pb-2">Ship Systems</div>
+                <div class="text-[9px] text-orange-600 font-black tracking-[0.3em] uppercase border-b border-orange-900/20 pb-2 mt-1">Ship Systems</div>
                 <div class="grid grid-cols-2 gap-3">
                     <div id="ind-cargo" onclick="komut('cargo-scoop')" class="ind-btn cursor-pointer border-2 rounded-xl py-8 text-xs font-black ind-off transition-all text-center flex flex-col items-center justify-center">
                         <span class="text-2xl mb-1">📦</span>CARGO SCOOP
@@ -381,9 +381,12 @@ HTML = """
                     <div id="ind-light" onclick="komut('lights')" class="ind-btn cursor-pointer border-2 rounded-xl py-8 text-xs font-black ind-off transition-all text-center flex flex-col items-center justify-center">
                         <span class="text-2xl mb-1">💡</span>LIGHTS
                     </div>
-                    <div id="ind-nv" onclick="komut('night-vision')" class="ind-btn cursor-pointer border-2 rounded-xl py-8 text-xs font-black ind-off transition-all text-center flex flex-col items-center justify-center col-span-2">
+                    <div id="ind-nv" onclick="komut('night-vision')" class="ind-btn cursor-pointer border-2 rounded-xl py-8 text-xs font-black ind-off transition-all text-center flex flex-col items-center justify-center">
                         <span class="text-2xl mb-1">👁️</span>NIGHT VISION
                     </div>
+                    <button onclick="switchPage('landing')" class="btn border-2 border-orange-900/50 bg-orange-900/10 text-orange-500 rounded-xl py-8 text-xs font-black transition-all text-center flex flex-col items-center justify-center active:scale-95">
+                        <span class="text-2xl mb-1">⚓</span>LANDING
+                    </button>
                 </div>
 
                 <div class="text-[9px] text-orange-600 font-black tracking-[0.3em] uppercase border-b border-orange-900/20 pb-2 mt-2">Utilities</div>
@@ -477,13 +480,14 @@ HTML = """
                             <div class="absolute top-1/2 left-2 -translate-y-1/2 text-[8px] text-blue-500 font-black opacity-40 uppercase -rotate-90">LEFT</div>
                             <div class="absolute top-1/2 right-2 -translate-y-1/2 text-[8px] text-blue-500 font-black opacity-40 uppercase rotate-90">RIGHT</div>
                         </div>
-                        <button onclick="resetLateralForward()" class="py-2 bg-red-900/10 border border-red-900/40 text-red-500 text-[9px] font-black rounded-lg uppercase active:scale-95 transition-all">RESET L/F</button>
                     </div>
                 </div>
 
                 <div class="py-2 text-center">
                     <div class="text-[9px] text-gray-600 font-black tracking-[0.4em] uppercase animate-pulse">Docking protocols active</div>
                 </div>
+
+                <button onclick="switchPage('nav')" class="w-full py-3 bg-orange-900/20 border border-orange-800/50 text-orange-500 text-[10px] font-black rounded-xl uppercase tracking-widest">&lt; BACK TO NAV</button>
             </div>
         </div>
 
@@ -553,7 +557,7 @@ HTML = """
             const lfPad = document.getElementById('lf-pad');
             if (!vPad || !lfPad) return;
 
-            const setupPad = (el, updateFn, is2D) => {
+            const setupPad = (el, updateFn, is2D, autoCenter, resetFn) => {
                 let isDragging = false;
                 const move = (e) => {
                     if (!isDragging) return;
@@ -565,14 +569,20 @@ HTML = """
                 };
                 el.addEventListener('mousedown', (e) => { isDragging = true; move(e); });
                 window.addEventListener('mousemove', move);
-                window.addEventListener('mouseup', () => { isDragging = false; });
+                window.addEventListener('mouseup', () => { 
+                    if (isDragging && autoCenter) resetFn();
+                    isDragging = false; 
+                });
                 el.addEventListener('touchstart', (e) => { isDragging = true; move(e); }, {passive: false});
                 window.addEventListener('touchmove', (e) => { if (isDragging) { move(e); e.preventDefault(); } }, {passive: false});
-                window.addEventListener('touchend', () => { isDragging = false; });
+                window.addEventListener('touchend', () => { 
+                    if (isDragging && autoCenter) resetFn();
+                    isDragging = false; 
+                });
             };
 
-            setupPad(vPad, updateVertical, false);
-            setupPad(lfPad, updateLateralForward, true);
+            setupPad(vPad, updateVertical, false, false);
+            setupPad(lfPad, updateLateralForward, true, true, resetLateralForward);
         });
 
 
