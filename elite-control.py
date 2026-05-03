@@ -31,7 +31,25 @@ KOMUTLAR = {
     "galaxy-map": "m", "system-map": "o",
     "pip-sys": "left", "pip-eng": "up", "pip-wep": "right", "pip-rst": "down",
     "fg-prev": "[", "fg-next": "]", "menu": "esc",
-    "fss": "'", "cockpit-mode": "\\" 
+    "fss": "'", "cockpit-mode": "\\",
+    # Navigation & Menus
+    "menu-up": "up", "menu-down": "down", "menu-left": "left", "menu-right": "right", "menu-select": "enter",
+    "tab-prev": "q", "tab-next": "e",
+    # Speed & Thrusters
+    "speed-0": "x", "speed-25": "1", "speed-50": "2", "speed-75": "3", "speed-100": "4",
+    "throttle-inc": "w", "throttle-dec": "s",
+    "thruster-up": "r", "thruster-down": "f",
+    "boost": "tab",
+    # FSD Variants
+    "fsd-sc": "k", "fsd-jump": "h",
+    # Misc
+    "rot-corr": "delete", "orbit-lines": "=",
+    # Targeting
+    "target-ahead": "t", "target-next": "g", "target-highest": "h",
+    "target-team-1": "7", "target-team-2": "8", "target-team-3": "9",
+    "target-team-target": "0", "target-navlock": "-", "target-sub-next": "y", "target-route": ".",
+    "ui-page-prev": "[", "ui-page-next": "]",
+    "panel-external": "1", "panel-comms": "2", "panel-role": "3", "panel-internal": "4"
 }
 
 HTML = """
@@ -91,7 +109,59 @@ HTML = """
 
     <div class="flex-1 overflow-hidden p-3 pb-16">
 
-
+        <!-- ==================== TARGETING MODAL ==================== -->
+        <div id="modal-targeting" class="fixed inset-0 bg-[#050505]/98 z-[100] flex-col p-4 backdrop-blur-xl" style="display: none;">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6 border-b-2 border-red-900/50 pb-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-6 bg-red-600 shadow-[0_0_8px_rgba(220,38,38,0.5)]"></div>
+                    <div class="text-red-500 font-black tracking-[0.2em] text-xl">TARGETING SYSTEMS</div>
+                </div>
+                <button onclick="document.getElementById('modal-targeting').style.display='none'" class="btn border-2 border-red-900 bg-red-900/30 text-red-500 rounded-full w-12 h-12 text-2xl font-black flex items-center justify-center shadow-[0_0_15px_rgba(220,38,38,0.3)] active:scale-90 transition-transform">×</button>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="flex-1 flex flex-col gap-4 overflow-y-auto">
+                
+                <!-- Primary Combat Targets -->
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="komut('target-highest')" class="btn col-span-2 border-2 border-red-600 bg-red-900/40 text-red-100 rounded-xl p-3 text-base font-black shadow-[0_0_10px_rgba(220,38,38,0.3)] tracking-widest active:scale-95 transition-transform">
+                        <div class="text-[9px] text-red-400 mb-0.5 opacity-70">PRIORITY</div>
+                        HIGHEST THREAT
+                    </button>
+                    
+                    <button onclick="komut('target-ahead')" class="btn border-2 border-orange-700/50 bg-orange-900/20 text-orange-400 rounded-xl p-2.5 text-sm font-bold shadow-md active:scale-95 transition-transform">
+                        <div class="text-[8px] mb-0.5 opacity-70">AHEAD</div>
+                        TARGET AHEAD
+                    </button>
+                    <button onclick="komut('target-next')" class="btn border-2 border-red-800/50 bg-red-900/10 text-red-400 rounded-xl p-2.5 text-sm font-bold shadow-md active:scale-95 transition-transform">
+                        <div class="text-[8px] mb-0.5 opacity-70">CYCLE</div>
+                        NEXT TARGET
+                    </button>
+                </div>
+                
+                <!-- Team & Wing Operations -->
+                <div class="bg-[#0a0a0a] p-3 rounded-xl border border-blue-900/30 relative mt-1">
+                    <div class="absolute top-0 left-8 px-3 -mt-2 bg-[#050505] text-[9px] text-blue-500 font-black tracking-widest border border-blue-900/30 rounded-full">WING OPERATIONS</div>
+                    
+                    <div class="grid grid-cols-3 gap-1.5 mt-1">
+                        <button onclick="komut('target-team-1')" class="btn border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded-lg py-2 text-[10px] font-bold active:scale-95 transition-transform">WING 1</button>
+                        <button onclick="komut('target-team-2')" class="btn border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded-lg py-2 text-[10px] font-bold active:scale-95 transition-transform">WING 2</button>
+                        <button onclick="komut('target-team-3')" class="btn border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded-lg py-2 text-[10px] font-bold active:scale-95 transition-transform">WING 3</button>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-1.5 mt-1.5">
+                        <button onclick="komut('target-team-target')" class="btn border border-blue-600/60 bg-blue-600/20 text-blue-100 rounded-lg py-2.5 text-[10px] font-black tracking-wider active:scale-95 transition-transform">WINGMAN TGT</button>
+                        <button onclick="komut('target-navlock')" class="btn border border-cyan-600/60 bg-cyan-600/20 text-cyan-100 rounded-lg py-2.5 text-[10px] font-black tracking-wider active:scale-95 transition-transform">NAV LOCK</button>
+                    </div>
+                </div>
+                
+                <!-- Status Indicator at bottom -->
+                <div class="mt-auto py-4 text-center border-t border-gray-900">
+                    <div class="text-[10px] text-gray-600 font-black tracking-[0.5em] animate-pulse">SYSTEMS ONLINE // SCANNING...</div>
+                </div>
+            </div>
+        </div>
         <!-- ==================== SAVAŞ (COMBAT) ==================== -->
         <div id="page-combat" class="page active">
 
@@ -99,7 +169,7 @@ HTML = """
                 <div id="ind-hardp" onclick="komut('wg-hardpoints')" class="ind-btn cursor-pointer border rounded p-3 ind-off transition-all"><div class="text-base mb-1">⚙️</div>HARDPOINTS</div>
                 <button onclick="komut('cockpit-mode')" class="btn border border-gray-800 bg-[#0a0a0a] text-indigo-400 rounded p-3 hover:border-indigo-400 hover:shadow-[0_0_10px_rgba(129,140,248,0.2)]"><div class="text-base mb-1">🖥️</div>HUD MODE</button>
                 <div id="ind-silent" onclick="komut('silent-running')" class="ind-btn cursor-pointer border rounded p-3 ind-off transition-all"><div class="text-base mb-1">🤫</div>SILENT RUN</div>
-                <div id="ind-shield" class="border rounded p-3 ind-off transition-all"><div class="text-base mb-1">🛡️</div>SHIELD</div>
+                <button onclick="document.getElementById('modal-targeting').style.display='flex'" class="btn border border-red-800 bg-red-900/20 text-red-500 rounded p-3 hover:border-red-500 hover:shadow-[0_0_10px_rgba(239,68,68,0.3)]"><div class="text-base mb-1">🎯</div>TARGETING</button>
             </div>
 
 
@@ -150,22 +220,131 @@ HTML = """
         </div>
 
         <!-- ==================== SEYİR (NAVIGATION) ==================== -->
-        <div id="page-nav" class="page">
-            <div class="grid grid-cols-2 gap-2 text-center text-xs font-bold mb-4">
-                <div id="ind-sc" onclick="komut('fsd')" class="ind-btn cursor-pointer border rounded p-3 ind-off transition-all"><div class="text-base mb-1">🚀</div>FSD / SC</div>
-                <div id="ind-gear" onclick="komut('landing-gear')" class="ind-btn cursor-pointer border rounded p-3 ind-off transition-all"><div class="text-base mb-1">🛬</div>GEAR</div>
-                <div id="ind-cargo" onclick="komut('cargo-scoop')" class="ind-btn cursor-pointer border rounded p-3 ind-off transition-all"><div class="text-base mb-1">📦</div>SCOOP</div>
-                <div id="ind-light" onclick="komut('lights')" class="ind-btn cursor-pointer border rounded p-3 ind-off transition-all"><div class="text-base mb-1">💡</div>LIGHTS</div>
-                <div id="ind-nv" onclick="komut('night-vision')" class="ind-btn cursor-pointer border rounded p-3 ind-off transition-all"><div class="text-base mb-1">👁️</div>N-VISION</div>
-                <button onclick="komut('cockpit-mode')" class="btn border border-gray-800 bg-[#0a0a0a] text-indigo-400 rounded p-3 hover:border-indigo-400 hover:shadow-[0_0_10px_rgba(129,140,248,0.2)]"><div class="text-base mb-1">🖥️</div>HUD MODE</button>
-            </div>
-            <div class="grid grid-cols-3 gap-2 mb-4 text-xs font-bold">
-                <button onclick="komut('galaxy-map')" class="btn border border-gray-800 bg-[#0a0a0a] text-gray-400 rounded p-3 hover:border-gray-400"><div class="text-base mb-1">🌌</div>GAL MAP</button>
-                <button onclick="komut('system-map')" class="btn border border-gray-800 bg-[#0a0a0a] text-gray-400 rounded p-3 hover:border-gray-400"><div class="text-base mb-1">🪐</div>SYS MAP</button>
-                <button onclick="komut('fss')" class="btn border border-gray-800 bg-[#0a0a0a] text-purple-400 rounded p-3 hover:border-purple-400 hover:shadow-[0_0_10px_rgba(192,132,252,0.2)]"><div class="text-base mb-1">📡</div>FSS</button>
+        <div id="page-nav" class="page !flex-row !justify-start gap-2 p-2 overflow-y-auto pb-20">
+            
+            <!-- LEFT SIDE (MAIN NAV) -->
+            <div class="flex-1 flex flex-col gap-2 h-full">
+                <!-- MIDDLE: NAVIGATION CENTER -->
+                <div class="bg-[#050505] p-2.5 rounded-xl border border-orange-900/30 relative shadow-md mt-2">
+                    <div class="absolute top-0 left-4 px-2 -mt-2 bg-[#050505] text-[8px] text-orange-600 font-black tracking-widest">NAVIGATION</div>
+                    
+                    <div class="flex items-center justify-between mt-2 gap-2">
+                        <!-- Left Panel: FSD & Tabs -->
+                        <div class="flex flex-col gap-1.5 w-1/4">
+                            <button onclick="komut('fsd-jump')" class="btn border border-orange-700/50 bg-orange-900/10 text-orange-400 rounded py-1.5 text-[9px] font-bold">HYPER</button>
+                            <button onclick="komut('fsd-sc')" class="btn border border-orange-700/50 bg-orange-900/10 text-orange-400 rounded py-1.5 text-[9px] font-bold">CRUISE</button>
+                            <button onclick="komut('fsd')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-400 rounded py-1.5 text-[9px] font-bold mb-1">FSD</button>
+                            
+                            <button onclick="komut('tab-prev')" class="btn border-2 border-gray-600 bg-gray-800 text-white rounded py-2 text-[10px] font-black">&lt; TAB</button>
+                        </div>
+
+                    <!-- Center: D-Pad & Panels -->
+                    <div class="grid grid-cols-5 gap-0.5 p-1.5 bg-[#0a0a0a] rounded-2xl border-2 border-gray-800/80 shadow-inner">
+                        <!-- Top: Comms -->
+                        <div class="col-start-3 row-start-1 flex justify-center items-center">
+                            <button onclick="komut('panel-comms')" class="btn w-9 h-9 border border-blue-900/50 bg-blue-900/10 text-blue-400 rounded-md text-[8px] font-black leading-none">COMM</button>
+                        </div>
+                        
+                        <!-- D-Pad Up -->
+                        <div class="col-start-3 row-start-2 flex justify-center items-center">
+                            <button onclick="komut('menu-up')" class="btn w-9 h-9 border border-gray-600 bg-gray-800 rounded-lg text-base flex items-center justify-center">▲</button>
+                        </div>
+                        
+                        <!-- Left: External -->
+                        <div class="col-start-1 row-start-3 flex justify-center items-center">
+                            <button onclick="komut('panel-external')" class="btn w-9 h-9 border border-orange-900/50 bg-orange-900/10 text-orange-500 rounded-md text-[8px] font-black leading-none">EXT</button>
+                        </div>
+                        
+                        <!-- D-Pad Left -->
+                        <div class="col-start-2 row-start-3 flex justify-center items-center">
+                            <button onclick="komut('menu-left')" class="btn w-9 h-9 border border-gray-600 bg-gray-800 rounded-lg text-base flex items-center justify-center">◀</button>
+                        </div>
+                        
+                        <!-- D-Pad OK -->
+                        <div class="col-start-3 row-start-3 flex justify-center items-center">
+                            <button onclick="komut('menu-select')" class="btn w-9 h-9 border-2 border-orange-500 bg-orange-900/20 text-orange-500 rounded-lg font-black text-[10px] flex items-center justify-center shadow-[0_0_8px_rgba(249,115,22,0.2)]">OK</button>
+                        </div>
+                        
+                        <!-- D-Pad Right -->
+                        <div class="col-start-4 row-start-3 flex justify-center items-center">
+                            <button onclick="komut('menu-right')" class="btn w-9 h-9 border border-gray-600 bg-gray-800 rounded-lg text-base flex items-center justify-center">▶</button>
+                        </div>
+                        
+                        <!-- Right: Internal -->
+                        <div class="col-start-5 row-start-3 flex justify-center items-center">
+                            <button onclick="komut('panel-internal')" class="btn w-9 h-9 border border-orange-900/50 bg-orange-900/10 text-orange-500 rounded-md text-[8px] font-black leading-none">INT</button>
+                        </div>
+                        
+                        <!-- D-Pad Down -->
+                        <div class="col-start-3 row-start-4 flex justify-center items-center">
+                            <button onclick="komut('menu-down')" class="btn w-9 h-9 border border-gray-600 bg-gray-800 rounded-lg text-base flex items-center justify-center">▼</button>
+                        </div>
+                        
+                        <!-- Bottom: Role -->
+                        <div class="col-start-3 row-start-5 flex justify-center items-center">
+                            <button onclick="komut('panel-role')" class="btn w-9 h-9 border border-blue-900/50 bg-blue-900/10 text-blue-400 rounded-md text-[8px] font-black leading-none">ROLE</button>
+                        </div>
+                    </div>
+
+                        <!-- Right Panel: Maps & Pages -->
+                        <div class="flex flex-col gap-1.5 w-1/4">
+                            <button onclick="komut('galaxy-map')" class="btn border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded py-1.5 text-[9px] font-bold">GAL MAP</button>
+                            <button onclick="komut('system-map')" class="btn border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded py-1.5 text-[9px] font-bold">SYS MAP</button>
+                            <button onclick="komut('target-route')" class="btn border border-orange-900/40 bg-orange-900/10 text-orange-400 rounded py-1 text-[9px] font-bold">ROUTE</button>
+                            <button onclick="komut('target-sub-next')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-400 rounded py-1 text-[9px] font-bold mb-1">SUBSYS</button>
+                            
+                            <button onclick="komut('tab-next')" class="btn border-2 border-gray-600 bg-gray-800 text-white rounded py-2 text-[10px] font-black">TAB &gt;</button>
+                        </div>
+                    </div>
+                    
+                    <!-- UI Pages (Below D-pad) -->
+                    <div class="flex justify-center gap-6 mt-3">
+                        <button onclick="komut('ui-page-prev')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-400 rounded px-5 py-1.5 text-[9px] font-bold uppercase tracking-wider">&lt;&lt; PAGE</button>
+                        <button onclick="komut('ui-page-next')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-400 rounded px-5 py-1.5 text-[9px] font-bold uppercase tracking-wider">PAGE &gt;&gt;</button>
+                    </div>
+                </div>
+
+                <!-- BOTTOM: SYSTEMS & THRUSTERS -->
+                <div class="grid grid-cols-2 gap-2 mt-1 flex-1">
+                    
+                    <!-- SHIP SYSTEMS -->
+                    <div class="bg-[#050505] p-2.5 rounded-xl border border-gray-700/50 relative flex flex-col gap-2 shadow-md">
+                        <div class="absolute top-0 left-4 px-2 -mt-2 bg-[#050505] text-[8px] text-gray-400 font-black tracking-widest">SYSTEMS</div>
+                        <div class="grid grid-cols-2 gap-1.5 mt-1">
+                            <div id="ind-gear" onclick="komut('landing-gear')" class="ind-btn cursor-pointer border rounded py-3 text-[8px] font-bold ind-off transition-all text-center flex items-center justify-center">GEAR</div>
+                            <div id="ind-cargo" onclick="komut('cargo-scoop')" class="ind-btn cursor-pointer border rounded py-3 text-[8px] font-bold ind-off transition-all text-center flex items-center justify-center">SCOOP</div>
+                            <div id="ind-light" onclick="komut('lights')" class="ind-btn cursor-pointer border rounded py-3 text-[8px] font-bold ind-off transition-all text-center flex items-center justify-center">LIGHTS</div>
+                            <div id="ind-nv" onclick="komut('night-vision')" class="ind-btn cursor-pointer border rounded py-3 text-[8px] font-bold ind-off transition-all text-center flex items-center justify-center">N-VIS</div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-1.5 mt-auto">
+                            <button onclick="komut('rot-corr')" class="btn border border-gray-800 bg-[#0a0a0a] text-gray-500 rounded py-2 text-[7px] uppercase font-black">Rot Corr</button>
+                            <button onclick="komut('orbit-lines')" class="btn border border-gray-800 bg-[#0a0a0a] text-gray-500 rounded py-2 text-[7px] uppercase font-black">Orbit Lns</button>
+                        </div>
+                    </div>
+
+                    <!-- VERTICAL THRUSTERS -->
+                    <div class="bg-[#050505] p-2.5 rounded-xl border border-blue-900/30 relative flex flex-col gap-2 shadow-md">
+                        <div class="absolute top-0 left-4 px-2 -mt-2 bg-[#050505] text-[8px] text-blue-500 font-black tracking-widest">THRUSTERS</div>
+                        <div class="flex flex-col gap-2 mt-1 h-full justify-center">
+                            <button onclick="komut('thruster-up')" class="btn flex-1 border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded py-4 text-xs font-bold">V-UP ▲</button>
+                            <button onclick="komut('thruster-down')" class="btn flex-1 border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded py-4 text-xs font-bold">V-DN ▼</button>
+                        </div>
+                    </div>
+
+                </div>
             </div>
 
-            <button onclick="komut('menu')" class="btn w-full border border-gray-600 bg-gray-800 text-white rounded p-3 text-xs font-bold hover:border-white shadow-[0_0_10px_rgba(255,255,255,0.1)] tracking-widest">☰ MENU (ESC)</button>
+            <!-- RIGHT SIDE: SPEED COLUMN -->
+            <div class="w-20 flex flex-col gap-1 bg-[#050505] p-1.5 rounded-xl border border-cyan-900/30 shadow-md shrink-0 h-full">
+                <button onclick="komut('boost')" class="btn flex-1 border-2 border-cyan-600 bg-cyan-900/30 text-cyan-400 rounded-md text-[10px] font-black tracking-wider shadow-[0_0_15px_rgba(8,145,178,0.4)] transition-all hover:bg-cyan-800/40">BOOST</button>
+                <button onclick="komut('throttle-inc')" class="btn flex-1 border border-gray-700 bg-gray-800 text-gray-300 rounded-md text-[9px] font-bold">THR +</button>
+                <button onclick="komut('speed-100')" class="btn flex-1 border border-green-900/60 bg-green-900/10 text-green-500 rounded-md text-[10px] font-black">100%</button>
+                <button onclick="komut('speed-75')" class="btn flex-1 border border-orange-900/60 bg-orange-900/10 text-orange-400 rounded-md text-[10px] font-black">75%</button>
+                <button onclick="komut('speed-50')" class="btn flex-1 border border-blue-900/60 bg-blue-900/10 text-blue-400 rounded-md text-[10px] font-black">50%</button>
+                <button onclick="komut('speed-25')" class="btn flex-1 border border-gray-800 bg-gray-900 text-gray-300 rounded-md text-[10px] font-black">25%</button>
+                <button onclick="komut('speed-0')" class="btn flex-1 border border-red-900/60 bg-red-900/10 text-red-500 rounded-md text-[10px] font-black">0%</button>
+                <button onclick="komut('throttle-dec')" class="btn flex-1 border border-gray-700 bg-gray-800 text-gray-300 rounded-md text-[9px] font-bold">THR -</button>
+            </div>
         </div>
 
         <!-- ==================== BİLGİ (INFO) ==================== -->
@@ -389,4 +568,4 @@ def get_status():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
