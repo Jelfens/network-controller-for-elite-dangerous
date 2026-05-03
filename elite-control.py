@@ -125,6 +125,9 @@ HTML = """
         }
         .page { display: none; }
         .page.active { display: flex; flex-direction: column; justify-content: space-evenly; height: 100%; }
+        #page-nav.active { justify-content: flex-start; gap: 0.5rem; overflow: hidden; }
+        #page-aux.active { justify-content: flex-start; }
+        #page-landing.active { justify-content: flex-start; }
         .tab-btn { transition: all 0.2s; }
         .tab-btn.active {
             color: #ff8c00;
@@ -141,7 +144,7 @@ HTML = """
 </head>
 <body class="text-gray-300 font-mono select-none flex flex-col h-screen tracking-tight overflow-hidden">
 
-    <div class="flex-1 overflow-y-auto no-scrollbar p-3 pb-20">
+    <div class="flex-1 overflow-y-auto no-scrollbar p-2 pb-16">
 
         <!-- ==================== TARGETING MODAL ==================== -->
         <div id="modal-targeting" class="fixed inset-0 bg-[#050505]/98 z-[100] flex-col p-4 backdrop-blur-xl" style="display: none;">
@@ -254,70 +257,118 @@ HTML = """
         </div>
 
         <!-- ==================== SEYİR (NAVIGATION) ==================== -->
-        <div id="page-nav" class="page h-full overflow-y-auto no-scrollbar p-2">
+        <!-- ==================== SEYİR (NAVIGATION) ==================== -->
+        <div id="page-nav" class="page h-full overflow-hidden p-2">
             
             <!-- TOP ROW: FSD | COM | Maps -->
-            <div class="grid grid-cols-3 gap-2 mb-3 items-start">
+            <div class="flex-[2] grid grid-cols-3 gap-2 mb-2 min-h-0">
                 <!-- FSD Box -->
-                <div class="bg-[#050505] p-2 rounded-xl border border-orange-900/30 relative shadow-md">
+                <div class="bg-[#050505] p-2 rounded-xl border border-orange-900/30 relative shadow-md flex flex-col justify-center">
                     <div class="absolute top-0 left-3 px-1 -mt-2 bg-[#050505] text-[7px] text-orange-600 font-black tracking-widest uppercase">FSD</div>
-                    <div class="grid grid-cols-2 gap-1 mt-1">
-                        <button onclick="komut('fsd-jump')" class="btn border border-orange-700/50 bg-orange-900/10 text-orange-400 rounded py-2 text-[8px] font-bold">HYP</button>
-                        <button onclick="komut('fsd-sc')" class="btn border border-orange-700/50 bg-orange-900/10 text-orange-400 rounded py-2 text-[8px] font-bold">SUP</button>
-                        <button onclick="komut('fsd')" class="btn col-span-2 border border-gray-700 bg-[#0a0a0a] text-gray-400 rounded py-2 text-[9px] font-black uppercase">FSD</button>
+                    <div class="grid grid-cols-2 gap-1 h-full">
+                        <button onclick="komut('fsd-jump')" class="btn h-full border border-orange-700/50 bg-orange-900/10 text-orange-400 rounded text-[9px] font-bold flex flex-col items-center justify-center">
+                            <span class="text-xs">🚀</span>
+                            HYP
+                        </button>
+                        <button onclick="komut('fsd-sc')" class="btn h-full border border-orange-700/50 bg-orange-900/10 text-orange-400 rounded text-[9px] font-bold flex flex-col items-center justify-center">
+                            <span class="text-xs">⚡</span>
+                            SUP
+                        </button>
+                        <button onclick="komut('fsd')" class="btn col-span-2 h-full border border-gray-700 bg-[#0a0a0a] text-gray-400 rounded text-[10px] font-black uppercase flex items-center justify-center gap-2">
+                            <span class="text-xs">🌀</span>
+                            FSD
+                        </button>
                     </div>
                 </div>
 
                 <!-- Center: COM -->
-                <div class="flex justify-center items-start pt-1">
-                    <button onclick="komut('panel-comms')" class="btn w-full h-full min-h-[60px] border-2 border-blue-900/50 bg-blue-900/10 text-blue-400 rounded-xl text-[11px] font-black shadow-lg">COM</button>
-                </div>
+                <button onclick="komut('panel-comms')" class="btn w-full h-full border-2 border-blue-900/50 bg-blue-900/10 text-blue-400 rounded-xl text-[12px] font-black shadow-lg flex flex-col items-center justify-center">
+                    <span class="text-xl mb-1">📡</span>
+                    COM
+                </button>
 
                 <!-- Maps Box -->
-                <div class="bg-[#050505] p-2 rounded-xl border border-blue-900/30 relative shadow-md">
+                <div class="bg-[#050505] p-2 rounded-xl border border-blue-900/30 relative shadow-md flex flex-col">
                     <div class="absolute top-0 right-3 px-1 -mt-2 bg-[#050505] text-[7px] text-blue-500 font-black tracking-widest uppercase">Maps</div>
-                    <div class="grid grid-cols-2 gap-1 mt-1">
-                        <button onclick="komut('target-sub-next')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-400 rounded py-2 text-[8px] font-bold">SUBS</button>
-                        <button onclick="komut('target-route')" class="btn border border-orange-900/40 bg-orange-900/10 text-orange-400 rounded py-2 text-[8px] font-bold">ROUTE</button>
-                        <button onclick="komut('system-map')" class="btn col-span-2 border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded py-2 text-[9px] font-black uppercase">SYS MAP</button>
-                        <button onclick="komut('galaxy-map')" class="btn col-span-2 border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded py-2 text-[9px] font-black uppercase">GAL MAP</button>
+                    <div class="grid grid-cols-2 gap-1 flex-1">
+                        <button onclick="komut('target-sub-next')" class="btn h-full border border-gray-700 bg-[#0a0a0a] text-gray-400 rounded text-[9px] font-bold flex flex-col items-center justify-center leading-none">
+                            <span class="text-[10px]">🎯</span>
+                            SUBS
+                        </button>
+                        <button onclick="komut('target-route')" class="btn h-full border border-orange-900/40 bg-orange-900/10 text-orange-400 rounded text-[9px] font-bold flex flex-col items-center justify-center leading-none">
+                            <span class="text-[10px]">🚩</span>
+                            ROUTE
+                        </button>
+                        <button onclick="komut('system-map')" class="btn col-span-2 h-full border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded text-[10px] font-black uppercase flex items-center justify-center gap-2">
+                            <span class="text-xs">🪐</span>
+                            SYS MAP
+                        </button>
+                        <button onclick="komut('galaxy-map')" class="btn col-span-2 h-full border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded text-[10px] font-black uppercase flex items-center justify-center gap-2">
+                            <span class="text-xs">🌌</span>
+                            GAL MAP
+                        </button>
                     </div>
                 </div>
             </div>
 
             <!-- MIDDLE ROW: <TAB | EXT | D-PAD | INT | TAB> -->
-            <div class="flex items-center justify-between gap-1 mb-3 px-1">
-                <button onclick="komut('tab-prev')" class="btn w-14 h-[130px] border border-gray-600 bg-gray-800 text-white rounded-xl text-[10px] font-black">&lt;TAB</button>
-                <button onclick="komut('panel-external')" class="btn w-16 h-[130px] border border-orange-900/50 bg-orange-900/10 text-orange-500 rounded-xl text-[11px] font-black">EXT</button>
+            <div class="flex-[5] flex items-stretch justify-between gap-1 mb-2 min-h-0">
+                <button onclick="komut('tab-prev')" class="btn flex-1 border border-gray-600 bg-gray-800 text-white rounded-xl text-[11px] font-black flex flex-col items-center justify-center">
+                    <span class="text-lg mb-2">◀️</span>
+                    TAB
+                </button>
+                <button onclick="komut('panel-external')" class="btn flex-[1.5] border border-orange-900/50 bg-orange-900/10 text-orange-500 rounded-xl text-[13px] font-black flex flex-col items-center justify-center">
+                    <span class="text-2xl mb-2">🛰️</span>
+                    EXT
+                </button>
 
                 <!-- D-PAD -->
-                <div class="grid grid-cols-3 gap-1.5 bg-[#0a0a0a] p-2 rounded-2xl border-2 border-gray-800 shadow-inner">
+                <div class="flex-[3] grid grid-cols-3 gap-1.5 bg-[#0a0a0a] p-2 rounded-2xl border-2 border-gray-800 shadow-inner">
                     <div></div>
-                    <button onclick="komut('menu-up')" class="btn w-12 h-12 border border-gray-600 bg-gray-800 rounded-lg text-2xl">▲</button>
+                    <button onclick="komut('menu-up')" class="btn w-full h-full border border-gray-600 bg-gray-800 rounded-lg text-2xl">▲</button>
                     <div></div>
-                    <button onclick="komut('menu-left')" class="btn w-12 h-12 border border-gray-600 bg-gray-800 rounded-lg text-2xl">◀</button>
-                    <button onclick="komut('menu-select')" class="btn w-12 h-12 border-2 border-orange-500 bg-orange-900/30 text-orange-400 rounded-lg font-black text-sm">OK</button>
-                    <button onclick="komut('menu-right')" class="btn w-12 h-12 border border-gray-600 bg-gray-800 rounded-lg text-2xl">▶</button>
+                    <button onclick="komut('menu-left')" class="btn w-full h-full border border-gray-600 bg-gray-800 rounded-lg text-2xl">◀</button>
+                    <button onclick="komut('menu-select')" class="btn w-full h-full border-2 border-orange-500 bg-orange-900/30 text-orange-400 rounded-lg font-black text-lg flex flex-col items-center justify-center">
+                        <span class="text-xl">✅</span>
+                        OK
+                    </button>
+                    <button onclick="komut('menu-right')" class="btn w-full h-full border border-gray-600 bg-gray-800 rounded-lg text-2xl">▶</button>
                     <div></div>
-                    <button onclick="komut('menu-down')" class="btn w-12 h-12 border border-gray-600 bg-gray-800 rounded-lg text-2xl">▼</button>
+                    <button onclick="komut('menu-down')" class="btn w-full h-full border border-gray-600 bg-gray-800 rounded-lg text-2xl">▼</button>
                     <div></div>
                 </div>
 
-                <button onclick="komut('panel-internal')" class="btn w-16 h-[130px] border border-orange-900/50 bg-orange-900/10 text-orange-500 rounded-xl text-[11px] font-black">INT</button>
-                <button onclick="komut('tab-next')" class="btn w-14 h-[130px] border border-gray-600 bg-gray-800 text-white rounded-xl text-[10px] font-black">TAB&gt;</button>
+                <button onclick="komut('panel-internal')" class="btn flex-[1.5] border border-orange-900/50 bg-orange-900/10 text-orange-500 rounded-xl text-[13px] font-black flex flex-col items-center justify-center">
+                    <span class="text-2xl mb-2">🖥️</span>
+                    INT
+                </button>
+                <button onclick="komut('tab-next')" class="btn flex-1 border border-gray-600 bg-gray-800 text-white rounded-xl text-[11px] font-black flex flex-col items-center justify-center">
+                    <span class="text-lg mb-2">▶️</span>
+                    TAB
+                </button>
             </div>
-
 
             <!-- BOTTOM ROW: PAGE | ROLE | AUX -->
-            <div class="grid grid-cols-3 gap-2">
+            <div class="flex-[1.5] grid grid-cols-3 gap-2 min-h-0">
                 <div class="flex flex-col gap-1">
-                    <button onclick="komut('ui-page-prev')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-500 rounded py-3 text-[8px] font-black">PAGE ▲</button>
-                    <button onclick="komut('ui-page-next')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-500 rounded py-3 text-[8px] font-black">PAGE ▼</button>
+                    <button onclick="komut('ui-page-prev')" class="btn flex-1 border border-gray-700 bg-[#0a0a0a] text-gray-500 rounded text-[9px] font-black flex items-center justify-center gap-1">
+                        <span>🔼</span> UP
+                    </button>
+                    <button onclick="komut('ui-page-next')" class="btn flex-1 border border-gray-700 bg-[#0a0a0a] text-gray-500 rounded text-[9px] font-black flex items-center justify-center gap-1">
+                        <span>🔽</span> DOWN
+                    </button>
                 </div>
-                <button onclick="komut('panel-role')" class="btn border-2 border-blue-900/50 bg-blue-900/10 text-blue-400 rounded-xl text-[11px] font-black shadow-lg">ROLE</button>
-                <button onclick="switchPage('aux')" class="btn border-2 border-gray-600 bg-gray-800 text-gray-300 rounded-xl text-[11px] font-black shadow-lg">AUX</button>
+                <button onclick="komut('panel-role')" class="btn w-full h-full border-2 border-blue-900/50 bg-blue-900/10 text-blue-400 rounded-xl text-[12px] font-black shadow-lg flex flex-col items-center justify-center">
+                    <span class="text-xl">👥</span>
+                    ROLE
+                </button>
+                <button onclick="switchPage('aux')" class="btn w-full h-full border-2 border-gray-600 bg-gray-800 text-gray-300 rounded-xl text-[12px] font-black shadow-lg flex flex-col items-center justify-center">
+                    <span class="text-xl">🛠️</span>
+                    AUX
+                </button>
             </div>
         </div>
+
 
         <!-- ==================== AUX ==================== -->
         <div id="page-aux" class="page overflow-y-auto no-scrollbar h-full p-3">
