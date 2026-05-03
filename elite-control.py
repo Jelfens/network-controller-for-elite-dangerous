@@ -7,6 +7,36 @@ import subprocess
 import urllib.request
 import urllib.error
 
+# vJoy initialization (Windows only)
+has_gamepad = False
+gamepad = None
+if sys.platform == 'win32':
+    try:
+        import pyvjoy
+    except ImportError:
+        pyvjoy = None
+
+def initialize_vjoy(debug=True):
+    global has_gamepad, gamepad
+    if sys.platform != 'win32' or pyvjoy is None:
+        return
+    
+    if debug and os.environ.get('WERKZEUG_RUN_MAIN') != 'true':
+        return
+
+    try:
+        gamepad = pyvjoy.VJoyDevice(1)
+        has_gamepad = True
+        print("vJoy (Device 1) successfully initialized.")
+    except Exception as e:
+        if "VJD_STAT_FREE" in str(e):
+            print(f"vJoy error: Device 1 already in use.")
+        else:
+            print(f"vJoy error: {e}")
+
+
+
+
 # Platform-specific input handling
 if sys.platform == 'linux':
     def press_key(key):
@@ -103,11 +133,15 @@ HTML = """
             box-shadow: 0 -2px 10px rgba(255,140,0,0.3);
         }
         .tab-btn.active .tab-icon { filter: drop-shadow(0 0 4px rgba(255,140,0,0.6)); }
+        
+        /* Hide scrollbar completely but allow scrolling if absolutely necessary to prevent cutoff */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="text-gray-300 font-mono select-none flex flex-col h-screen tracking-tight overflow-hidden">
 
-    <div class="flex-1 overflow-hidden p-3 pb-16">
+    <div class="flex-1 overflow-y-auto no-scrollbar p-3 pb-20">
 
         <!-- ==================== TARGETING MODAL ==================== -->
         <div id="modal-targeting" class="fixed inset-0 bg-[#050505]/98 z-[100] flex-col p-4 backdrop-blur-xl" style="display: none;">
@@ -121,7 +155,7 @@ HTML = """
             </div>
             
             <!-- Main Content -->
-            <div class="flex-1 flex flex-col gap-4 overflow-y-auto">
+            <div class="flex-1 flex flex-col gap-4 overflow-y-auto no-scrollbar">
                 
                 <!-- Primary Combat Targets -->
                 <div class="grid grid-cols-2 gap-2">
@@ -163,7 +197,7 @@ HTML = """
             </div>
         </div>
         <!-- ==================== SAVAŞ (COMBAT) ==================== -->
-        <div id="page-combat" class="page active">
+        <div id="page-combat" class="page active overflow-y-auto no-scrollbar h-full">
 
             <div class="grid grid-cols-4 gap-2 text-center text-xs font-bold mb-4">
                 <div id="ind-hardp" onclick="komut('wg-hardpoints')" class="ind-btn cursor-pointer border rounded p-3 ind-off transition-all"><div class="text-base mb-1">⚙️</div>HARDPOINTS</div>
@@ -220,135 +254,101 @@ HTML = """
         </div>
 
         <!-- ==================== SEYİR (NAVIGATION) ==================== -->
-        <div id="page-nav" class="page !flex-row !justify-start gap-2 p-2 overflow-y-auto pb-20">
+        <div id="page-nav" class="page h-full overflow-y-auto no-scrollbar p-2">
             
-            <!-- LEFT SIDE (MAIN NAV) -->
-            <div class="flex-1 flex flex-col gap-2 h-full">
-                <!-- MIDDLE: NAVIGATION CENTER -->
-                <div class="bg-[#050505] p-2.5 rounded-xl border border-orange-900/30 relative shadow-md mt-2">
-                    <div class="absolute top-0 left-4 px-2 -mt-2 bg-[#050505] text-[8px] text-orange-600 font-black tracking-widest">NAVIGATION</div>
-                    
-                    <div class="flex items-center justify-between mt-2 gap-2">
-                        <!-- Left Panel: FSD & Tabs -->
-                        <div class="flex flex-col gap-1.5 w-1/4">
-                            <button onclick="komut('fsd-jump')" class="btn border border-orange-700/50 bg-orange-900/10 text-orange-400 rounded py-1.5 text-[9px] font-bold">HYPER</button>
-                            <button onclick="komut('fsd-sc')" class="btn border border-orange-700/50 bg-orange-900/10 text-orange-400 rounded py-1.5 text-[9px] font-bold">CRUISE</button>
-                            <button onclick="komut('fsd')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-400 rounded py-1.5 text-[9px] font-bold mb-1">FSD</button>
-                            
-                            <button onclick="komut('tab-prev')" class="btn border-2 border-gray-600 bg-gray-800 text-white rounded py-2 text-[10px] font-black">&lt; TAB</button>
-                        </div>
-
-                    <!-- Center: D-Pad & Panels -->
-                    <div class="grid grid-cols-5 gap-0.5 p-1.5 bg-[#0a0a0a] rounded-2xl border-2 border-gray-800/80 shadow-inner">
-                        <!-- Top: Comms -->
-                        <div class="col-start-3 row-start-1 flex justify-center items-center">
-                            <button onclick="komut('panel-comms')" class="btn w-9 h-9 border border-blue-900/50 bg-blue-900/10 text-blue-400 rounded-md text-[8px] font-black leading-none">COMM</button>
-                        </div>
-                        
-                        <!-- D-Pad Up -->
-                        <div class="col-start-3 row-start-2 flex justify-center items-center">
-                            <button onclick="komut('menu-up')" class="btn w-9 h-9 border border-gray-600 bg-gray-800 rounded-lg text-base flex items-center justify-center">▲</button>
-                        </div>
-                        
-                        <!-- Left: External -->
-                        <div class="col-start-1 row-start-3 flex justify-center items-center">
-                            <button onclick="komut('panel-external')" class="btn w-9 h-9 border border-orange-900/50 bg-orange-900/10 text-orange-500 rounded-md text-[8px] font-black leading-none">EXT</button>
-                        </div>
-                        
-                        <!-- D-Pad Left -->
-                        <div class="col-start-2 row-start-3 flex justify-center items-center">
-                            <button onclick="komut('menu-left')" class="btn w-9 h-9 border border-gray-600 bg-gray-800 rounded-lg text-base flex items-center justify-center">◀</button>
-                        </div>
-                        
-                        <!-- D-Pad OK -->
-                        <div class="col-start-3 row-start-3 flex justify-center items-center">
-                            <button onclick="komut('menu-select')" class="btn w-9 h-9 border-2 border-orange-500 bg-orange-900/20 text-orange-500 rounded-lg font-black text-[10px] flex items-center justify-center shadow-[0_0_8px_rgba(249,115,22,0.2)]">OK</button>
-                        </div>
-                        
-                        <!-- D-Pad Right -->
-                        <div class="col-start-4 row-start-3 flex justify-center items-center">
-                            <button onclick="komut('menu-right')" class="btn w-9 h-9 border border-gray-600 bg-gray-800 rounded-lg text-base flex items-center justify-center">▶</button>
-                        </div>
-                        
-                        <!-- Right: Internal -->
-                        <div class="col-start-5 row-start-3 flex justify-center items-center">
-                            <button onclick="komut('panel-internal')" class="btn w-9 h-9 border border-orange-900/50 bg-orange-900/10 text-orange-500 rounded-md text-[8px] font-black leading-none">INT</button>
-                        </div>
-                        
-                        <!-- D-Pad Down -->
-                        <div class="col-start-3 row-start-4 flex justify-center items-center">
-                            <button onclick="komut('menu-down')" class="btn w-9 h-9 border border-gray-600 bg-gray-800 rounded-lg text-base flex items-center justify-center">▼</button>
-                        </div>
-                        
-                        <!-- Bottom: Role -->
-                        <div class="col-start-3 row-start-5 flex justify-center items-center">
-                            <button onclick="komut('panel-role')" class="btn w-9 h-9 border border-blue-900/50 bg-blue-900/10 text-blue-400 rounded-md text-[8px] font-black leading-none">ROLE</button>
-                        </div>
-                    </div>
-
-                        <!-- Right Panel: Maps & Pages -->
-                        <div class="flex flex-col gap-1.5 w-1/4">
-                            <button onclick="komut('galaxy-map')" class="btn border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded py-1.5 text-[9px] font-bold">GAL MAP</button>
-                            <button onclick="komut('system-map')" class="btn border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded py-1.5 text-[9px] font-bold">SYS MAP</button>
-                            <button onclick="komut('target-route')" class="btn border border-orange-900/40 bg-orange-900/10 text-orange-400 rounded py-1 text-[9px] font-bold">ROUTE</button>
-                            <button onclick="komut('target-sub-next')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-400 rounded py-1 text-[9px] font-bold mb-1">SUBSYS</button>
-                            
-                            <button onclick="komut('tab-next')" class="btn border-2 border-gray-600 bg-gray-800 text-white rounded py-2 text-[10px] font-black">TAB &gt;</button>
-                        </div>
-                    </div>
-                    
-                    <!-- UI Pages (Below D-pad) -->
-                    <div class="flex justify-center gap-6 mt-3">
-                        <button onclick="komut('ui-page-prev')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-400 rounded px-5 py-1.5 text-[9px] font-bold uppercase tracking-wider">&lt;&lt; PAGE</button>
-                        <button onclick="komut('ui-page-next')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-400 rounded px-5 py-1.5 text-[9px] font-bold uppercase tracking-wider">PAGE &gt;&gt;</button>
+            <!-- TOP ROW: FSD | COM | Maps -->
+            <div class="grid grid-cols-3 gap-2 mb-3 items-start">
+                <!-- FSD Box -->
+                <div class="bg-[#050505] p-2 rounded-xl border border-orange-900/30 relative shadow-md">
+                    <div class="absolute top-0 left-3 px-1 -mt-2 bg-[#050505] text-[7px] text-orange-600 font-black tracking-widest uppercase">FSD</div>
+                    <div class="grid grid-cols-2 gap-1 mt-1">
+                        <button onclick="komut('fsd-jump')" class="btn border border-orange-700/50 bg-orange-900/10 text-orange-400 rounded py-2 text-[8px] font-bold">HYP</button>
+                        <button onclick="komut('fsd-sc')" class="btn border border-orange-700/50 bg-orange-900/10 text-orange-400 rounded py-2 text-[8px] font-bold">SUP</button>
+                        <button onclick="komut('fsd')" class="btn col-span-2 border border-gray-700 bg-[#0a0a0a] text-gray-400 rounded py-2 text-[9px] font-black uppercase">FSD</button>
                     </div>
                 </div>
 
-                <!-- BOTTOM: SYSTEMS & THRUSTERS -->
-                <div class="grid grid-cols-2 gap-2 mt-1 flex-1">
-                    
-                    <!-- SHIP SYSTEMS -->
-                    <div class="bg-[#050505] p-2.5 rounded-xl border border-gray-700/50 relative flex flex-col gap-2 shadow-md">
-                        <div class="absolute top-0 left-4 px-2 -mt-2 bg-[#050505] text-[8px] text-gray-400 font-black tracking-widest">SYSTEMS</div>
-                        <div class="grid grid-cols-2 gap-1.5 mt-1">
-                            <div id="ind-gear" onclick="komut('landing-gear')" class="ind-btn cursor-pointer border rounded py-3 text-[8px] font-bold ind-off transition-all text-center flex items-center justify-center">GEAR</div>
-                            <div id="ind-cargo" onclick="komut('cargo-scoop')" class="ind-btn cursor-pointer border rounded py-3 text-[8px] font-bold ind-off transition-all text-center flex items-center justify-center">SCOOP</div>
-                            <div id="ind-light" onclick="komut('lights')" class="ind-btn cursor-pointer border rounded py-3 text-[8px] font-bold ind-off transition-all text-center flex items-center justify-center">LIGHTS</div>
-                            <div id="ind-nv" onclick="komut('night-vision')" class="ind-btn cursor-pointer border rounded py-3 text-[8px] font-bold ind-off transition-all text-center flex items-center justify-center">N-VIS</div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-1.5 mt-auto">
-                            <button onclick="komut('rot-corr')" class="btn border border-gray-800 bg-[#0a0a0a] text-gray-500 rounded py-2 text-[7px] uppercase font-black">Rot Corr</button>
-                            <button onclick="komut('orbit-lines')" class="btn border border-gray-800 bg-[#0a0a0a] text-gray-500 rounded py-2 text-[7px] uppercase font-black">Orbit Lns</button>
-                        </div>
-                    </div>
+                <!-- Center: COM -->
+                <div class="flex justify-center items-start pt-1">
+                    <button onclick="komut('panel-comms')" class="btn w-full h-full min-h-[60px] border-2 border-blue-900/50 bg-blue-900/10 text-blue-400 rounded-xl text-[11px] font-black shadow-lg">COM</button>
+                </div>
 
-                    <!-- VERTICAL THRUSTERS -->
-                    <div class="bg-[#050505] p-2.5 rounded-xl border border-blue-900/30 relative flex flex-col gap-2 shadow-md">
-                        <div class="absolute top-0 left-4 px-2 -mt-2 bg-[#050505] text-[8px] text-blue-500 font-black tracking-widest">THRUSTERS</div>
-                        <div class="flex flex-col gap-2 mt-1 h-full justify-center">
-                            <button onclick="komut('thruster-up')" class="btn flex-1 border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded py-4 text-xs font-bold">V-UP ▲</button>
-                            <button onclick="komut('thruster-down')" class="btn flex-1 border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded py-4 text-xs font-bold">V-DN ▼</button>
-                        </div>
+                <!-- Maps Box -->
+                <div class="bg-[#050505] p-2 rounded-xl border border-blue-900/30 relative shadow-md">
+                    <div class="absolute top-0 right-3 px-1 -mt-2 bg-[#050505] text-[7px] text-blue-500 font-black tracking-widest uppercase">Maps</div>
+                    <div class="grid grid-cols-2 gap-1 mt-1">
+                        <button onclick="komut('target-sub-next')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-400 rounded py-2 text-[8px] font-bold">SUBS</button>
+                        <button onclick="komut('target-route')" class="btn border border-orange-900/40 bg-orange-900/10 text-orange-400 rounded py-2 text-[8px] font-bold">ROUTE</button>
+                        <button onclick="komut('system-map')" class="btn col-span-2 border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded py-2 text-[9px] font-black uppercase">SYS MAP</button>
+                        <button onclick="komut('galaxy-map')" class="btn col-span-2 border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded py-2 text-[9px] font-black uppercase">GAL MAP</button>
                     </div>
-
                 </div>
             </div>
 
-            <!-- RIGHT SIDE: SPEED COLUMN -->
-            <div class="w-20 flex flex-col gap-1 bg-[#050505] p-1.5 rounded-xl border border-cyan-900/30 shadow-md shrink-0 h-full">
-                <button onclick="komut('boost')" class="btn flex-1 border-2 border-cyan-600 bg-cyan-900/30 text-cyan-400 rounded-md text-[10px] font-black tracking-wider shadow-[0_0_15px_rgba(8,145,178,0.4)] transition-all hover:bg-cyan-800/40">BOOST</button>
-                <button onclick="komut('throttle-inc')" class="btn flex-1 border border-gray-700 bg-gray-800 text-gray-300 rounded-md text-[9px] font-bold">THR +</button>
-                <button onclick="komut('speed-100')" class="btn flex-1 border border-green-900/60 bg-green-900/10 text-green-500 rounded-md text-[10px] font-black">100%</button>
-                <button onclick="komut('speed-75')" class="btn flex-1 border border-orange-900/60 bg-orange-900/10 text-orange-400 rounded-md text-[10px] font-black">75%</button>
-                <button onclick="komut('speed-50')" class="btn flex-1 border border-blue-900/60 bg-blue-900/10 text-blue-400 rounded-md text-[10px] font-black">50%</button>
-                <button onclick="komut('speed-25')" class="btn flex-1 border border-gray-800 bg-gray-900 text-gray-300 rounded-md text-[10px] font-black">25%</button>
-                <button onclick="komut('speed-0')" class="btn flex-1 border border-red-900/60 bg-red-900/10 text-red-500 rounded-md text-[10px] font-black">0%</button>
-                <button onclick="komut('throttle-dec')" class="btn flex-1 border border-gray-700 bg-gray-800 text-gray-300 rounded-md text-[9px] font-bold">THR -</button>
+            <!-- MIDDLE ROW: <TAB | EXT | D-PAD | INT | TAB> -->
+            <div class="flex items-center justify-between gap-1 mb-3 px-1">
+                <button onclick="komut('tab-prev')" class="btn w-14 h-[130px] border border-gray-600 bg-gray-800 text-white rounded-xl text-[10px] font-black">&lt;TAB</button>
+                <button onclick="komut('panel-external')" class="btn w-16 h-[130px] border border-orange-900/50 bg-orange-900/10 text-orange-500 rounded-xl text-[11px] font-black">EXT</button>
+
+                <!-- D-PAD -->
+                <div class="grid grid-cols-3 gap-1.5 bg-[#0a0a0a] p-2 rounded-2xl border-2 border-gray-800 shadow-inner">
+                    <div></div>
+                    <button onclick="komut('menu-up')" class="btn w-12 h-12 border border-gray-600 bg-gray-800 rounded-lg text-2xl">▲</button>
+                    <div></div>
+                    <button onclick="komut('menu-left')" class="btn w-12 h-12 border border-gray-600 bg-gray-800 rounded-lg text-2xl">◀</button>
+                    <button onclick="komut('menu-select')" class="btn w-12 h-12 border-2 border-orange-500 bg-orange-900/30 text-orange-400 rounded-lg font-black text-sm">OK</button>
+                    <button onclick="komut('menu-right')" class="btn w-12 h-12 border border-gray-600 bg-gray-800 rounded-lg text-2xl">▶</button>
+                    <div></div>
+                    <button onclick="komut('menu-down')" class="btn w-12 h-12 border border-gray-600 bg-gray-800 rounded-lg text-2xl">▼</button>
+                    <div></div>
+                </div>
+
+                <button onclick="komut('panel-internal')" class="btn w-16 h-[130px] border border-orange-900/50 bg-orange-900/10 text-orange-500 rounded-xl text-[11px] font-black">INT</button>
+                <button onclick="komut('tab-next')" class="btn w-14 h-[130px] border border-gray-600 bg-gray-800 text-white rounded-xl text-[10px] font-black">TAB&gt;</button>
+            </div>
+
+
+            <!-- BOTTOM ROW: PAGE | ROLE | AUX -->
+            <div class="grid grid-cols-3 gap-2">
+                <div class="flex flex-col gap-1">
+                    <button onclick="komut('ui-page-prev')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-500 rounded py-3 text-[8px] font-black">PAGE ▲</button>
+                    <button onclick="komut('ui-page-next')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-500 rounded py-3 text-[8px] font-black">PAGE ▼</button>
+                </div>
+                <button onclick="komut('panel-role')" class="btn border-2 border-blue-900/50 bg-blue-900/10 text-blue-400 rounded-xl text-[11px] font-black shadow-lg">ROLE</button>
+                <button onclick="switchPage('aux')" class="btn border-2 border-gray-600 bg-gray-800 text-gray-300 rounded-xl text-[11px] font-black shadow-lg">AUX</button>
             </div>
         </div>
 
+        <!-- ==================== AUX ==================== -->
+        <div id="page-aux" class="page overflow-y-auto no-scrollbar h-full p-3">
+            <div class="flex flex-col gap-3">
+                <div class="text-[9px] text-orange-600 font-black tracking-[0.3em] uppercase border-b border-orange-900/20 pb-2">Ship Systems</div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div id="ind-cargo" onclick="komut('cargo-scoop')" class="ind-btn cursor-pointer border-2 rounded-xl py-8 text-xs font-black ind-off transition-all text-center flex flex-col items-center justify-center">
+                        <span class="text-2xl mb-1">📦</span>CARGO SCOOP
+                    </div>
+                    <div id="ind-light" onclick="komut('lights')" class="ind-btn cursor-pointer border-2 rounded-xl py-8 text-xs font-black ind-off transition-all text-center flex flex-col items-center justify-center">
+                        <span class="text-2xl mb-1">💡</span>LIGHTS
+                    </div>
+                    <div id="ind-nv" onclick="komut('night-vision')" class="ind-btn cursor-pointer border-2 rounded-xl py-8 text-xs font-black ind-off transition-all text-center flex flex-col items-center justify-center col-span-2">
+                        <span class="text-2xl mb-1">👁️</span>NIGHT VISION
+                    </div>
+                </div>
+
+                <div class="text-[9px] text-orange-600 font-black tracking-[0.3em] uppercase border-b border-orange-900/20 pb-2 mt-2">Utilities</div>
+                <div class="grid grid-cols-1 gap-2">
+                    <button onclick="komut('rot-corr')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-300 rounded-xl py-4 text-[10px] font-black uppercase">Rotation Correction</button>
+                    <button onclick="komut('orbit-lines')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-300 rounded-xl py-4 text-[10px] font-black uppercase">Orbit Lines</button>
+                </div>
+
+                <button onclick="switchPage('nav')" class="w-full py-3 bg-orange-900/20 border border-orange-800/50 text-orange-500 text-[10px] font-black rounded-xl uppercase tracking-widest mt-2">&lt; Back to Nav</button>
+            </div>
+        </div>
+
+
+
         <!-- ==================== BİLGİ (INFO) ==================== -->
-        <div id="page-info" class="page">
+        <div id="page-info" class="page overflow-y-auto no-scrollbar h-full">
 
             <div class="grid grid-cols-2 gap-2 mb-4">
                 <div class="bg-[#050505] border border-orange-900/50 rounded p-3 text-center relative overflow-hidden">
@@ -383,6 +383,60 @@ HTML = """
             <div class="text-center text-xl font-black text-gray-600 tracking-[0.2em]" id="sys-clock">00:00:00 LOC</div>
         </div>
 
+        <!-- ==================== İNİŞ (LANDING) ==================== -->
+        <div id="page-landing" class="page overflow-y-auto no-scrollbar h-full">
+            <div class="flex-1 flex flex-col gap-4 p-2">
+                
+                <!-- LANDING STATUS -->
+                <div class="w-full">
+                    <div id="ind-gear" onclick="komut('landing-gear')" class="ind-btn cursor-pointer border-2 rounded-xl py-8 text-sm font-black ind-off transition-all text-center flex flex-col items-center justify-center shadow-lg">
+                        <span class="text-3xl mb-2">⚓</span>
+                        LANDING GEAR
+                    </div>
+                </div>
+
+
+                <!-- DUAL PAD CONTROLS -->
+                <div class="flex-1 flex gap-3 min-h-0 bg-[#050505] p-3 rounded-2xl border border-blue-900/20 relative shadow-inner">
+                    <div class="absolute top-0 left-6 px-3 -mt-2 bg-[#050505] text-[10px] text-blue-500 font-black tracking-widest uppercase">Precision Thrust Control</div>
+                    
+                    <!-- Vertical Pad (Wider) -->
+                    <div class="flex flex-col gap-2 w-20">
+                        <div id="v-pad" class="relative flex-1 bg-[#0a0a0a] border-2 border-blue-900/40 rounded-xl overflow-hidden cursor-ns-resize touch-none">
+                            <div class="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none">
+                                <div class="w-full h-[1px] bg-blue-500/50"></div>
+                            </div>
+                            <div id="v-handle" class="absolute left-1/2 w-14 h-3 bg-blue-500 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.8)] -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-[top] duration-75" style="top: 50%;"></div>
+                            <div class="absolute top-2 left-1/2 -translate-x-1/2 text-[8px] text-blue-500 font-black opacity-40 uppercase">UP</div>
+                            <div class="absolute bottom-2 left-1/2 -translate-x-1/2 text-[8px] text-blue-500 font-black opacity-40 uppercase">DOWN</div>
+                        </div>
+                        <button onclick="resetVertical()" class="py-2 bg-red-900/10 border border-red-900/40 text-red-500 text-[9px] font-black rounded-lg uppercase active:scale-95 transition-all">RESET V</button>
+                    </div>
+
+                    <!-- Lateral/Forward Pad -->
+                    <div class="flex flex-col gap-2 flex-1">
+                        <div id="lf-pad" class="relative flex-1 bg-[#0a0a0a] border-2 border-blue-900/40 rounded-xl overflow-hidden cursor-crosshair touch-none">
+                            <div class="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none">
+                                <div class="w-full h-[1px] bg-blue-500/30"></div>
+                                <div class="h-full w-[1px] bg-blue-500/30"></div>
+                            </div>
+                            <div id="lf-handle" class="absolute w-7 h-7 bg-blue-500 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.9)] -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-[left,top] duration-75" style="left: 50%; top: 50%;"></div>
+                            <div class="absolute top-2 left-1/2 -translate-x-1/2 text-[8px] text-blue-500 font-black opacity-40 uppercase">FWD</div>
+                            <div class="absolute bottom-2 left-1/2 -translate-x-1/2 text-[8px] text-blue-500 font-black opacity-40 uppercase">BCK</div>
+                            <div class="absolute top-1/2 left-2 -translate-y-1/2 text-[8px] text-blue-500 font-black opacity-40 uppercase -rotate-90">LEFT</div>
+                            <div class="absolute top-1/2 right-2 -translate-y-1/2 text-[8px] text-blue-500 font-black opacity-40 uppercase rotate-90">RIGHT</div>
+                        </div>
+                        <button onclick="resetLateralForward()" class="py-2 bg-red-900/10 border border-red-900/40 text-red-500 text-[9px] font-black rounded-lg uppercase active:scale-95 transition-all">RESET L/F</button>
+                    </div>
+                </div>
+
+                <div class="py-2 text-center">
+                    <div class="text-[9px] text-gray-600 font-black tracking-[0.4em] uppercase animate-pulse">Docking protocols active</div>
+                </div>
+            </div>
+        </div>
+
+
 
 
     </div>
@@ -403,18 +457,92 @@ HTML = """
         </button>
     </div>
 
+
+
     <script>
+        let lateral = 0;
+        let vertical = 0;
+        let forward = 0;
+
+        function updateVertical(y) {
+            vertical = Math.max(-100, Math.min(100, y));
+            const handle = document.getElementById('v-handle');
+            if (handle) handle.style.top = ((100 - vertical) / 2) + '%';
+            fetch('/axis/vthrust/' + Math.round(vertical));
+        }
+
+        function updateLateralForward(x, y) {
+            lateral = Math.max(-100, Math.min(100, x));
+            forward = Math.max(-100, Math.min(100, y));
+            const handle = document.getElementById('lf-handle');
+            if (handle) {
+                handle.style.left = ((lateral + 100) / 2) + '%';
+                handle.style.top = ((100 - forward) / 2) + '%';
+            }
+            fetch('/axis/lthrust/' + Math.round(lateral));
+            fetch('/axis/fthrust/' + Math.round(forward));
+        }
+
+        function resetVertical() {
+            updateVertical(0);
+        }
+
+        function resetLateralForward() {
+            updateLateralForward(0, 0);
+        }
+
+        function resetThrusters() {
+            resetVertical();
+            resetLateralForward();
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const vPad = document.getElementById('v-pad');
+            const lfPad = document.getElementById('lf-pad');
+            if (!vPad || !lfPad) return;
+
+            const setupPad = (el, updateFn, is2D) => {
+                let isDragging = false;
+                const move = (e) => {
+                    if (!isDragging) return;
+                    const rect = el.getBoundingClientRect();
+                    const touch = e.touches ? e.touches[0] : e;
+                    let x = ((touch.clientX - rect.left) / rect.width) * 200 - 100;
+                    let y = 100 - ((touch.clientY - rect.top) / rect.height) * 200;
+                    if (is2D) updateFn(x, y); else updateFn(y);
+                };
+                el.addEventListener('mousedown', (e) => { isDragging = true; move(e); });
+                window.addEventListener('mousemove', move);
+                window.addEventListener('mouseup', () => { isDragging = false; });
+                el.addEventListener('touchstart', (e) => { isDragging = true; move(e); }, {passive: false});
+                window.addEventListener('touchmove', (e) => { if (isDragging) { move(e); e.preventDefault(); } }, {passive: false});
+                window.addEventListener('touchend', () => { isDragging = false; });
+            };
+
+            setupPad(vPad, updateVertical, false);
+            setupPad(lfPad, updateLateralForward, true);
+        });
+
+
+
         const guiFocusMap = {0: "COCKPIT", 1: "LEFT PANEL", 2: "RIGHT PANEL", 3: "COMMS", 4: "ROLE PANEL", 5: "STATION", 6: "GALAXY MAP", 7: "SYSTEM MAP", 8: "ORION", 9: "FSS", 10: "SAA", 11: "CODEX"};
 
         function switchPage(name) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(t => { t.classList.remove('active'); t.classList.add('text-gray-600'); });
-            document.getElementById('page-' + name).classList.add('active');
+            
+            const page = document.getElementById('page-' + name);
+            if (page) page.classList.add('active');
+            
             const tab = document.getElementById('tab-' + name);
-            tab.classList.add('active');
-            tab.classList.remove('text-gray-600');
+            if (tab) {
+                tab.classList.add('active');
+                tab.classList.remove('text-gray-600');
+            }
             if (navigator.vibrate) navigator.vibrate(20);
         }
+
         
 
 
@@ -465,11 +593,13 @@ HTML = """
                     setInd('ind-hardp', f & 64, false);     
                     setInd('ind-gear', f & 4, false);       
                     setInd('ind-cargo', f & 512, false);    
+                    setInd('ind-cargo-landing', f & 512, false);    
                     setInd('ind-light', f & 256, true);     
                     setInd('ind-nv', f & 8192, true);       
                     setInd('ind-silent', f & 1024, false);  
                     setInd('ind-sc', f & 16, true);         
                 }
+
 
                 if (d.Pips) cizPips(d.Pips);
 
@@ -536,6 +666,30 @@ def action(komut_adi):
         return "OK"
     return "Hata", 400
 
+@app.route('/axis/<axis_name>/<value>')
+def handle_axis(axis_name, value):
+    if not has_gamepad: return "No vJoy Device", 500
+    try:
+        val = int(value)
+        # Convert -100...100 range to vJoy 0x0000...0x8000 (0 to 32768)
+        # -100 -> 0, 0 -> 16384, 100 -> 32768
+        axis_val = int(((val + 100) / 200.0) * 32768)
+        axis_val = max(0, min(32768, axis_val)) # clamp
+        
+        if axis_name == 'vthrust':
+            gamepad.set_axis(pyvjoy.HID_USAGE_Y, axis_val)
+        elif axis_name == 'lthrust':
+            gamepad.set_axis(pyvjoy.HID_USAGE_X, axis_val)
+        elif axis_name == 'fthrust':
+            gamepad.set_axis(pyvjoy.HID_USAGE_Z, axis_val)
+
+
+            
+    except Exception as e:
+        print(f"Axis error: {e}")
+        return "Error", 500
+    return "OK"
+
 @app.route('/status')
 def get_status():
     # Platform-specific paths to Status.json
@@ -568,4 +722,6 @@ def get_status():
 
 
 if __name__ == '__main__':
+    initialize_vjoy(debug=True)
     app.run(host='0.0.0.0', port=5000, debug=True)
+

@@ -1,2 +1,4 @@
 flask
 pydirectinput; sys_platform == 'win32'
+pyvjoy-python; sys_platform == 'win32'
+
