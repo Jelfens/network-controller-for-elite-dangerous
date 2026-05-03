@@ -33,53 +33,86 @@ def initialize_vjoy(debug=True):
             print(f"vJoy error: Device 1 already in use.")
         else:
             print(f"vJoy error: {e}")
+            has_gamepad = False
 
+import time
+import threading
 
-
+def vjoy_button_press(button_id):
+    """Press and release a vJoy button asynchronously"""
+    if not has_gamepad or gamepad is None:
+        return
+    try:
+        gamepad.set_button(button_id, 1)
+        time.sleep(0.1)
+        gamepad.set_button(button_id, 0)
+    except:
+        pass
 
 # Platform-specific input handling
 if sys.platform == 'linux':
     def press_key(key):
         """Send keypress on Linux using xdotool"""
         try:
-            # xdotool key sends the key
             subprocess.run(['xdotool', 'key', key], check=False)
         except FileNotFoundError:
-            print("Error: xdotool not found. Install it with: sudo apt install xdotool")
+            print("Error: xdotool not found.")
 else:
     import pydirectinput
     def press_key(key):
         """Send keypress on Windows using pydirectinput"""
-        pydirectinput.press(key)
+        try:
+            pydirectinput.press(key)
+        except:
+            pass
 
 app = Flask(__name__)
 
+# Map commands to vJoy Buttons (1-58)
 KOMUTLAR = {
+    "wg-hardpoints": 1, "landing-gear": 2, "cargo-scoop": 3,
+    "lights": 4, "night-vision": 5, "silent-running": 6,
+    "fsd": 7, "heatsink": 8, "chaff": 9, "scb": 10,
+    "galaxy-map": 11, "system-map": 12,
+    "pip-sys": 13, "pip-eng": 14, "pip-wep": 15, "pip-rst": 16,
+    "fg-prev": 17, "fg-next": 18, "menu": 19,
+    "fss": 20, "cockpit-mode": 21,
+    # Navigation & Menus
+    "menu-up": 22, "menu-down": 23, "menu-left": 24, "menu-right": 25, "menu-select": 26,
+    "tab-prev": 27, "tab-next": 28,
+    # Speed & Thrusters
+    "speed-0": 29, "speed-25": 30, "speed-50": 31, "speed-75": 32, "speed-100": 33,
+    "throttle-inc": 34, "throttle-dec": 35,
+    "thruster-up": 36, "thruster-down": 37,
+    "boost": 38,
+    # FSD Variants
+    "fsd-sc": 39, "fsd-jump": 40,
+    # Misc
+    "rot-corr": 41, "orbit-lines": 42,
+    # Targeting
+    "target-ahead": 43, "target-next": 44, "target-highest": 45, "target-prev": 64, "target-hostile-next": 65, "target-hostile-prev": 66,
+    "target-team-1": 46, "target-team-2": 47, "target-team-3": 48,
+    "target-team-target": 49, "target-navlock": 50, "target-sub-next": 51, "target-sub-prev": 67, "target-route": 52,
+    "ui-page-prev": 53, "ui-page-next": 54,
+    "panel-external": 55, "panel-comms": 56, "panel-role": 57, "panel-internal": 58,
+    "menu-back": 59,
+    "speed-rev-25": 60, "speed-rev-50": 61, "speed-rev-75": 62, "speed-rev-100": 63,
+    "menu-game": 68, "menu-social": 69, "discovery": 70,
+    "fighter-recall": 71, "fighter-defend": 72, "fighter-engage": 73, "fighter-attack": 74,
+    "fighter-formation": 75, "fighter-hold": 76, "fighter-follow": 77
+}
+
+# Keep original key map as fallback
+FALLBACK_KEYS = {
     "wg-hardpoints": "u", "landing-gear": "l", "cargo-scoop": "home",
     "lights": "insert", "night-vision": "n", "silent-running": "delete",
     "fsd": "j", "heatsink": "v", "chaff": "c", "scb": "b",
     "galaxy-map": "m", "system-map": "o",
     "pip-sys": "left", "pip-eng": "up", "pip-wep": "right", "pip-rst": "down",
-    "fg-prev": "[", "fg-next": "]", "menu": "esc",
-    "fss": "'", "cockpit-mode": "\\",
-    # Navigation & Menus
     "menu-up": "up", "menu-down": "down", "menu-left": "left", "menu-right": "right", "menu-select": "enter",
-    "tab-prev": "q", "tab-next": "e",
-    # Speed & Thrusters
-    "speed-0": "x", "speed-25": "1", "speed-50": "2", "speed-75": "3", "speed-100": "4",
-    "throttle-inc": "w", "throttle-dec": "s",
-    "thruster-up": "r", "thruster-down": "f",
-    "boost": "tab",
-    # FSD Variants
-    "fsd-sc": "k", "fsd-jump": "h",
-    # Misc
-    "rot-corr": "delete", "orbit-lines": "=",
-    # Targeting
-    "target-ahead": "t", "target-next": "g", "target-highest": "h",
-    "target-team-1": "7", "target-team-2": "8", "target-team-3": "9",
-    "target-team-target": "0", "target-navlock": "-", "target-sub-next": "y", "target-route": ".",
-    "ui-page-prev": "[", "ui-page-next": "]",
-    "panel-external": "1", "panel-comms": "2", "panel-role": "3", "panel-internal": "4"
+    "tab-prev": "q", "tab-next": "e", "boost": "tab", "menu-back": "backspace", "menu-game": "esc", "menu-social": "p", "discovery": "'",
+    "fighter-recall": "numpad0", "fighter-defend": "numpad1", "fighter-engage": "numpad2", "fighter-attack": "numpad3",
+    "fighter-formation": "numpad4", "fighter-hold": "numpad5", "fighter-follow": "numpad6"
 }
 
 HTML = """
@@ -124,8 +157,8 @@ HTML = """
             border-left: 4px solid #ff8c00;
         }
         .page { display: none; }
-        .page.active { display: flex; flex-direction: column; justify-content: space-evenly; height: 100%; }
-        #page-nav.active { justify-content: flex-start; gap: 0.5rem; overflow: hidden; }
+        .page.active { display: flex; flex-direction: column; justify-content: space-evenly; min-height: 100%; flex: 1; }
+        #page-nav.active { flex-direction: row; justify-content: flex-start; gap: 0.5rem; height: 100%; min-height: unset; flex: none; overflow: hidden; }
         #page-aux.active { justify-content: flex-start; }
         #page-landing.active { justify-content: flex-start; }
         .tab-btn { transition: all 0.2s; }
@@ -144,7 +177,7 @@ HTML = """
 </head>
 <body class="text-gray-300 font-mono select-none flex flex-col h-screen tracking-tight overflow-hidden">
 
-    <div class="flex-1 overflow-y-auto no-scrollbar p-2 pb-16">
+    <div class="flex-1 flex flex-col overflow-y-auto no-scrollbar p-2 pb-24">
 
         <!-- ==================== TARGETING MODAL ==================== -->
         <div id="modal-targeting" class="fixed inset-0 bg-[#050505]/98 z-[100] flex-col p-4 backdrop-blur-xl" style="display: none;">
@@ -162,17 +195,29 @@ HTML = """
                 
                 <!-- Primary Combat Targets -->
                 <div class="grid grid-cols-2 gap-2">
-                    <button onclick="komut('target-highest')" class="btn col-span-2 border-2 border-red-600 bg-red-900/40 text-red-100 rounded-xl p-3 text-base font-black shadow-[0_0_10px_rgba(220,38,38,0.3)] tracking-widest active:scale-95 transition-transform">
-                        <div class="text-[9px] text-red-400 mb-0.5 opacity-70">PRIORITY</div>
+                    <button onclick="komut('target-highest')" class="btn col-span-2 border-2 border-red-600 bg-red-900/40 text-red-100 rounded-xl p-3 text-lg font-black shadow-[0_0_10px_rgba(220,38,38,0.3)] tracking-widest active:scale-95 transition-transform">
+                        <div class="text-[11px] text-red-400 mb-0.5 opacity-70">PRIORITY</div>
                         HIGHEST THREAT
                     </button>
+                    <button onclick="komut('target-hostile-prev')" class="btn border-2 border-red-600 bg-red-900/40 text-red-100 rounded-xl p-3 text-lg font-black shadow-[0_0_10px_rgba(220,38,38,0.3)] tracking-widest active:scale-95 transition-transform">
+                        <div class="text-[11px] text-red-400 mb-0.5 opacity-70">HOSTILE</div>
+                        PREV HOSTILE
+                    </button>
+                    <button onclick="komut('target-hostile-next')" class="btn border-2 border-red-600 bg-red-900/40 text-red-100 rounded-xl p-3 text-lg font-black shadow-[0_0_10px_rgba(220,38,38,0.3)] tracking-widest active:scale-95 transition-transform">
+                        <div class="text-[11px] text-red-400 mb-0.5 opacity-70">HOSTILE</div>
+                        NEXT HOSTILE
+                    </button>
                     
-                    <button onclick="komut('target-ahead')" class="btn border-2 border-orange-700/50 bg-orange-900/20 text-orange-400 rounded-xl p-2.5 text-sm font-bold shadow-md active:scale-95 transition-transform">
-                        <div class="text-[8px] mb-0.5 opacity-70">AHEAD</div>
+                    <button onclick="komut('target-ahead')" class="btn col-span-2 border-2 border-orange-700/50 bg-orange-900/20 text-orange-400 rounded-xl p-2.5 text-base font-bold shadow-md active:scale-95 transition-transform">
+                        <div class="text-[10px] mb-0.5 opacity-70">AHEAD</div>
                         TARGET AHEAD
                     </button>
-                    <button onclick="komut('target-next')" class="btn border-2 border-red-800/50 bg-red-900/10 text-red-400 rounded-xl p-2.5 text-sm font-bold shadow-md active:scale-95 transition-transform">
-                        <div class="text-[8px] mb-0.5 opacity-70">CYCLE</div>
+                    <button onclick="komut('target-prev')" class="btn border-2 border-red-800/50 bg-red-900/10 text-red-400 rounded-xl p-2.5 text-base font-bold shadow-md active:scale-95 transition-transform">
+                        <div class="text-[10px] mb-0.5 opacity-70">CYCLE</div>
+                        PREV TARGET
+                    </button>
+                    <button onclick="komut('target-next')" class="btn border-2 border-red-800/50 bg-red-900/10 text-red-400 rounded-xl p-2.5 text-base font-bold shadow-md active:scale-95 transition-transform">
+                        <div class="text-[10px] mb-0.5 opacity-70">CYCLE</div>
                         NEXT TARGET
                     </button>
                 </div>
@@ -199,14 +244,56 @@ HTML = """
                 </div>
             </div>
         </div>
-        <!-- ==================== SAVAŞ (COMBAT) ==================== -->
-        <div id="page-combat" class="page active overflow-y-auto no-scrollbar h-full">
+        
+        <!-- FIGHTERS MODAL -->
+        <div id="modal-fighters" class="fixed inset-0 bg-[#050505]/95 z-50 hidden flex-col p-4 backdrop-blur-sm">
+            <div class="flex justify-between items-center mb-4 border-b border-orange-900/50 pb-2">
+                <div class="text-orange-500 font-black tracking-[0.3em] text-lg">FIGHTER ORDERS</div>
+                <button onclick="document.getElementById('modal-fighters').style.display='none'" class="text-gray-500 hover:text-white transition-colors text-4xl leading-none">&times;</button>
+            </div>
+            
+            <div class="flex-1 flex flex-col gap-4 overflow-y-auto no-scrollbar">
+                
+                <!-- COMBAT GROUP -->
+                <div>
+                    <div class="text-[10px] text-red-500 font-black tracking-widest uppercase mb-2 ml-1 opacity-70">Combat Operations</div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="komut('fighter-engage'); document.getElementById('modal-fighters').style.display='none'" class="btn border-2 border-orange-500 bg-orange-600 text-[#111] rounded-lg py-4 text-sm font-black shadow-lg active:scale-95 transition-transform">ENGAGE</button>
+                        <button onclick="komut('fighter-attack'); document.getElementById('modal-fighters').style.display='none'" class="btn border-2 border-red-900/50 bg-red-900/10 text-red-500 rounded-lg py-4 text-sm font-black shadow-md active:scale-95 transition-transform">ATTACK</button>
+                    </div>
+                </div>
 
-            <div class="grid grid-cols-4 gap-2 text-center text-xs font-bold mb-4">
-                <div id="ind-hardp" onclick="komut('wg-hardpoints')" class="ind-btn cursor-pointer border rounded p-3 ind-off transition-all"><div class="text-base mb-1">⚙️</div>HARDPOINTS</div>
-                <button onclick="komut('cockpit-mode')" class="btn border border-gray-800 bg-[#0a0a0a] text-indigo-400 rounded p-3 hover:border-indigo-400 hover:shadow-[0_0_10px_rgba(129,140,248,0.2)]"><div class="text-base mb-1">🖥️</div>HUD MODE</button>
-                <div id="ind-silent" onclick="komut('silent-running')" class="ind-btn cursor-pointer border rounded p-3 ind-off transition-all"><div class="text-base mb-1">🤫</div>SILENT RUN</div>
-                <button onclick="document.getElementById('modal-targeting').style.display='flex'" class="btn border border-red-800 bg-red-900/20 text-red-500 rounded p-3 hover:border-red-500 hover:shadow-[0_0_10px_rgba(239,68,68,0.3)]"><div class="text-base mb-1">🎯</div>TARGETING</button>
+                <!-- FORMATION GROUP -->
+                <div>
+                    <div class="text-[10px] text-blue-500 font-black tracking-widest uppercase mb-2 ml-1 opacity-70">Positioning</div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="komut('fighter-follow'); document.getElementById('modal-fighters').style.display='none'" class="btn border border-gray-700 bg-gray-800/30 text-gray-300 rounded-lg py-3 text-xs font-bold active:scale-95 transition-transform">FOLLOW</button>
+                        <button onclick="komut('fighter-hold'); document.getElementById('modal-fighters').style.display='none'" class="btn border border-gray-700 bg-gray-800/30 text-gray-300 rounded-lg py-3 text-xs font-bold active:scale-95 transition-transform">HOLD</button>
+                        <button onclick="komut('fighter-formation'); document.getElementById('modal-fighters').style.display='none'" class="btn border border-gray-700 bg-gray-800/30 text-gray-300 rounded-lg py-3 text-xs font-bold active:scale-95 transition-transform">STAY</button>
+                    </div>
+                </div>
+
+                <!-- SUPPORT GROUP -->
+                <div>
+                    <div class="text-[10px] text-green-500 font-black tracking-widest uppercase mb-2 ml-1 opacity-70">Support</div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="komut('fighter-defend'); document.getElementById('modal-fighters').style.display='none'" class="btn border border-green-900/50 bg-green-900/10 text-green-500 rounded-lg py-3 text-sm font-bold active:scale-95 transition-transform">DEFEND</button>
+                        <button onclick="komut('fighter-recall'); document.getElementById('modal-fighters').style.display='none'" class="btn border border-orange-900/50 bg-orange-900/10 text-orange-400 rounded-lg py-3 text-sm font-bold active:scale-95 transition-transform">RECALL</button>
+                    </div>
+                </div>
+
+                <button onclick="komut('panel-role'); document.getElementById('modal-fighters').style.display='none'" class="btn mt-auto border border-gray-700 bg-[#0a0a0a] text-gray-500 rounded-lg py-3 text-[10px] font-black tracking-widest uppercase active:scale-95 transition-transform">OPEN ROLE PANEL</button>
+            </div>
+        </div>
+        
+        <!-- ==================== SAVAŞ (COMBAT) ==================== -->
+        <div id="page-combat" class="page active min-h-full">
+
+            <div class="grid grid-cols-4 gap-2 text-center text-sm font-bold mb-4">
+                <div id="ind-hardp" onclick="komut('wg-hardpoints')" class="ind-btn cursor-pointer border rounded p-3 ind-off transition-all"><div class="text-xl mb-1">⚙️</div>HARDPOINTS</div>
+                <button onclick="komut('cockpit-mode')" class="btn border border-gray-800 bg-[#0a0a0a] text-indigo-400 rounded p-3 hover:border-indigo-400 hover:shadow-[0_0_10px_rgba(129,140,248,0.2)]"><div class="text-xl mb-1">🖥️</div>HUD MODE</button>
+                <div id="ind-silent" onclick="komut('silent-running')" class="ind-btn cursor-pointer border rounded p-3 ind-off transition-all"><div class="text-xl mb-1">🤫</div>SILENT RUN</div>
+                <button onclick="document.getElementById('modal-targeting').style.display='flex'" class="btn border border-red-800 bg-red-900/20 text-red-500 rounded p-3 hover:border-red-500 hover:shadow-[0_0_10px_rgba(239,68,68,0.3)]"><div class="text-xl mb-1">🎯</div>TARGETING</button>
             </div>
 
 
@@ -231,10 +318,11 @@ HTML = """
                 <button onclick="komut('pip-rst')" class="btn w-full mt-2 border border-gray-800 bg-[#0f0f0f] text-gray-500 rounded p-2 text-xs font-black hover:border-gray-500 tracking-[0.3em]">↩ RESET PIPS</button>
             </div>
 
-            <div class="grid grid-cols-3 gap-2 mb-4 text-xs font-bold">
+            <div class="grid grid-cols-4 gap-2 mb-4 text-xs font-bold">
                 <button onclick="komut('heatsink')" class="btn border border-gray-800 bg-[#0a0a0a] text-blue-500 rounded p-3 hover:border-blue-500 hover:shadow-[0_0_10px_rgba(59,130,246,0.2)]"><div class="text-base mb-1">🧊</div>HEATSINK</button>
                 <button onclick="komut('chaff')" class="btn border border-gray-800 bg-[#0a0a0a] text-yellow-500 rounded p-3 hover:border-yellow-500 hover:shadow-[0_0_10px_rgba(234,179,8,0.2)]"><div class="text-base mb-1">✨</div>CHAFF</button>
                 <button onclick="komut('scb')" class="btn border border-gray-800 bg-[#0a0a0a] text-teal-400 rounded p-3 hover:border-teal-400 hover:shadow-[0_0_10px_rgba(45,212,191,0.2)]"><div class="text-base mb-1">🔋</div>SHIELD CELL</button>
+                <button onclick="document.getElementById('modal-fighters').style.display='flex'" class="btn border border-orange-800 bg-orange-900/20 text-orange-500 rounded p-3 hover:border-orange-500 hover:shadow-[0_0_10px_rgba(249,115,22,0.2)]"><div class="text-base mb-1">🚀</div>FIGHTERS</button>
             </div>
 
 
@@ -258,166 +346,219 @@ HTML = """
 
         <!-- ==================== SEYİR (NAVIGATION) ==================== -->
         <!-- ==================== SEYİR (NAVIGATION) ==================== -->
-        <div id="page-nav" class="page h-full overflow-hidden p-2">
+        <div id="page-nav" class="page h-full p-1 flex-row">
+            <div class="flex-1 grid min-w-0 gap-1" style="grid-template-rows: 2fr 5fr 1.5fr; height: 100%;">
             
             <!-- TOP ROW: FSD | COM | Maps -->
-            <div class="flex-[2] grid grid-cols-3 gap-2 mb-2 min-h-0">
+            <div class="grid grid-cols-3 gap-2 min-h-0 overflow-hidden">
                 <!-- FSD Box -->
-                <div class="bg-[#050505] p-2 rounded-xl border border-orange-900/30 relative shadow-md flex flex-col justify-center">
-                    <div class="absolute top-0 left-3 px-1 -mt-2 bg-[#050505] text-[7px] text-orange-600 font-black tracking-widest uppercase">FSD</div>
+                <div class="bg-[#050505] p-1 rounded-xl border border-orange-900/30 relative shadow-md flex flex-col justify-center overflow-hidden">
+                    <div class="absolute top-0 left-3 px-1 -mt-2 bg-[#050505] text-[10px] text-orange-600 font-black tracking-widest uppercase">FSD</div>
                     <div class="grid grid-cols-2 gap-1 h-full">
-                        <button onclick="komut('fsd-jump')" class="btn h-full border border-orange-700/50 bg-orange-900/10 text-orange-400 rounded text-[9px] font-bold flex flex-col items-center justify-center">
-                            <span class="text-xs">🚀</span>
+                        <button onclick="komut('fsd-jump')" class="btn h-full border border-orange-700/50 bg-orange-900/10 text-orange-400 rounded text-[10px] font-bold flex flex-col items-center justify-center">
+                            <span class="text-base leading-none">🚀</span>
                             HYP
                         </button>
-                        <button onclick="komut('fsd-sc')" class="btn h-full border border-orange-700/50 bg-orange-900/10 text-orange-400 rounded text-[9px] font-bold flex flex-col items-center justify-center">
-                            <span class="text-xs">⚡</span>
+                        <button onclick="komut('fsd-sc')" class="btn h-full border border-orange-700/50 bg-orange-900/10 text-orange-400 rounded text-[10px] font-bold flex flex-col items-center justify-center">
+                            <span class="text-base leading-none">⚡</span>
                             SUP
                         </button>
-                        <button onclick="komut('fsd')" class="btn col-span-2 h-full border border-gray-700 bg-[#0a0a0a] text-gray-400 rounded text-[10px] font-black uppercase flex items-center justify-center gap-2">
-                            <span class="text-xs">🌀</span>
+                        <button onclick="komut('fsd')" class="btn col-span-2 h-full border border-gray-700 bg-[#0a0a0a] text-gray-400 rounded text-[11px] font-black uppercase flex items-center justify-center gap-1">
+                            <span class="text-base leading-none">🌀</span>
                             FSD
                         </button>
                     </div>
                 </div>
 
                 <!-- Center: COM -->
-                <button onclick="komut('panel-comms')" class="btn w-full h-full border-2 border-blue-900/50 bg-blue-900/10 text-blue-400 rounded-xl text-[12px] font-black shadow-lg flex flex-col items-center justify-center">
-                    <span class="text-xl mb-1">📡</span>
+                <button onclick="komut('panel-comms')" class="btn w-full h-full border-2 border-blue-900/50 bg-blue-900/10 text-blue-400 rounded-xl text-[14px] font-black shadow-lg flex flex-col items-center justify-center">
+                    <span class="text-2xl leading-none">📡</span>
                     COM
                 </button>
 
                 <!-- Maps Box -->
-                <div class="bg-[#050505] p-2 rounded-xl border border-blue-900/30 relative shadow-md flex flex-col">
-                    <div class="absolute top-0 right-3 px-1 -mt-2 bg-[#050505] text-[7px] text-blue-500 font-black tracking-widest uppercase">Maps</div>
-                    <div class="grid grid-cols-2 gap-1 flex-1">
+                <div class="bg-[#050505] p-1 rounded-xl border border-blue-900/30 relative shadow-md flex flex-col overflow-hidden">
+                    <div class="absolute top-0 right-3 px-1 -mt-2 bg-[#050505] text-[10px] text-blue-500 font-black tracking-widest uppercase">Maps</div>
+                    <div class="grid grid-cols-2 gap-px flex-1 min-h-0">
+                        <button onclick="komut('target-sub-prev')" class="btn h-full border border-gray-700 bg-[#0a0a0a] text-gray-400 rounded text-[9px] font-bold flex flex-col items-center justify-center leading-none">
+                            <span class="text-sm leading-none">🎯◀</span>
+                            PREV SUB
+                        </button>
                         <button onclick="komut('target-sub-next')" class="btn h-full border border-gray-700 bg-[#0a0a0a] text-gray-400 rounded text-[9px] font-bold flex flex-col items-center justify-center leading-none">
-                            <span class="text-[10px]">🎯</span>
-                            SUBS
+                            <span class="text-sm leading-none">🎯▶</span>
+                            NEXT SUB
                         </button>
-                        <button onclick="komut('target-route')" class="btn h-full border border-orange-900/40 bg-orange-900/10 text-orange-400 rounded text-[9px] font-bold flex flex-col items-center justify-center leading-none">
-                            <span class="text-[10px]">🚩</span>
-                            ROUTE
+                        <button onclick="komut('system-map')" class="btn h-full border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded text-[9px] font-bold flex flex-col items-center justify-center leading-none">
+                            <span class="text-sm leading-none">🪐</span>
+                            SYS
                         </button>
-                        <button onclick="komut('system-map')" class="btn col-span-2 h-full border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded text-[10px] font-black uppercase flex items-center justify-center gap-2">
-                            <span class="text-xs">🪐</span>
-                            SYS MAP
+                        <button onclick="komut('galaxy-map')" class="btn h-full border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded text-[9px] font-bold flex flex-col items-center justify-center leading-none">
+                            <span class="text-sm leading-none">🌌</span>
+                            GAL
                         </button>
-                        <button onclick="komut('galaxy-map')" class="btn col-span-2 h-full border border-blue-800/50 bg-blue-900/10 text-blue-400 rounded text-[10px] font-black uppercase flex items-center justify-center gap-2">
-                            <span class="text-xs">🌌</span>
-                            GAL MAP
+                        <button onclick="komut('target-route')" class="btn col-span-2 h-full border border-orange-900/40 bg-orange-900/10 text-orange-400 rounded text-[9px] font-bold flex flex-row items-center justify-center gap-1 leading-none">
+                            <span class="text-sm leading-none">🚩</span>
+                            NEXT SYS ON ROUTE
                         </button>
                     </div>
                 </div>
             </div>
 
             <!-- MIDDLE ROW: <TAB | EXT | D-PAD | INT | TAB> -->
-            <div class="flex-[5] flex items-stretch justify-between gap-1 mb-2 min-h-0">
-                <button onclick="komut('tab-prev')" class="btn flex-1 border border-gray-600 bg-gray-800 text-white rounded-xl text-[11px] font-black flex flex-col items-center justify-center">
-                    <span class="text-lg mb-2">◀️</span>
+            <div class="flex items-stretch justify-between gap-1 min-h-0 overflow-hidden">
+                <button onclick="komut('tab-prev')" class="btn flex-1 border border-gray-600 bg-gray-800 text-white rounded-xl text-[12px] font-black flex flex-col items-center justify-center">
+                    <span class="text-xl leading-none">◀️</span>
                     TAB
                 </button>
-                <button onclick="komut('panel-external')" class="btn flex-[1.5] border border-orange-900/50 bg-orange-900/10 text-orange-500 rounded-xl text-[13px] font-black flex flex-col items-center justify-center">
-                    <span class="text-2xl mb-2">🛰️</span>
+                <button onclick="komut('panel-external')" class="btn flex-[1.5] border border-orange-900/50 bg-orange-900/10 text-orange-500 rounded-xl text-[14px] font-black flex flex-col items-center justify-center">
+                    <span class="text-3xl leading-none">🛰️</span>
                     EXT
                 </button>
 
                 <!-- D-PAD -->
-                <div class="flex-[3] grid grid-cols-3 gap-1.5 bg-[#0a0a0a] p-2 rounded-2xl border-2 border-gray-800 shadow-inner">
+                <div class="flex-[3] grid grid-cols-3 gap-1 bg-[#0a0a0a] p-1.5 rounded-2xl border-2 border-gray-800 shadow-inner overflow-hidden">
                     <div></div>
                     <button onclick="komut('menu-up')" class="btn w-full h-full border border-gray-600 bg-gray-800 rounded-lg text-2xl">▲</button>
                     <div></div>
                     <button onclick="komut('menu-left')" class="btn w-full h-full border border-gray-600 bg-gray-800 rounded-lg text-2xl">◀</button>
                     <button onclick="komut('menu-select')" class="btn w-full h-full border-2 border-orange-500 bg-orange-900/30 text-orange-400 rounded-lg font-black text-lg flex flex-col items-center justify-center">
-                        <span class="text-xl">✅</span>
+                        <span class="text-xl leading-none">✅</span>
                         OK
                     </button>
                     <button onclick="komut('menu-right')" class="btn w-full h-full border border-gray-600 bg-gray-800 rounded-lg text-2xl">▶</button>
-                    <div></div>
+                    <button onclick="komut('menu-back')" class="btn w-full h-full border border-gray-600 bg-gray-800 rounded-lg text-xl flex items-center justify-center">↩️</button>
                     <button onclick="komut('menu-down')" class="btn w-full h-full border border-gray-600 bg-gray-800 rounded-lg text-2xl">▼</button>
                     <div></div>
                 </div>
 
-                <button onclick="komut('panel-internal')" class="btn flex-[1.5] border border-orange-900/50 bg-orange-900/10 text-orange-500 rounded-xl text-[13px] font-black flex flex-col items-center justify-center">
-                    <span class="text-2xl mb-2">🖥️</span>
+                <button onclick="komut('panel-internal')" class="btn flex-[1.5] border border-orange-900/50 bg-orange-900/10 text-orange-500 rounded-xl text-[14px] font-black flex flex-col items-center justify-center">
+                    <span class="text-3xl leading-none">🖥️</span>
                     INT
                 </button>
-                <button onclick="komut('tab-next')" class="btn flex-1 border border-gray-600 bg-gray-800 text-white rounded-xl text-[11px] font-black flex flex-col items-center justify-center">
-                    <span class="text-lg mb-2">▶️</span>
+                <button onclick="komut('tab-next')" class="btn flex-1 border border-gray-600 bg-gray-800 text-white rounded-xl text-[12px] font-black flex flex-col items-center justify-center">
+                    <span class="text-xl leading-none">▶️</span>
                     TAB
                 </button>
             </div>
 
-            <!-- BOTTOM ROW: PAGE | ROLE | AUX -->
-            <div class="flex-[1.5] grid grid-cols-3 gap-2 min-h-0">
-                <div class="flex flex-col gap-1">
-                    <button onclick="komut('ui-page-prev')" class="btn flex-1 border border-gray-700 bg-[#0a0a0a] text-gray-500 rounded text-[9px] font-black flex items-center justify-center gap-1">
+            <!-- BOTTOM ROW: PAGE | FSS | ROLE | AUX -->
+            <div class="grid grid-cols-4 gap-2 min-h-0 overflow-hidden">
+                <div class="flex flex-col gap-1 overflow-hidden">
+                    <button onclick="komut('ui-page-prev')" class="btn flex-1 border border-gray-700 bg-[#0a0a0a] text-gray-500 rounded text-[10px] font-black flex items-center justify-center gap-1">
                         <span>🔼</span> UP
                     </button>
-                    <button onclick="komut('ui-page-next')" class="btn flex-1 border border-gray-700 bg-[#0a0a0a] text-gray-500 rounded text-[9px] font-black flex items-center justify-center gap-1">
+                    <button onclick="komut('ui-page-next')" class="btn flex-1 border border-gray-700 bg-[#0a0a0a] text-gray-500 rounded text-[10px] font-black flex items-center justify-center gap-1">
                         <span>🔽</span> DOWN
                     </button>
                 </div>
-                <button onclick="komut('panel-role')" class="btn w-full h-full border-2 border-blue-900/50 bg-blue-900/10 text-blue-400 rounded-xl text-[12px] font-black shadow-lg flex flex-col items-center justify-center">
-                    <span class="text-xl">👥</span>
+                <button onclick="komut('fss')" class="btn w-full h-full border-2 border-orange-900/50 bg-orange-900/10 text-orange-400 rounded-xl text-[13px] font-black shadow-lg flex flex-col items-center justify-center">
+                    <span class="text-2xl leading-none">🔭</span>
+                    FSS
+                </button>
+                <button onclick="komut('panel-role')" class="btn w-full h-full border-2 border-blue-900/50 bg-blue-900/10 text-blue-400 rounded-xl text-[13px] font-black shadow-lg flex flex-col items-center justify-center">
+                    <span class="text-2xl leading-none">👥</span>
                     ROLE
                 </button>
-                <button onclick="switchPage('aux')" class="btn w-full h-full border-2 border-gray-600 bg-gray-800 text-gray-300 rounded-xl text-[12px] font-black shadow-lg flex flex-col items-center justify-center">
-                    <span class="text-xl">🛠️</span>
+                <button onclick="switchPage('aux')" class="btn w-full h-full border-2 border-gray-600 bg-gray-800 text-gray-300 rounded-xl text-[13px] font-black shadow-lg flex flex-col items-center justify-center">
+                    <span class="text-2xl leading-none">🛠️</span>
                     AUX
                 </button>
+            </div>
+            </div>
+
+
+
+            <!-- RIGHT SIDE: SPEED COLUMN -->
+            <div class="w-16 flex flex-col gap-1 bg-[#050505] p-1 rounded-xl border border-cyan-900/30 shadow-md shrink-0 h-full">
+                <button onclick="komut('boost')" class="btn flex-[1.5] border-2 border-cyan-600 bg-cyan-900/30 text-cyan-400 rounded-md text-[13px] font-black tracking-wider shadow-[0_0_15px_rgba(8,145,178,0.4)] transition-all active:scale-95">BOOST</button>
+                <button onclick="komut('throttle-inc')" class="btn flex-1 border border-gray-700 bg-gray-800 text-gray-300 rounded-md text-[12px] font-bold active:scale-95">TH +</button>
+                <div class="flex-[6] flex flex-col gap-0.5">
+                    <button onclick="komut('speed-100')" class="btn flex-1 border border-green-900/60 bg-green-900/10 text-green-500 rounded-md text-[13px] font-black active:scale-95">100%</button>
+                    <button onclick="komut('speed-75')" class="btn flex-1 border border-orange-900/60 bg-orange-900/10 text-orange-400 rounded-md text-[13px] font-black active:scale-95">75%</button>
+                    <button onclick="komut('speed-50')" class="btn flex-1 border border-blue-900/60 bg-blue-900/10 text-blue-400 rounded-md text-[13px] font-black active:scale-95">50%</button>
+                    <button onclick="komut('speed-25')" class="btn flex-1 border border-gray-800 bg-gray-900 text-gray-300 rounded-md text-[13px] font-black active:scale-95">25%</button>
+                    <button onclick="komut('speed-0')" class="btn flex-1 border border-red-900/60 bg-red-900/10 text-red-500 rounded-md text-[13px] font-black active:scale-95">0%</button>
+                    <button onclick="komut('speed-rev-25')" class="btn flex-1 border border-gray-800 bg-gray-900 text-gray-400 rounded-md text-[13px] font-black active:scale-95">-25%</button>
+                    <button onclick="komut('speed-rev-50')" class="btn flex-1 border border-purple-900/60 bg-purple-900/10 text-purple-400 rounded-md text-[13px] font-black active:scale-95">-50%</button>
+                    <button onclick="komut('speed-rev-75')" class="btn flex-1 border border-purple-900/60 bg-purple-900/20 text-purple-300 rounded-md text-[13px] font-black active:scale-95">-75%</button>
+                    <button onclick="komut('speed-rev-100')" class="btn flex-1 border border-pink-900/60 bg-pink-900/20 text-pink-500 rounded-md text-[13px] font-black active:scale-95">-100%</button>
+                </div>
+                <button onclick="komut('throttle-dec')" class="btn flex-1 border border-gray-700 bg-gray-800 text-gray-300 rounded-md text-[12px] font-bold active:scale-95">TH -</button>
             </div>
         </div>
 
 
         <!-- ==================== AUX ==================== -->
-        <div id="page-aux" class="page overflow-y-auto no-scrollbar h-full p-3">
-            <div class="flex flex-col gap-3">
-                <div class="text-[9px] text-orange-600 font-black tracking-[0.3em] uppercase border-b border-orange-900/20 pb-2 mt-1">Ship Systems</div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div id="ind-cargo" onclick="komut('cargo-scoop')" class="ind-btn cursor-pointer border-2 rounded-xl py-8 text-xs font-black ind-off transition-all text-center flex flex-col items-center justify-center">
-                        <span class="text-2xl mb-1">📦</span>CARGO SCOOP
+        <div id="page-aux" class="page min-h-full p-3">
+            <div class="flex flex-row gap-3 h-full w-full flex-1 min-h-0">
+                <!-- Left: Buttons & Utilities -->
+                <div class="flex-1 flex flex-col gap-3 min-w-0 overflow-y-auto no-scrollbar pb-2">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div id="ind-cargo" onclick="komut('cargo-scoop')" class="ind-btn cursor-pointer border-2 rounded-xl py-3 text-xs font-black ind-off transition-all text-center flex flex-col items-center justify-center">
+                            <span class="text-3xl mb-1">📦</span>CARGO SCOOP
+                        </div>
+                        <div id="ind-light" onclick="komut('lights')" class="ind-btn cursor-pointer border-2 rounded-xl py-3 text-xs font-black ind-off transition-all text-center flex flex-col items-center justify-center">
+                            <span class="text-3xl mb-1">💡</span>LIGHTS
+                        </div>
+                        <div id="ind-nv" onclick="komut('night-vision')" class="ind-btn cursor-pointer border-2 rounded-xl py-3 text-xs font-black ind-off transition-all text-center flex flex-col items-center justify-center">
+                            <span class="text-3xl mb-1">👁️</span>NIGHT VISION
+                        </div>
+                        <button onclick="switchPage('landing')" class="btn border-2 border-orange-900/50 bg-orange-900/10 text-orange-500 rounded-xl py-3 text-xs font-black transition-all text-center flex flex-col items-center justify-center active:scale-95">
+                            <span class="text-3xl mb-1">⚓</span>LANDING
+                        </button>
+                        <button onclick="komut('fss')" class="btn border-2 border-orange-900/50 bg-orange-900/10 text-orange-400 rounded-xl py-3 text-xs font-black transition-all text-center flex flex-col items-center justify-center active:scale-95">
+                            <span class="text-3xl mb-1">🔭</span>FSS
+                        </button>
+                        <button onclick="switchPage('nav')" class="btn border-2 border-gray-700 bg-gray-800/20 text-gray-400 rounded-xl py-3 text-xs font-black transition-all text-center flex flex-col items-center justify-center active:scale-95">
+                            <span class="text-3xl mb-1">◀</span>NAV
+                        </button>
                     </div>
-                    <div id="ind-light" onclick="komut('lights')" class="ind-btn cursor-pointer border-2 rounded-xl py-8 text-xs font-black ind-off transition-all text-center flex flex-col items-center justify-center">
-                        <span class="text-2xl mb-1">💡</span>LIGHTS
+
+                    <div class="flex flex-col gap-2 mt-2">
+                        <div class="text-[11px] text-orange-600 font-black tracking-[0.3em] uppercase border-b border-orange-900/20 pb-1">Utilities</div>
+                        <div class="grid grid-cols-1 gap-2">
+                            <button onclick="komut('rot-corr')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-300 rounded-xl py-3 text-[12px] font-black uppercase">Rotation Correction</button>
+                            <button onclick="komut('orbit-lines')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-300 rounded-xl py-3 text-[12px] font-black uppercase">Orbit Lines</button>
+                        </div>
                     </div>
-                    <div id="ind-nv" onclick="komut('night-vision')" class="ind-btn cursor-pointer border-2 rounded-xl py-8 text-xs font-black ind-off transition-all text-center flex flex-col items-center justify-center">
-                        <span class="text-2xl mb-1">👁️</span>NIGHT VISION
-                    </div>
-                    <button onclick="switchPage('landing')" class="btn border-2 border-orange-900/50 bg-orange-900/10 text-orange-500 rounded-xl py-8 text-xs font-black transition-all text-center flex flex-col items-center justify-center active:scale-95">
-                        <span class="text-2xl mb-1">⚓</span>LANDING
-                    </button>
                 </div>
 
-                <div class="text-[9px] text-orange-600 font-black tracking-[0.3em] uppercase border-b border-orange-900/20 pb-2 mt-2">Utilities</div>
-                <div class="grid grid-cols-1 gap-2">
-                    <button onclick="komut('rot-corr')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-300 rounded-xl py-4 text-[10px] font-black uppercase">Rotation Correction</button>
-                    <button onclick="komut('orbit-lines')" class="btn border border-gray-700 bg-[#0a0a0a] text-gray-300 rounded-xl py-4 text-[10px] font-black uppercase">Orbit Lines</button>
+                <!-- Right: Sensor Zoom Full Height -->
+                <div class="w-20 flex flex-col gap-1 shrink-0 h-full">
+                    <div class="text-[10px] text-blue-500 font-black text-center uppercase tracking-widest">ZOOM</div>
+                    <div class="flex-1 bg-[#0a0a0a] rounded-xl border border-blue-900/20 relative p-1 shadow-inner min-h-0">
+                        <div id="zoom-pad" class="relative h-full w-full bg-[#050505] border-2 border-blue-900/40 rounded-lg overflow-hidden cursor-ns-resize touch-none">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center opacity-20 pointer-events-none">
+                                <div class="w-full h-[1px] bg-blue-500/50"></div>
+                            </div>
+                            <div id="zoom-handle" class="absolute left-1/2 w-12 h-5 bg-blue-500 rounded-sm shadow-[0_0_15px_rgba(59,130,246,0.8)] -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-[top] duration-75" style="top: 50%;"></div>
+                            <div class="absolute top-2 left-1/2 -translate-x-1/2 text-[8px] text-blue-500 font-black opacity-40 uppercase">MAX</div>
+                            <div class="absolute bottom-2 left-1/2 -translate-x-1/2 text-[8px] text-blue-500 font-black opacity-40 uppercase">MIN</div>
+                        </div>
+                    </div>
                 </div>
-
-                <button onclick="switchPage('nav')" class="w-full py-3 bg-orange-900/20 border border-orange-800/50 text-orange-500 text-[10px] font-black rounded-xl uppercase tracking-widest mt-2">&lt; Back to Nav</button>
             </div>
         </div>
 
 
 
         <!-- ==================== BİLGİ (INFO) ==================== -->
-        <div id="page-info" class="page overflow-y-auto no-scrollbar h-full">
+        <div id="page-info" class="page min-h-full">
 
             <div class="grid grid-cols-2 gap-2 mb-4">
                 <div class="bg-[#050505] border border-orange-900/50 rounded p-3 text-center relative overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-t from-orange-900/10 to-transparent"></div>
-                    <div class="text-gray-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1 relative z-10">Balance</div>
-                    <div id="txt-cr" class="ed-text text-lg font-black tracking-wider relative z-10 ed-glow">- CR</div>
+                    <div class="text-gray-500 text-[12px] font-black uppercase tracking-[0.2em] mb-1 relative z-10">Balance</div>
+                    <div id="txt-cr" class="ed-text text-xl font-black tracking-wider relative z-10 ed-glow">- CR</div>
                 </div>
                 <div class="bg-[#050505] border border-orange-900/50 rounded p-3 text-center relative overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-t from-orange-900/10 to-transparent"></div>
-                    <div class="text-gray-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1 relative z-10">Cargo</div>
-                    <div id="txt-cargo" class="ed-text text-lg font-black tracking-wider relative z-10 ed-glow">- T</div>
+                    <div class="text-gray-500 text-[12px] font-black uppercase tracking-[0.2em] mb-1 relative z-10">Cargo</div>
+                    <div id="txt-cargo" class="ed-text text-xl font-black tracking-wider relative z-10 ed-glow">- T</div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-3 text-[10px] text-gray-400 font-bold tracking-wider mb-4">
+            <div class="grid grid-cols-2 gap-3 text-[12px] text-gray-400 font-bold tracking-wider mb-4">
                 <div class="bg-[#0a0a0a] p-2 rounded border border-gray-800">
                     <div class="text-white font-black mb-2 border-b border-gray-800 pb-1 tracking-widest">FLIGHT DATA</div>
                     <div class="flex justify-between mb-1"><span>DEST:</span><span id="txt-dest" class="ed-text">-</span></div>
@@ -434,17 +575,33 @@ HTML = """
                 </div>
             </div>
 
-            <div class="text-center text-xl font-black text-gray-600 tracking-[0.2em]" id="sys-clock">00:00:00 LOC</div>
+            <div class="text-center text-2xl font-black text-gray-600 tracking-[0.2em] mb-4" id="sys-clock">00:00:00 LOC</div>
+
+            <!-- SYSTEM CONTROLS / MENU -->
+            <div class="flex justify-end gap-2 p-2">
+                <button onclick="komut('discovery')" class="btn border-2 border-orange-900/40 bg-orange-900/10 text-orange-400 rounded-xl px-4 py-3 font-black shadow-lg flex flex-col items-center justify-center transition-all active:scale-95">
+                    <span class="text-2xl mb-1">🔭</span>
+                    DISCOVERY
+                </button>
+                <button onclick="komut('menu-social')" class="btn border-2 border-blue-900/40 bg-blue-900/10 text-blue-400 rounded-xl px-4 py-3 font-black shadow-lg flex flex-col items-center justify-center transition-all active:scale-95">
+                    <span class="text-2xl mb-1">👥</span>
+                    FRIENDS
+                </button>
+                <button onclick="komut('menu-game')" class="btn border-2 border-red-900/40 bg-red-900/10 text-red-500 rounded-xl px-4 py-3 font-black shadow-lg flex flex-col items-center justify-center transition-all active:scale-95">
+                    <span class="text-2xl mb-1">⚙️</span>
+                    GAME MENU
+                </button>
+            </div>
         </div>
 
         <!-- ==================== İNİŞ (LANDING) ==================== -->
-        <div id="page-landing" class="page overflow-y-auto no-scrollbar h-full">
+        <div id="page-landing" class="page min-h-full">
             <div class="flex-1 flex flex-col gap-4 p-2">
                 
                 <!-- LANDING STATUS -->
                 <div class="w-full">
-                    <div id="ind-gear" onclick="komut('landing-gear')" class="ind-btn cursor-pointer border-2 rounded-xl py-8 text-sm font-black ind-off transition-all text-center flex flex-col items-center justify-center shadow-lg">
-                        <span class="text-3xl mb-2">⚓</span>
+                    <div id="ind-gear" onclick="komut('landing-gear')" class="ind-btn cursor-pointer border-2 rounded-xl py-8 text-lg font-black ind-off transition-all text-center flex flex-col items-center justify-center shadow-lg">
+                        <span class="text-5xl mb-2">⚓</span>
                         LANDING GEAR
                     </div>
                 </div>
@@ -452,7 +609,7 @@ HTML = """
 
                 <!-- DUAL PAD CONTROLS -->
                 <div class="flex-1 flex gap-3 min-h-0 bg-[#050505] p-3 rounded-2xl border border-blue-900/20 relative shadow-inner">
-                    <div class="absolute top-0 left-6 px-3 -mt-2 bg-[#050505] text-[10px] text-blue-500 font-black tracking-widest uppercase">Precision Thrust Control</div>
+                    <div class="absolute top-0 left-6 px-3 -mt-2 bg-[#050505] text-[13px] text-blue-500 font-black tracking-widest uppercase">Precision Thrust Control</div>
                     
                     <!-- Vertical Pad (Wider) -->
                     <div class="flex flex-col gap-2 w-20">
@@ -461,10 +618,10 @@ HTML = """
                                 <div class="w-full h-[1px] bg-blue-500/50"></div>
                             </div>
                             <div id="v-handle" class="absolute left-1/2 w-14 h-3 bg-blue-500 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.8)] -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-[top] duration-75" style="top: 50%;"></div>
-                            <div class="absolute top-2 left-1/2 -translate-x-1/2 text-[8px] text-blue-500 font-black opacity-40 uppercase">UP</div>
-                            <div class="absolute bottom-2 left-1/2 -translate-x-1/2 text-[8px] text-blue-500 font-black opacity-40 uppercase">DOWN</div>
+                            <div class="absolute top-2 left-1/2 -translate-x-1/2 text-[11px] text-blue-500 font-black opacity-40 uppercase">UP</div>
+                            <div class="absolute bottom-2 left-1/2 -translate-x-1/2 text-[11px] text-blue-500 font-black opacity-40 uppercase">DOWN</div>
                         </div>
-                        <button onclick="resetVertical()" class="py-2 bg-red-900/10 border border-red-900/40 text-red-500 text-[9px] font-black rounded-lg uppercase active:scale-95 transition-all">RESET V</button>
+                        <button onclick="resetVertical()" class="py-2 bg-red-900/10 border border-red-900/40 text-red-500 text-[12px] font-black rounded-lg uppercase active:scale-95 transition-all">RESET V</button>
                     </div>
 
                     <!-- Lateral/Forward Pad -->
@@ -475,19 +632,19 @@ HTML = """
                                 <div class="h-full w-[1px] bg-blue-500/30"></div>
                             </div>
                             <div id="lf-handle" class="absolute w-7 h-7 bg-blue-500 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.9)] -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-[left,top] duration-75" style="left: 50%; top: 50%;"></div>
-                            <div class="absolute top-2 left-1/2 -translate-x-1/2 text-[8px] text-blue-500 font-black opacity-40 uppercase">FWD</div>
-                            <div class="absolute bottom-2 left-1/2 -translate-x-1/2 text-[8px] text-blue-500 font-black opacity-40 uppercase">BCK</div>
-                            <div class="absolute top-1/2 left-2 -translate-y-1/2 text-[8px] text-blue-500 font-black opacity-40 uppercase -rotate-90">LEFT</div>
-                            <div class="absolute top-1/2 right-2 -translate-y-1/2 text-[8px] text-blue-500 font-black opacity-40 uppercase rotate-90">RIGHT</div>
+                            <div class="absolute top-2 left-1/2 -translate-x-1/2 text-[11px] text-blue-500 font-black opacity-40 uppercase">FWD</div>
+                            <div class="absolute bottom-2 left-1/2 -translate-x-1/2 text-[11px] text-blue-500 font-black opacity-40 uppercase">BCK</div>
+                            <div class="absolute top-1/2 left-2 -translate-y-1/2 text-[11px] text-blue-500 font-black opacity-40 uppercase -rotate-90">LEFT</div>
+                            <div class="absolute top-1/2 right-2 -translate-y-1/2 text-[11px] text-blue-500 font-black opacity-40 uppercase rotate-90">RIGHT</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="py-2 text-center">
-                    <div class="text-[9px] text-gray-600 font-black tracking-[0.4em] uppercase animate-pulse">Docking protocols active</div>
+                    <div class="text-[12px] text-gray-600 font-black tracking-[0.4em] uppercase animate-pulse">Docking protocols active</div>
                 </div>
 
-                <button onclick="switchPage('nav')" class="w-full py-3 bg-orange-900/20 border border-orange-800/50 text-orange-500 text-[10px] font-black rounded-xl uppercase tracking-widest">&lt; BACK TO NAV</button>
+                <button onclick="switchPage('nav')" class="w-full py-3 bg-orange-900/20 border border-orange-800/50 text-orange-500 text-[12px] font-black rounded-xl uppercase tracking-widest">&lt; BACK TO NAV</button>
             </div>
         </div>
 
@@ -538,6 +695,13 @@ HTML = """
             fetch('/axis/fthrust/' + Math.round(forward));
         }
 
+        function updateZoom(y) {
+            let val = Math.max(-100, Math.min(100, y));
+            const handle = document.getElementById('zoom-handle');
+            if (handle) handle.style.top = ((100 - val) / 2) + '%';
+            fetch('/axis/sensorzoom/' + Math.round(val));
+        }
+
         function resetVertical() {
             updateVertical(0);
         }
@@ -583,6 +747,11 @@ HTML = """
 
             setupPad(vPad, updateVertical, false, false);
             setupPad(lfPad, updateLateralForward, true, true, resetLateralForward);
+            
+            const zPad = document.getElementById('zoom-pad');
+            if (zPad) {
+                setupPad(zPad, (y) => updateZoom(y), false, false);
+            }
         });
 
 
@@ -723,8 +892,19 @@ def index():
 @app.route('/action/<komut_adi>')
 def action(komut_adi):
     if komut_adi in KOMUTLAR:
-        press_key(KOMUTLAR[komut_adi])
-        return "OK"
+        btn_id = KOMUTLAR[komut_adi]
+        # Always try vJoy if available
+        if has_gamepad and gamepad:
+            threading.Thread(target=vjoy_button_press, args=(btn_id,)).start()
+            return "OK (vJoy)"
+        
+        # Fallback to keyboard if vJoy not available and fallback exists
+        key = FALLBACK_KEYS.get(komut_adi)
+        if key:
+            press_key(key)
+            return "OK (Keyboard)"
+            
+        return "OK (vJoy not active)"
     return "Hata", 400
 
 @app.route('/axis/<axis_name>/<value>')
@@ -743,6 +923,8 @@ def handle_axis(axis_name, value):
             gamepad.set_axis(pyvjoy.HID_USAGE_X, axis_val)
         elif axis_name == 'fthrust':
             gamepad.set_axis(pyvjoy.HID_USAGE_Z, axis_val)
+        elif axis_name == 'sensorzoom':
+            gamepad.set_axis(pyvjoy.HID_USAGE_RX, axis_val)
 
 
             
