@@ -6,13 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Elite Control Interface</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Rajdhani', 'sans-serif'] },
+                    fontFamily: { 
+                        sans: ['Orbitron', 'sans-serif'],
+                        mono: ['Share Tech Mono', 'monospace']
+                    },
                     colors: {
                         ed: {
                             orange: '#ff7100',
@@ -46,11 +49,11 @@
         }
 
         .glass-panel {
-            background: rgba(8, 10, 15, 0.6);
+            background: rgba(20, 10, 0, 0.45);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 113, 0, 0.15);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(255, 113, 0, 0.02);
+            border: 1px solid rgba(255, 113, 0, 0.25);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 0 30px rgba(255, 113, 0, 0.05);
             border-radius: 0.75rem;
         }
 
@@ -73,6 +76,7 @@
         .ed-text {
             color: #ff7100;
             text-shadow: 0 0 10px rgba(255, 113, 0, 0.5);
+            font-family: 'Share Tech Mono', monospace;
         }
 
         .btn-orange {
@@ -247,7 +251,8 @@
     </style>
 </head>
 
-<body class="font-sans flex flex-col h-screen overflow-hidden text-sm">
+<body class="font-sans flex flex-col h-screen overflow-hidden text-sm bg-ed-darker select-none" 
+      style="background: radial-gradient(circle at center, #1a0d00 0%, #050608 100%);">
 
     <div class="flex-1 flex flex-col overflow-y-auto no-scrollbar p-3 pb-24 relative">
         <div class="scan-line"></div>
