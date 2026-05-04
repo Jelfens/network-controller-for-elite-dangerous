@@ -407,60 +407,58 @@
 
                 <div class="h-3/5 glass-panel p-4 flex items-center justify-center relative border-ed-blue/20">
                     <div class="absolute top-2 left-4 text-[10px] text-ed-blue font-bold tracking-[0.3em] uppercase opacity-50">Power Management</div>
-                    <div class="grid grid-cols-3 grid-rows-2 gap-4 w-full h-full max-w-md">
+                    <div class="grid grid-cols-4 gap-2 w-full h-full pt-6">
                         <button onclick="komut('pip-sys')"
-                            class="btn-glass btn-blue row-span-2 flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform">
-                            <i data-lucide="shield" class="w-12 h-12"></i>
-                            <span class="text-sm font-bold tracking-widest">SYS</span>
+                            class="btn-glass btn-blue flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform px-1">
+                            <i data-lucide="shield" class="w-8 h-8 opacity-70"></i>
+                            <span class="text-xs font-bold tracking-widest">SYS</span>
                             <!-- PIP Indicators -->
-                            <div id="pips-sys" class="flex gap-0.5 h-1.5 w-16 bg-black/40 rounded-full overflow-hidden p-0.5 border border-white/5">
-                                <div class="flex-1 bg-ed-blue/20 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-blue/20 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-blue/20 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-blue/20 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-blue/20 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-blue/20 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-blue/20 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-blue/20 rounded-sm transition-all"></div>
+                            <div id="pips-sys" class="flex gap-0.5 h-16 w-full bg-black/40 rounded-sm overflow-hidden p-0.5 border border-white/5">
+                                <div class="flex-1 bg-ed-blue rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-blue rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-blue rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-blue rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-blue/10 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-blue/10 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-blue/10 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-blue/10 rounded-sm transition-all"></div>
                             </div>
                         </button>
                         <button onclick="komut('pip-eng')"
-                            class="btn-glass btn-orange flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform">
-                            <i data-lucide="zap" class="w-10 h-10"></i>
-                            <div class="flex items-center gap-3">
-                                <span class="text-sm font-bold tracking-widest">ENG</span>
-                                <!-- PIP Indicators -->
-                                <div id="pips-eng" class="flex gap-0.5 h-1.5 w-12 bg-black/40 rounded-full overflow-hidden p-0.5 border border-white/5">
-                                    <div class="flex-1 bg-ed-orange/20 rounded-sm transition-all"></div>
-                                    <div class="flex-1 bg-ed-orange/20 rounded-sm transition-all"></div>
-                                    <div class="flex-1 bg-ed-orange/20 rounded-sm transition-all"></div>
-                                    <div class="flex-1 bg-ed-orange/20 rounded-sm transition-all"></div>
-                                    <div class="flex-1 bg-ed-orange/20 rounded-sm transition-all"></div>
-                                    <div class="flex-1 bg-ed-orange/20 rounded-sm transition-all"></div>
-                                    <div class="flex-1 bg-ed-orange/20 rounded-sm transition-all"></div>
-                                    <div class="flex-1 bg-ed-orange/20 rounded-sm transition-all"></div>
-                                </div>
+                            class="btn-glass btn-orange flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform px-1">
+                            <i data-lucide="zap" class="w-8 h-8 opacity-70"></i>
+                            <span class="text-xs font-bold tracking-widest">ENG</span>
+                            <!-- PIP Indicators -->
+                            <div id="pips-eng" class="flex gap-0.5 h-16 w-full bg-black/40 rounded-sm overflow-hidden p-0.5 border border-white/5">
+                                <div class="flex-1 bg-ed-orange rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-orange rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-orange rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-orange rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-orange/10 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-orange/10 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-orange/10 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-orange/10 rounded-sm transition-all"></div>
                             </div>
                         </button>
                         <button onclick="komut('pip-wep')"
-                            class="btn-glass btn-red row-span-2 flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform">
-                            <i data-lucide="crosshair" class="w-12 h-12"></i>
-                            <span class="text-sm font-bold tracking-widest">WEP</span>
+                            class="btn-glass btn-red flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform px-1">
+                            <i data-lucide="crosshair" class="w-8 h-8 opacity-70"></i>
+                            <span class="text-xs font-bold tracking-widest">WEP</span>
                             <!-- PIP Indicators -->
-                            <div id="pips-wep" class="flex gap-0.5 h-1.5 w-16 bg-black/40 rounded-full overflow-hidden p-0.5 border border-white/5">
-                                <div class="flex-1 bg-ed-red/20 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-red/20 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-red/20 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-red/20 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-red/20 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-red/20 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-red/20 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-red/20 rounded-sm transition-all"></div>
+                            <div id="pips-wep" class="flex gap-0.5 h-16 w-full bg-black/40 rounded-sm overflow-hidden p-0.5 border border-white/5">
+                                <div class="flex-1 bg-ed-red rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-red rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-red rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-red rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-red/10 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-red/10 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-red/10 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-red/10 rounded-sm transition-all"></div>
                             </div>
                         </button>
                         <button onclick="komut('pip-rst')"
-                            class="btn-glass border-gray-500/30 text-gray-400 flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform">
-                            <i data-lucide="rotate-ccw" class="w-10 h-10"></i>
+                            class="btn-glass border-gray-500/30 text-gray-400 flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform px-1">
+                            <i data-lucide="rotate-ccw" class="w-8 h-8 opacity-50"></i>
                             <span class="text-xs font-bold tracking-widest">RST</span>
                         </button>
                     </div>
@@ -787,7 +785,7 @@
 
     <script>
         function komut(c) {
-            fetch('/komut/' + c).then(r => r.json()).then(d => {
+            fetch('/action/' + c).then(r => r.json()).then(d => {
                 if (d.status === 'ok') {
                     const btn = event.currentTarget;
                     if (btn && btn.classList.contains('btn-glass')) {
@@ -844,19 +842,18 @@
                 });
 
                 // Update PIPs
-                if (d.Pips) {
-                    const updatePips = (id, count, colorClass) => {
-                        const container = document.getElementById(id);
-                        if (!container) return;
-                        const segments = container.children;
-                        for (let i = 0; i < segments.length; i++) {
-                            segments[i].className = 'flex-1 rounded-sm transition-all ' + (i < count ? colorClass : colorClass + '/10');
-                        }
-                    };
-                    updatePips('pips-sys', d.Pips[0], 'bg-ed-blue');
-                    updatePips('pips-eng', d.Pips[1], 'bg-ed-orange');
-                    updatePips('pips-wep', d.Pips[2], 'bg-ed-red');
-                }
+                const pips = d.Pips || [4, 4, 4];
+                const updatePips = (id, count, colorClass) => {
+                    const container = document.getElementById(id);
+                    if (!container) return;
+                    const segments = container.children;
+                    for (let i = 0; i < segments.length; i++) {
+                        segments[i].className = 'flex-1 rounded-sm transition-all ' + (i < count ? colorClass : colorClass + '/10');
+                    }
+                };
+                updatePips('pips-sys', pips[0], 'bg-ed-blue');
+                updatePips('pips-eng', pips[1], 'bg-ed-orange');
+                updatePips('pips-wep', pips[2], 'bg-ed-red');
             });
         }
 
@@ -873,12 +870,16 @@
         }
 
         function updateVertical(y) {
-            komut('thrust-v-' + y);
+            const val = Math.round(y * 100);
+            fetch(`/axis/vthrust/${val}`);
             updatePad('v-handle', 0, y, false);
         }
 
         function updateLateralForward(x, y) {
-            komut('thrust-lf-' + x + '-' + y);
+            const valX = Math.round(x * 100);
+            const valY = Math.round(y * 100);
+            fetch(`/axis/lthrust/${valX}`);
+            fetch(`/axis/fthrust/${valY}`);
             updatePad('lf-handle', x, y, true);
         }
 
@@ -895,36 +896,79 @@
             const lfPad = document.getElementById('lf-pad');
             const setupPad = (el, updateFn, is2D, autoCenter, resetFn) => {
                 if (!el) return;
+                let isDragging = false;
+                const handleSize = 32; 
+                const halfHandle = handleSize / 2;
+
                 const handleMove = (e) => {
+                    if (e.type.startsWith('mouse') && !isDragging) return;
                     const rect = el.getBoundingClientRect();
-                    const touch = e.touches ? e.touches[0] : e;
-                    let x = (touch.clientX - rect.left) / rect.width * 2 - 1;
-                    let y = -((touch.clientY - rect.top) / rect.height * 2 - 1);
-                    x = Math.max(-1, Math.min(1, x));
-                    y = Math.max(-1, Math.min(1, y));
-                    updateFn(is2D ? x : 0, y);
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                    
+                    let pxX = clientX - rect.left;
+                    let pxY = clientY - rect.top;
+                    
+                    pxX = Math.max(halfHandle, Math.min(rect.width - halfHandle, pxX));
+                    pxY = Math.max(halfHandle, Math.min(rect.height - halfHandle, pxY));
+                    
+                    const rangeX = rect.width - handleSize;
+                    const rangeY = rect.height - handleSize;
+                    const x = is2D ? ((pxX - halfHandle) / (rangeX || 1) * 2 - 1) : 0;
+                    const y = -((pxY - halfHandle) / (rangeY || 1) * 2 - 1);
+                    
+                    updateFn(x, y);
+                    if (e.cancelable) e.preventDefault();
                 };
-                el.addEventListener('touchstart', handleMove);
-                el.addEventListener('touchmove', handleMove);
+
+                el.addEventListener('touchstart', (e) => { handleMove(e); }, { passive: false });
+                el.addEventListener('touchmove', (e) => { handleMove(e); }, { passive: false });
+                el.addEventListener('mousedown', (e) => { isDragging = true; handleMove(e); });
+                window.addEventListener('mousemove', (e) => { if (isDragging) handleMove(e); });
+                window.addEventListener('mouseup', () => { 
+                    if (isDragging && autoCenter) resetFn();
+                    isDragging = false; 
+                });
+
                 if (autoCenter) {
                     el.addEventListener('touchend', resetFn);
                 }
             };
+
             setupPad(vPad, (x, y) => updateVertical(y), false, true, () => updateVertical(0));
             setupPad(lfPad, updateLateralForward, true, true, resetLateralForward);
 
             const zoomPad = document.getElementById('zoom-pad');
             if (zoomPad) {
+                let isZoomDragging = false;
                 const handleZoom = (e) => {
+                    if (e.type.startsWith('mouse') && !isZoomDragging) return;
                     const rect = zoomPad.getBoundingClientRect();
-                    const touch = e.touches ? e.touches[0] : e;
-                    let val = (touch.clientY - rect.top) / rect.height;
-                    val = Math.max(0, Math.min(1, val));
-                    document.getElementById('zoom-handle').style.top = (val * 100) + '%';
-                    komut('sensor-zoom-' + Math.round((1 - val) * 10));
+                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                    
+                    // Visual clamping for the handle (h-4 is 16px)
+                    const handleHalfHeight = 8;
+                    let posPx = clientY - rect.top;
+                    posPx = Math.max(handleHalfHeight, Math.min(rect.height - handleHalfHeight, posPx));
+                    
+                    const topPercent = (posPx / rect.height) * 100;
+                    document.getElementById('zoom-handle').style.top = topPercent + '%';
+                    
+                    // Map posPx to -100...100 range
+                    // posPx = handleHalfHeight -> 100
+                    // posPx = rect.height - handleHalfHeight -> -100
+                    const range = rect.height - handleHalfHeight * 2;
+                    const normalized = (posPx - handleHalfHeight) / range;
+                    const axisVal = Math.round((1 - normalized * 2) * 100);
+                    
+                    fetch(`/axis/sensorzoom/${axisVal}`);
+                    if (e.cancelable) e.preventDefault();
                 };
-                zoomPad.addEventListener('touchstart', handleZoom);
-                zoomPad.addEventListener('touchmove', handleZoom);
+                zoomPad.addEventListener('touchstart', handleZoom, { passive: false });
+                zoomPad.addEventListener('touchmove', handleZoom, { passive: false });
+                zoomPad.addEventListener('mousedown', (e) => { isZoomDragging = true; handleZoom(e); });
+                window.addEventListener('mousemove', (e) => { if (isZoomDragging) handleZoom(e); });
+                window.addEventListener('mouseup', () => { isZoomDragging = false; });
             }
         });
     </script>
