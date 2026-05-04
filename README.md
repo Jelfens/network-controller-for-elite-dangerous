@@ -2,6 +2,20 @@
 
 A lightweight Python-based local network controller designed specifically for **Elite Dangerous**. This script hosts a responsive, Elite Dangerous-themed web interface on your local network, allowing you to control your ship's systems and monitor live telemetry directly from your smartphone, tablet, or another monitor.
 
+## 📸 Screenshots
+
+| Combat Interface | Navigation Panel |
+| :---: | :---: |
+| ![Combat](screenshots/combat.png) | ![Navigation](screenshots/nav.png) |
+
+| Engines & Thrusters | Information Display |
+| :---: | :---: |
+| ![Engines](screenshots/engines.png) | ![Info](screenshots/info.png) |
+
+| Utilities | External Panels |
+| :---: | :---: |
+| ![Utils](screenshots/utils.png) | ![Panels](screenshots/panels.png) |
+
 ## 🚀 Features
 
 * **Real-time Telemetry:** Reads data directly from Elite Dangerous's `Status.json` file.
