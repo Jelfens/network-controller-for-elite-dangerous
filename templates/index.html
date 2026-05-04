@@ -7,6 +7,7 @@
     <title>Elite Control Interface</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -165,7 +166,7 @@
         }
 
         #page-nav.active {
-            flex-direction: row;
+            display: grid;
         }
 
         @keyframes fadeIn {
@@ -265,33 +266,33 @@
             <div class="flex-1 flex flex-col gap-4 overflow-y-auto no-scrollbar">
                 <div class="grid grid-cols-2 gap-3">
                     <button onclick="komut('target-highest')"
-                        class="btn-glass btn-red col-span-2 p-4 text-lg font-bold tracking-widest">
-                        <div class="text-[10px] text-ed-red/70 mb-1">PRIORITY</div>
-                        HIGHEST THREAT
+                        class="btn-glass btn-red col-span-2 p-4 text-lg font-bold tracking-widest flex items-center justify-center gap-3">
+                        <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                        <div class="text-left">
+                            <div class="text-[10px] text-ed-red/70 mb-0.5">PRIORITY</div>
+                            <div>HIGHEST THREAT</div>
+                        </div>
                     </button>
                     <button onclick="komut('target-hostile-prev')"
-                        class="btn-glass btn-red p-4 text-sm font-bold tracking-widest">
-                        <div class="text-[10px] text-ed-red/70 mb-1">HOSTILE</div>
-                        PREV HOSTILE
+                        class="btn-glass btn-red p-4 text-sm font-bold tracking-widest flex flex-col items-center justify-center gap-1">
+                        <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                        <div class="text-[10px] text-ed-red/70">PREV HOSTILE</div>
                     </button>
                     <button onclick="komut('target-hostile-next')"
-                        class="btn-glass btn-red p-4 text-sm font-bold tracking-widest">
-                        <div class="text-[10px] text-ed-red/70 mb-1">HOSTILE</div>
-                        NEXT HOSTILE
+                        class="btn-glass btn-red p-4 text-sm font-bold tracking-widest flex flex-col items-center justify-center gap-1">
+                        <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                        <div class="text-[10px] text-ed-red/70">NEXT HOSTILE</div>
                     </button>
 
                     <button onclick="komut('target-ahead')"
-                        class="btn-glass btn-orange col-span-2 p-3 text-base font-bold">
-                        <div class="text-[10px] mb-1 opacity-70">AHEAD</div>
-                        TARGET AHEAD
+                        class="btn-glass btn-orange col-span-2 p-3 text-base font-bold flex items-center justify-center gap-3">
+                        <i data-lucide="focus" class="w-6 h-6"></i>TARGET AHEAD
                     </button>
-                    <button onclick="komut('target-prev')" class="btn-glass btn-orange p-3 text-base font-bold">
-                        <div class="text-[10px] mb-1 opacity-70">CYCLE</div>
-                        PREV TARGET
+                    <button onclick="komut('target-prev')" class="btn-glass btn-orange p-3 text-sm font-bold flex flex-col items-center justify-center gap-1">
+                        <i data-lucide="chevron-left" class="w-5 h-5"></i>PREV TARGET
                     </button>
-                    <button onclick="komut('target-next')" class="btn-glass btn-orange p-3 text-base font-bold">
-                        <div class="text-[10px] mb-1 opacity-70">CYCLE</div>
-                        NEXT TARGET
+                    <button onclick="komut('target-next')" class="btn-glass btn-orange p-3 text-sm font-bold flex flex-col items-center justify-center gap-1">
+                        <i data-lucide="chevron-right" class="w-5 h-5"></i>NEXT TARGET
                     </button>
                 </div>
 
@@ -300,19 +301,15 @@
                         class="absolute -top-2 left-6 px-2 bg-ed-darker text-[10px] text-ed-blue font-bold tracking-widest">
                         WING OPERATIONS</div>
                     <div class="grid grid-cols-3 gap-2 mt-2">
-                        <button onclick="komut('target-team-1')" class="btn-glass btn-blue py-3 text-xs font-bold">WING
-                            1</button>
-                        <button onclick="komut('target-team-2')" class="btn-glass btn-blue py-3 text-xs font-bold">WING
-                            2</button>
-                        <button onclick="komut('target-team-3')" class="btn-glass btn-blue py-3 text-xs font-bold">WING
-                            3</button>
+                        <button onclick="komut('target-team-1')" class="btn-glass btn-blue py-3 text-[10px] font-bold flex flex-col items-center"><i data-lucide="user" class="w-4 h-4 mb-1"></i>WING 1</button>
+                        <button onclick="komut('target-team-2')" class="btn-glass btn-blue py-3 text-[10px] font-bold flex flex-col items-center"><i data-lucide="user" class="w-4 h-4 mb-1"></i>WING 2</button>
+                        <button onclick="komut('target-team-3')" class="btn-glass btn-blue py-3 text-[10px] font-bold flex flex-col items-center"><i data-lucide="user" class="w-4 h-4 mb-1"></i>WING 3</button>
                     </div>
                     <div class="grid grid-cols-2 gap-2 mt-2">
                         <button onclick="komut('target-team-target')"
-                            class="btn-glass btn-blue py-3 text-xs font-bold tracking-wider">WINGMAN TGT</button>
+                            class="btn-glass btn-blue py-3 text-[10px] font-bold tracking-wider flex items-center justify-center gap-2"><i data-lucide="crosshair" class="w-4 h-4"></i>WING TGT</button>
                         <button onclick="komut('target-navlock')"
-                            class="btn-glass btn-cyan py-3 text-xs font-bold tracking-wider text-ed-cyan border-ed-cyan/40">NAV
-                            LOCK</button>
+                            class="btn-glass btn-cyan py-3 text-[10px] font-bold tracking-wider text-ed-cyan border-ed-cyan/40 flex items-center justify-center gap-2"><i data-lucide="lock" class="w-4 h-4"></i>NAV LOCK</button>
                     </div>
                 </div>
 
@@ -341,10 +338,10 @@
                     <div class="grid grid-cols-2 gap-3">
                         <button
                             onclick="komut('fighter-engage'); document.getElementById('modal-fighters').style.display='none'"
-                            class="btn-glass btn-red bg-ed-red/20 py-5 text-base font-bold tracking-widest">ENGAGE</button>
+                            class="btn-glass btn-red bg-ed-red/20 py-5 text-sm font-bold tracking-widest flex flex-col items-center gap-2"><i data-lucide="swords" class="w-6 h-6"></i>ENGAGE</button>
                         <button
                             onclick="komut('fighter-attack'); document.getElementById('modal-fighters').style.display='none'"
-                            class="btn-glass btn-red py-5 text-base font-bold tracking-widest">ATTACK</button>
+                            class="btn-glass btn-red py-5 text-sm font-bold tracking-widest flex flex-col items-center gap-2"><i data-lucide="target" class="w-6 h-6"></i>ATTACK</button>
                     </div>
                 </div>
 
@@ -387,19 +384,19 @@
             <div class="grid grid-cols-4 gap-3 text-center font-bold mb-5">
                 <div id="ind-hardp" onclick="komut('wg-hardpoints')"
                     class="btn-glass ind-off p-3 cursor-pointer transition-all flex flex-col items-center justify-center gap-1">
-                    <div class="text-2xl">⚙️</div><span class="text-[11px]">HARDPOINTS</span>
+                    <i data-lucide="swords" class="w-6 h-6"></i><span class="text-[11px]">HARDPOINTS</span>
                 </div>
                 <button onclick="komut('cockpit-mode')"
                     class="btn-glass btn-blue p-3 flex flex-col items-center justify-center gap-1">
-                    <div class="text-2xl">🖥️</div><span class="text-[11px]">HUD MODE</span>
+                    <i data-lucide="layout" class="w-6 h-6"></i><span class="text-[11px]">HUD MODE</span>
                 </button>
                 <div id="ind-silent" onclick="komut('silent-running')"
                     class="btn-glass ind-off p-3 cursor-pointer transition-all flex flex-col items-center justify-center gap-1">
-                    <div class="text-2xl">🤫</div><span class="text-[11px]">SILENT RUN</span>
+                    <i data-lucide="ghost" class="w-6 h-6"></i><span class="text-[11px]">SILENT RUN</span>
                 </div>
                 <button onclick="document.getElementById('modal-targeting').style.display='flex'"
                     class="btn-glass btn-red p-3 flex flex-col items-center justify-center gap-1">
-                    <div class="text-2xl">🎯</div><span class="text-[11px]">TARGETING</span>
+                    <i data-lucide="target" class="w-6 h-6"></i><span class="text-[11px]">TARGETING</span>
                 </button>
             </div>
 
@@ -430,19 +427,19 @@
             <div class="grid grid-cols-4 gap-3 mb-5">
                 <button onclick="komut('heatsink')"
                     class="btn-glass btn-blue p-3 flex flex-col items-center justify-center gap-1">
-                    <div class="text-xl">🧊</div><span class="text-[10px] font-bold">HEATSINK</span>
+                    <i data-lucide="snowflake" class="w-6 h-6"></i><span class="text-[10px] font-bold">HEATSINK</span>
                 </button>
                 <button onclick="komut('chaff')"
                     class="btn-glass p-3 flex flex-col items-center justify-center gap-1 border-yellow-500/40 text-yellow-500 hover:bg-yellow-500/20">
-                    <div class="text-xl">✨</div><span class="text-[10px] font-bold">CHAFF</span>
+                    <i data-lucide="sparkles" class="w-6 h-6"></i><span class="text-[10px] font-bold">CHAFF</span>
                 </button>
                 <button onclick="komut('scb')"
                     class="btn-glass p-3 flex flex-col items-center justify-center gap-1 border-teal-400/40 text-teal-400 hover:bg-teal-400/20">
-                    <div class="text-xl">🔋</div><span class="text-[10px] font-bold">SHIELD CELL</span>
+                    <i data-lucide="shield-plus" class="w-6 h-6"></i><span class="text-[10px] font-bold">SHIELD CELL</span>
                 </button>
                 <button onclick="document.getElementById('modal-fighters').style.display='flex'"
                     class="btn-glass btn-orange p-3 flex flex-col items-center justify-center gap-1">
-                    <div class="text-xl">🚀</div><span class="text-[10px] font-bold">FIGHTERS</span>
+                    <i data-lucide="rocket" class="w-6 h-6"></i><span class="text-[10px] font-bold">FIGHTERS</span>
                 </button>
             </div>
 
@@ -492,41 +489,41 @@
                         FSD</div>
                     <div class="grid grid-cols-2 gap-1 h-full pt-2">
                         <button onclick="komut('fsd-jump')"
-                            class="btn-glass btn-orange text-[10px] font-bold flex flex-col items-center justify-center gap-0.5"><span
-                                class="text-sm">🚀</span>HYP</button>
+                            class="btn-glass btn-orange text-[10px] font-bold flex flex-col items-center justify-center gap-0.5">
+                            <i data-lucide="rocket" class="w-4 h-4"></i>HYP</button>
                         <button onclick="komut('fsd-sc')"
-                            class="btn-glass btn-orange text-[10px] font-bold flex flex-col items-center justify-center gap-0.5"><span
-                                class="text-sm">⚡</span>SUP</button>
+                            class="btn-glass btn-orange text-[10px] font-bold flex flex-col items-center justify-center gap-0.5">
+                            <i data-lucide="zap" class="w-4 h-4"></i>SUP</button>
                         <button onclick="komut('fsd')"
-                            class="btn-glass col-span-2 text-[11px] font-bold tracking-wider flex items-center justify-center gap-1 text-gray-300"><span
-                                class="text-base">🌀</span>FSD</button>
+                            class="btn-glass col-span-2 text-[11px] font-bold tracking-wider flex items-center justify-center gap-1 text-gray-300">
+                            <i data-lucide="wind" class="w-5 h-5"></i>FSD</button>
                     </div>
                 </div>
 
                 <button onclick="komut('panel-comms')"
                     class="btn-glass btn-blue rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-blue/5">
-                    <span class="text-4xl">📡</span><span class="text-sm font-bold tracking-widest">COMMS</span>
+                    <i data-lucide="radio" class="w-10 h-10"></i><span class="text-sm font-bold tracking-widest">COMMS</span>
                 </button>
 
                 <button onclick="switchPage('mapping')"
                     class="btn-glass btn-blue rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-blue/10 border-ed-blue/40">
-                    <span class="text-4xl">🗺️</span><span class="text-sm font-bold tracking-widest text-ed-cyan">MAPPING</span>
+                    <i data-lucide="map" class="w-10 h-10"></i><span class="text-sm font-bold tracking-widest text-ed-cyan">MAPPING</span>
                 </button>
 
                 <!-- ROW 2 -->
                 <button onclick="komut('panel-external')"
                     class="btn-glass btn-orange rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-orange/5">
-                    <span class="text-4xl">🛰️</span><span class="text-sm font-bold tracking-widest">EXTERNAL</span>
+                    <i data-lucide="satellite" class="w-10 h-10"></i><span class="text-sm font-bold tracking-widest">EXTERNAL</span>
                 </button>
 
                 <button onclick="switchPage('panels')"
                     class="btn-glass btn-blue border-ed-blue/40 bg-ed-blue/10 flex flex-col items-center justify-center gap-2">
-                    <span class="text-4xl">🎮</span><span class="text-sm font-bold tracking-widest text-ed-cyan uppercase">Panels</span>
+                    <i data-lucide="gamepad-2" class="w-10 h-10 text-ed-cyan"></i><span class="text-sm font-bold tracking-widest text-ed-cyan uppercase">Panels</span>
                 </button>
 
                 <button onclick="komut('panel-internal')"
                     class="btn-glass btn-orange rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-orange/5">
-                    <span class="text-4xl">🖥️</span><span class="text-sm font-bold tracking-widest">INTERNAL</span>
+                    <i data-lucide="monitor" class="w-10 h-10"></i><span class="text-sm font-bold tracking-widest">INTERNAL</span>
                 </button>
 
                 <!-- ROW 3 -->
@@ -534,12 +531,12 @@
 
                 <button onclick="komut('panel-role')"
                     class="btn-glass btn-blue rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-blue/5">
-                    <span class="text-4xl">👥</span><span class="text-sm font-bold tracking-widest uppercase">Role Panel</span>
+                    <i data-lucide="users" class="w-10 h-10"></i><span class="text-sm font-bold tracking-widest uppercase">Role Panel</span>
                 </button>
 
                 <button onclick="switchPage('aux')"
                     class="btn-glass rounded-xl flex flex-col items-center justify-center text-gray-400 gap-2 bg-white/5">
-                    <span class="text-4xl">🛠️</span>
+                    <i data-lucide="wrench" class="w-10 h-10"></i>
                     <span class="text-[11px] font-bold uppercase tracking-widest">AUX SYSTEMS</span>
                 </button>
             </div>
@@ -551,27 +548,27 @@
                 <div class="grid grid-cols-2 gap-3 h-1/3">
                     <button onclick="komut('target-sub-prev')"
                         class="btn-glass flex flex-col items-center justify-center font-bold text-lg text-ed-blue/80">
-                        <span class="text-3xl mb-1">🎯◀</span>PREV SUB
+                        <i data-lucide="target" class="w-8 h-8 mb-1"></i>PREV SUB
                     </button>
                     <button onclick="komut('target-sub-next')"
                         class="btn-glass flex flex-col items-center justify-center font-bold text-lg text-ed-blue/80">
-                        <span class="text-3xl mb-1">🎯▶</span>NEXT SUB
+                        <i data-lucide="target" class="w-8 h-8 mb-1"></i>NEXT SUB
                     </button>
                 </div>
                 <div class="grid grid-cols-2 gap-3 h-1/3">
                     <button onclick="komut('system-map')"
                         class="btn-glass btn-blue flex flex-col items-center justify-center font-bold text-lg">
-                        <span class="text-4xl mb-1">🪐</span>SYSTEM MAP
+                        <i data-lucide="orbit" class="w-10 h-10 mb-1"></i>SYSTEM MAP
                     </button>
                     <button onclick="komut('galaxy-map')"
                         class="btn-glass btn-blue flex flex-col items-center justify-center font-bold text-lg">
-                        <span class="text-4xl mb-1">🌌</span>GALAXY MAP
+                        <i data-lucide="milky-way" class="w-10 h-10 mb-1"></i>GALAXY MAP
                     </button>
                 </div>
                 <div class="grid grid-cols-1 gap-3 flex-1">
                     <button onclick="komut('target-route')"
                         class="btn-glass btn-orange flex items-center justify-center font-bold text-xl gap-4">
-                        <span class="text-4xl">🚩</span>TARGET ROUTE
+                        <i data-lucide="flag" class="w-10 h-10"></i>TARGET ROUTE
                     </button>
                 </div>
             </div>
@@ -582,39 +579,35 @@
             <div class="flex-1 grid grid-cols-3 grid-rows-3 gap-3">
                 <!-- ROW 1 -->
                 <button onclick="komut('tab-prev')"
-                    class="btn-glass flex flex-col items-center justify-center text-gray-400 font-bold text-sm">
-                    <span class="text-2xl mb-1">◀️</span>TAB
-                </button>
+                    class="btn-glass flex items-center justify-center"><i data-lucide="chevron-left" class="w-10 h-10"></i></button>
                 <button onclick="komut('menu-up')"
-                    class="btn-glass text-3xl flex items-center justify-center">▲</button>
+                    class="btn-glass flex items-center justify-center"><i data-lucide="chevron-up" class="w-10 h-10"></i></button>
                 <button onclick="komut('tab-next')"
-                    class="btn-glass flex flex-col items-center justify-center text-gray-400 font-bold text-sm">
-                    <span class="text-2xl mb-1">▶️</span>TAB
-                </button>
+                    class="btn-glass flex items-center justify-center"><i data-lucide="chevron-right" class="w-10 h-10"></i></button>
 
                 <!-- ROW 2 -->
                 <button onclick="komut('menu-left')"
-                    class="btn-glass text-3xl flex items-center justify-center">◀</button>
+                    class="btn-glass flex items-center justify-center"><i data-lucide="chevron-left" class="w-10 h-10"></i></button>
                 <button onclick="komut('menu-select')"
                     class="btn-glass btn-orange text-2xl font-bold flex items-center justify-center bg-ed-orange/10">OK</button>
                 <button onclick="komut('menu-right')"
-                    class="btn-glass text-3xl flex items-center justify-center">▶</button>
+                    class="btn-glass flex items-center justify-center"><i data-lucide="chevron-right" class="w-10 h-10"></i></button>
 
                 <!-- ROW 3 -->
                 <div class="grid grid-cols-2 gap-2">
                     <button onclick="komut('menu-back')"
                         class="btn-glass text-gray-400 font-bold flex flex-col items-center justify-center">
-                        <span class="text-xl">↩️</span><span class="text-[9px]">BACK</span>
+                        <i data-lucide="undo-2" class="w-6 h-6 mb-1"></i><span class="text-[9px]">BACK</span>
                     </button>
                     <div class="grid grid-rows-2 gap-1">
                         <button onclick="komut('ui-page-prev')"
-                            class="btn-glass text-gray-300 font-bold flex items-center justify-center text-lg">🔼</button>
+                            class="btn-glass text-gray-300 font-bold flex items-center justify-center text-lg"><i data-lucide="chevrons-up" class="w-5 h-5"></i></button>
                         <button onclick="komut('ui-page-next')"
-                            class="btn-glass text-gray-300 font-bold flex items-center justify-center text-lg">🔽</button>
+                            class="btn-glass text-gray-300 font-bold flex items-center justify-center text-lg"><i data-lucide="chevrons-down" class="w-5 h-5"></i></button>
                     </div>
                 </div>
                 <button onclick="komut('menu-down')"
-                    class="btn-glass text-3xl flex items-center justify-center">▼</button>
+                    class="btn-glass flex items-center justify-center"><i data-lucide="chevron-down" class="w-10 h-10"></i></button>
                 <div></div>
             </div>
         </div>
@@ -626,27 +619,27 @@
                 <div class="flex-[2] grid grid-cols-2 grid-rows-3 gap-3">
                     <div id="ind-cargo" onclick="komut('cargo-scoop')"
                         class="btn-glass ind-off flex flex-col items-center justify-center cursor-pointer transition-all">
-                        <span class="text-3xl mb-1">📦</span><span class="text-[11px] font-bold uppercase">Cargo Scoop</span>
+                        <i data-lucide="package" class="w-8 h-8 mb-1"></i><span class="text-[11px] font-bold uppercase">Cargo Scoop</span>
                     </div>
                     <div id="ind-gear" onclick="komut('landing-gear')"
                         class="btn-glass ind-off flex flex-col items-center justify-center cursor-pointer transition-all">
-                        <span class="text-3xl mb-1">⚓</span><span class="text-[11px] font-bold uppercase">Landing Gear</span>
+                        <i data-lucide="anchor" class="w-8 h-8 mb-1"></i><span class="text-[11px] font-bold uppercase">Landing Gear</span>
                     </div>
                     <div id="ind-light" onclick="komut('lights')"
                         class="btn-glass ind-off flex flex-col items-center justify-center cursor-pointer transition-all">
-                        <span class="text-3xl mb-1">💡</span><span class="text-[11px] font-bold uppercase">Lights</span>
+                        <i data-lucide="lightbulb" class="w-8 h-8 mb-1"></i><span class="text-[11px] font-bold uppercase">Lights</span>
                     </div>
                     <div id="ind-nv" onclick="komut('night-vision')"
                         class="btn-glass ind-off flex flex-col items-center justify-center cursor-pointer transition-all">
-                        <span class="text-3xl mb-1">👁️</span><span class="text-[11px] font-bold uppercase">Night Vision</span>
+                        <i data-lucide="eye" class="w-8 h-8 mb-1"></i><span class="text-[11px] font-bold uppercase">Night Vision</span>
                     </div>
                     <button onclick="komut('rot-corr')"
                         class="btn-glass flex flex-col items-center justify-center text-xs font-bold uppercase text-gray-300">
-                        <span class="text-2xl mb-1">🔄</span>ROT CORR
+                        <i data-lucide="refresh-cw" class="w-6 h-6 mb-1"></i>ROT CORR
                     </button>
                     <button onclick="komut('orbit-lines')"
                         class="btn-glass flex flex-col items-center justify-center text-xs font-bold uppercase text-gray-300">
-                        <span class="text-2xl mb-1">⭕</span>ORBIT LINES
+                        <i data-lucide="circle" class="w-6 h-6 mb-1"></i>ORBIT LINES
                     </button>
                 </div>
 
@@ -719,17 +712,17 @@
 
             <div class="grid grid-cols-4 gap-2 mt-auto">
                 <button onclick="komut('discovery')"
-                    class="btn-glass btn-orange py-3 font-bold flex flex-col items-center justify-center gap-1"><span
-                        class="text-xl">🔭</span><span class="text-[9px]">DISCOVERY</span></button>
+                    class="btn-glass btn-orange py-3 font-bold flex flex-col items-center justify-center gap-1">
+                    <i data-lucide="telescope" class="w-6 h-6"></i><span class="text-[9px]">DISCOVERY</span></button>
                 <button onclick="komut('fss')"
-                    class="btn-glass btn-orange py-3 font-bold flex flex-col items-center justify-center gap-1"><span
-                        class="text-xl">📡</span><span class="text-[9px]">FSS</span></button>
+                    class="btn-glass btn-orange py-3 font-bold flex flex-col items-center justify-center gap-1">
+                    <i data-lucide="radio" class="w-6 h-6"></i><span class="text-[9px]">FSS</span></button>
                 <button onclick="komut('menu-social')"
-                    class="btn-glass btn-blue py-3 font-bold flex flex-col items-center justify-center gap-1"><span
-                        class="text-xl">👥</span><span class="text-[9px]">FRIENDS</span></button>
+                    class="btn-glass btn-blue py-3 font-bold flex flex-col items-center justify-center gap-1">
+                    <i data-lucide="users" class="w-6 h-6"></i><span class="text-[9px]">FRIENDS</span></button>
                 <button onclick="komut('menu-game')"
-                    class="btn-glass btn-red py-3 font-bold flex flex-col items-center justify-center gap-1"><span
-                        class="text-xl">⚙️</span><span class="text-[9px]">MENU</span></button>
+                    class="btn-glass btn-red py-3 font-bold flex flex-col items-center justify-center gap-1">
+                    <i data-lucide="settings" class="w-6 h-6"></i><span class="text-[9px]">MENU</span></button>
             </div>
         </div>
 
@@ -808,8 +801,10 @@
 
                 <!-- Right Throttle (1/6) -->
                 <div class="flex-1 flex flex-col gap-1.5 h-full">
-                    <button onclick="komut('boost')"
-                        class="btn-glass flex-1 btn-blue bg-ed-cyan/10 font-bold text-xs text-ed-cyan border-ed-cyan/40">BOOST</button>
+                <button onclick="komut('boost')"
+                        class="btn-glass flex-1 btn-blue bg-ed-cyan/10 font-bold text-xs text-ed-cyan border-ed-cyan/40">
+                        <i data-lucide="rocket" class="w-5 h-5 mx-auto mb-1"></i>BOOST
+                </button>
                     <button onclick="komut('speed-100')"
                         class="btn-glass flex-1 btn-green bg-ed-green/10 font-bold text-sm">100%</button>
                     <button onclick="komut('speed-75')"
@@ -828,20 +823,20 @@
     <!-- TAB BAR -->
     <div
         class="fixed bottom-0 left-0 right-0 glass-panel rounded-none border-x-0 border-b-0 border-t border-white/10 grid grid-cols-4 text-center z-50 bg-ed-dark/95">
-        <button onclick="switchPage('combat')" id="tab-combat" class="tab-btn active py-4">
-            <div class="tab-icon text-xl mb-1">⚔</div>
+                <button onclick="switchPage('combat')" id="tab-combat" class="tab-btn active py-4">
+            <div class="tab-icon flex justify-center mb-1"><i data-lucide="swords" class="w-6 h-6"></i></div>
             <div class="text-[11px] font-bold tracking-widest">COMBAT</div>
         </button>
         <button onclick="switchPage('nav')" id="tab-nav" class="tab-btn py-4 text-gray-500">
-            <div class="tab-icon text-xl mb-1">✦</div>
+            <div class="tab-icon flex justify-center mb-1"><i data-lucide="compass" class="w-6 h-6"></i></div>
             <div class="text-[11px] font-bold tracking-widest">NAV</div>
         </button>
         <button onclick="switchPage('engines')" id="tab-engines" class="tab-btn py-4 text-gray-500">
-            <div class="tab-icon text-xl mb-1">🚀</div>
+            <div class="tab-icon flex justify-center mb-1"><i data-lucide="rocket" class="w-6 h-6"></i></div>
             <div class="text-[11px] font-bold tracking-widest">ENGINES</div>
         </button>
         <button onclick="switchPage('info')" id="tab-info" class="tab-btn py-4 text-gray-500">
-            <div class="tab-icon text-xl mb-1">◈</div>
+            <div class="tab-icon flex justify-center mb-1"><i data-lucide="info" class="w-6 h-6"></i></div>
             <div class="text-[11px] font-bold tracking-widest">INFO</div>
         </button>
     </div>
@@ -879,6 +874,12 @@
         function resetLateralForward() { updateLateralForward(0, 0); }
 
         document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons({
+                props: {
+                    'stroke-width': 2.5,
+                    'class': 'lucide-icon'
+                }
+            });
             const vPad = document.getElementById('v-pad');
             const lfPad = document.getElementById('lf-pad');
             const setupPad = (el, updateFn, is2D, autoCenter, resetFn) => {
