@@ -163,34 +163,83 @@ def handle_axis(axis_name, value):
         return "Error", 500
     return "OK"
 
+def get_latest_journal_info(path_dir):
+    try:
+        files = [f for f in os.listdir(path_dir) if f.startswith('Journal.') and f.endswith('.log')]
+        if not files: return None
+        latest_file = max(files, key=lambda x: os.path.getmtime(os.path.join(path_dir, x)))
+        system, station, capacity = "Unknown", "", 32.0
+        logs = []
+        
+        with open(os.path.join(path_dir, latest_file), 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+            # Parse for status info (latest first)
+            for line in reversed(lines):
+                try:
+                    data = json.loads(line)
+                    event = data.get('event')
+                    if event in ['Location', 'FSDJump'] and system == "Unknown":
+                        system = data.get('StarSystem', system)
+                        station = data.get('StationName', station)
+                    elif event == 'Docked' and not station:
+                        station = data.get('StationName', station)
+                    elif event == 'LoadGame':
+                        capacity = data.get('FuelCapacity', capacity)
+                except: continue
+            
+            # Parse for logs (last 15 events)
+            for line in lines[-50:]: # Look at last 50 lines to find 15 good events
+                try:
+                    data = json.loads(line)
+                    event = data.get('event')
+                    msg = ""
+                    if event == 'FSDJump': msg = f"Jumped to {data.get('StarSystem')}"
+                    elif event == 'Docked': msg = f"Docked at {data.get('StationName')}"
+                    elif event == 'Undocked': msg = f"Undocked from {data.get('StationName')}"
+                    elif event == 'Bounty': msg = f"Bounty claimed: {data.get('TotalReward'):,} CR"
+                    elif event == 'CommitCrime': msg = f"CRIME: {data.get('CrimeType')}"
+                    elif event == 'Died': msg = "SHIP DESTROYED"
+                    elif event == 'ShieldState': msg = "Shields " + ("UP" if data.get('ShieldsUp') else "DOWN")
+                    elif event == 'MarketBuy': msg = f"Bought {data.get('Count')} {data.get('Type')}"
+                    
+                    if msg:
+                        time_str = data.get('timestamp')[11:16] # HH:MM
+                        logs.append({"t": time_str, "m": msg.upper()})
+                except: continue
+                
+        return {"System": system, "Station": station, "FuelCapacity": capacity, "Logs": logs[-10:]}
+    except: return None
+
 @app.route('/status')
 def get_status():
-    # Platform-specific paths to Status.json
     if sys.platform == 'linux':
         possible_paths = [
-            # Proton/Steam (common path)
-            os.path.expanduser("~/.steam/root/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous/Status.json"),
-            # Alternative Proton paths
-            os.path.expanduser("~/.steamapps/compatdata/626690/pfx/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous/Status.json"),
-            # Standard Wine paths
-            os.path.expanduser("~/.wine/drive_c/users") + "*/Saved Games/Frontier Developments/Elite Dangerous/Status.json",
+            os.path.expanduser("~/.steam/root/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous/"),
+            os.path.expanduser("~/.steamapps/compatdata/626690/pfx/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous/"),
         ]
     else:
         possible_paths = [
-            os.path.expanduser(r"~\Saved Games\Frontier Developments\Elite Dangerous\Status.json"),
+            os.path.expanduser(r"~\Saved Games\Frontier Developments\Elite Dangerous\\"),
         ]
     
-    # Try to find the Status.json file
     for path in possible_paths:
-        expanded_path = os.path.expanduser(path)
-        if os.path.exists(expanded_path):
+        if os.path.exists(path):
             try:
-                with open(expanded_path, 'r', encoding='utf-8') as f:
-                    return jsonify(json.load(f))
+                status_path = os.path.join(path, "Status.json")
+                res = {}
+                if os.path.exists(status_path):
+                    with open(status_path, 'r', encoding='utf-8') as f:
+                        res = json.load(f)
+                
+                journal_info = get_latest_journal_info(path)
+                if journal_info:
+                    res.update(journal_info)
+                
+                return jsonify(res)
             except Exception as e:
-                return jsonify({"hata": f"Error reading file: {str(e)}"})
+                return jsonify({"hata": str(e)})
     
-    return jsonify({"hata": "Status.json not found. Please check Elite Dangerous data path."})
+    return jsonify({"hata": "Elite Dangerous data path not found."})
 
 
 

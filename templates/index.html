@@ -580,24 +580,24 @@
         <div id="page-mapping" class="page h-full">
             <div class="flex-1 flex flex-col gap-3">
                 <div class="grid grid-cols-2 gap-3 h-1/3">
-                    <button onclick="komut('target-sub-prev')" class="btn-glass flex flex-col items-center justify-center font-bold text-lg text-ed-blue/80">
-                        <i data-lucide="target" class="w-8 h-8 mb-1"></i>PREV SUB
+                    <button onclick="komut('target-sub-prev')" class="btn-glass flex flex-col items-center justify-center font-bold text-sm text-ed-blue/80 text-center leading-tight">
+                        <i data-lucide="target" class="w-8 h-8 mb-1"></i>PREVIOUS SUB SYSTEM
                     </button>
-                    <button onclick="komut('target-sub-next')" class="btn-glass flex flex-col items-center justify-center font-bold text-lg text-ed-blue/80">
-                        <i data-lucide="target" class="w-8 h-8 mb-1"></i>NEXT SUB
+                    <button onclick="komut('target-sub-next')" class="btn-glass flex flex-col items-center justify-center font-bold text-sm text-ed-blue/80 text-center leading-tight">
+                        <i data-lucide="target" class="w-8 h-8 mb-1"></i>NEXT SUB SYSTEM
                     </button>
                 </div>
                 <div class="grid grid-cols-2 gap-3 h-1/3">
-                    <button onclick="komut('system-map')" class="btn-glass btn-blue flex flex-col items-center justify-center font-bold text-lg">
+                    <button onclick="komut('system-map')" class="btn-glass btn-blue flex flex-col items-center justify-center font-bold text-sm">
                         <i data-lucide="orbit" class="w-10 h-10 mb-1"></i>SYSTEM MAP
                     </button>
-                    <button onclick="komut('galaxy-map')" class="btn-glass btn-blue flex flex-col items-center justify-center font-bold text-lg">
+                    <button onclick="komut('galaxy-map')" class="btn-glass btn-blue flex flex-col items-center justify-center font-bold text-sm">
                         <i data-lucide="milky-way" class="w-10 h-10 mb-1"></i>GALAXY MAP
                     </button>
                 </div>
                 <div class="grid grid-cols-1 gap-3 flex-1">
-                    <button onclick="komut('target-route')" class="btn-glass btn-orange flex items-center justify-center font-bold text-xl gap-4">
-                        <i data-lucide="flag" class="w-10 h-10"></i>TARGET ROUTE
+                    <button onclick="komut('target-route')" class="btn-glass btn-orange flex items-center justify-center font-bold text-lg gap-4">
+                        <i data-lucide="flag" class="w-10 h-10"></i>NEXT SYSTEM ON ROUTE
                     </button>
                 </div>
             </div>
@@ -672,20 +672,20 @@
                 <div class="glass-panel p-3 border-ed-orange/20">
                     <div class="text-ed-orange text-[9px] font-bold uppercase tracking-widest mb-2 opacity-60">Status</div>
                     <div class="flex flex-col gap-2">
-                        <div id="ind-fuel" class="h-1 bg-ed-orange/20 rounded-full overflow-hidden">
-                            <div class="h-full bg-ed-orange" style="width: 75%"></div>
+                        <div class="h-1 bg-ed-orange/20 rounded-full overflow-hidden">
+                            <div id="fuel-bar" class="h-full bg-ed-orange transition-all" style="width: 0%"></div>
                         </div>
                         <div class="flex justify-between text-[10px] font-mono">
                             <span>FUEL</span>
-                            <span class="text-ed-orange">75%</span>
+                            <span id="fuel-text" class="text-ed-orange">--%</span>
                         </div>
                     </div>
                 </div>
                 <div class="glass-panel p-3 border-ed-cyan/20">
                     <div class="text-ed-cyan text-[9px] font-bold uppercase tracking-widest mb-2 opacity-60">Location</div>
                     <div class="text-[11px] font-mono leading-tight">
-                        <div class="text-ed-cyan">SOL</div>
-                        <div class="text-gray-400">DAEDALUS</div>
+                        <div id="info-system" class="text-ed-cyan truncate">SYNCING...</div>
+                        <div id="info-station" class="text-gray-400 truncate">CHECKING JOURNAL</div>
                     </div>
                 </div>
             </div>
@@ -694,9 +694,7 @@
                 <div class="absolute top-0 right-0 p-2 opacity-10"><i data-lucide="database" class="w-16 h-16"></i></div>
                 <div class="text-gray-500 text-[10px] font-bold tracking-widest mb-4">LOG DATA</div>
                 <div id="log-container" class="space-y-2 text-[10px] font-mono overflow-y-auto max-h-[150px] pr-2">
-                    <div class="flex gap-2"><span class="text-ed-orange">[OK]</span> SYSTEM CHECK COMPLETE</div>
-                    <div class="flex gap-2"><span class="text-ed-cyan">[INFO]</span> DOCKED AT DAEDALUS</div>
-                    <div class="flex gap-2"><span class="text-ed-blue">[NAV]</span> ROUTE SET: SOL -> ALPHA CENTAURI</div>
+                    <div class="text-gray-600 italic">WAITING FOR GAME DATA...</div>
                 </div>
             </div>
 
@@ -854,6 +852,29 @@
                 updatePips('pips-sys', pips[0], 'bg-ed-blue');
                 updatePips('pips-eng', pips[1], 'bg-ed-orange');
                 updatePips('pips-wep', pips[2], 'bg-ed-red');
+
+                // Update Info Page
+                if (d.System) document.getElementById('info-system').textContent = d.System.toUpperCase();
+                if (d.Station) document.getElementById('info-station').textContent = d.Station.toUpperCase();
+                
+                if (d.Fuel && d.FuelCapacity) {
+                    const current = (d.Fuel.FuelMain || 0) + (d.Fuel.FuelReservoir || 0);
+                    const pct = Math.round((current / d.FuelCapacity) * 100);
+                    document.getElementById('fuel-bar').style.width = pct + '%';
+                    document.getElementById('fuel-text').textContent = pct + '%';
+                }
+
+                if (d.Logs) {
+                    const logContainer = document.getElementById('log-container');
+                    let logHtml = '';
+                    d.Logs.forEach(log => {
+                        logHtml += `<div class="flex gap-2 font-mono text-[9px] border-l border-white/10 pl-2">
+                            <span class="text-gray-500">[${log.t}]</span>
+                            <span class="text-ed-blue">${log.m}</span>
+                        </div>`;
+                    });
+                    logContainer.innerHTML = logHtml;
+                }
             });
         }
 
