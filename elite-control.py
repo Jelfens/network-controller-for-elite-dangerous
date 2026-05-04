@@ -85,7 +85,7 @@ KOMUTLAR = {
     "speed-rev-25": 60, "speed-rev-50": 61, "speed-rev-75": 62, "speed-rev-100": 63,
     "menu-game": 68, "menu-social": 69, "discovery": 70,
     "fighter-recall": 71, "fighter-defend": 72, "fighter-engage": 73, "fighter-attack": 74,
-    "fighter-formation": 75, "fighter-hold": 76, "fighter-follow": 77
+    "fighter-formation": 75, "fighter-hold": 76, "fighter-follow": 77, "fss-current-signal": 78
 }
 
 # Keep original key map as fallback
@@ -123,6 +123,34 @@ def action(komut_adi):
         return "OK (vJoy not active)"
     return "Hata", 400
 
+@app.route('/hold/<komut_adi>')
+def hold_action(komut_adi):
+    if komut_adi in KOMUTLAR:
+        btn_id = KOMUTLAR[komut_adi]
+        if has_gamepad and gamepad:
+            gamepad.set_button(btn_id, 1)
+            return "OK (vJoy Hold)"
+        key = FALLBACK_KEYS.get(komut_adi)
+        if key:
+            import pydirectinput
+            pydirectinput.keyDown(key)
+            return "OK (Keyboard Hold)"
+    return "Hata", 400
+
+@app.route('/release/<komut_adi>')
+def release_action(komut_adi):
+    if komut_adi in KOMUTLAR:
+        btn_id = KOMUTLAR[komut_adi]
+        if has_gamepad and gamepad:
+            gamepad.set_button(btn_id, 0)
+            return "OK (vJoy Release)"
+        key = FALLBACK_KEYS.get(komut_adi)
+        if key:
+            import pydirectinput
+            pydirectinput.keyUp(key)
+            return "OK (Keyboard Release)"
+    return "Hata", 400
+
 @app.route('/axis/<axis_name>/<value>')
 def handle_axis(axis_name, value):
     if not has_gamepad: return "No vJoy Device", 500
@@ -141,6 +169,14 @@ def handle_axis(axis_name, value):
             gamepad.set_axis(pyvjoy.HID_USAGE_Z, axis_val)
         elif axis_name == 'sensorzoom':
             gamepad.set_axis(pyvjoy.HID_USAGE_RX, axis_val)
+        elif axis_name == 'fsspitch':
+            gamepad.set_axis(pyvjoy.HID_USAGE_RY, axis_val)
+        elif axis_name == 'fssyaw':
+            gamepad.set_axis(pyvjoy.HID_USAGE_RZ, axis_val)
+        elif axis_name == 'fsstuning':
+            gamepad.set_axis(pyvjoy.HID_USAGE_SL0, axis_val)
+        elif axis_name == 'fssabstuning':
+            gamepad.set_axis(pyvjoy.HID_USAGE_SL1, axis_val)
 
 
             
