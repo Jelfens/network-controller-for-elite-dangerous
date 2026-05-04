@@ -385,162 +385,193 @@
         </div>
 
         <!-- PAGE COMBAT -->
-        <div id="page-combat" class="page active">
-            <div class="grid grid-cols-4 gap-3 text-center font-bold mb-5">
-                <div id="ind-hardp" onclick="komut('wg-hardpoints')"
-                    class="btn-glass ind-off p-3 cursor-pointer transition-all flex flex-col items-center justify-center gap-1">
-                    <i data-lucide="swords" class="w-6 h-6"></i><span class="text-[11px]">HARDPOINTS</span>
+        <div id="page-combat" class="page h-full active">
+            <div class="flex flex-col h-full gap-2">
+                <div class="h-1/5 grid grid-cols-3 gap-2">
+                    <div id="ind-hardp" onclick="komut('wg-hardpoints')"
+                        class="btn-glass ind-off flex flex-col items-center justify-center gap-1 cursor-pointer transition-all">
+                        <i data-lucide="swords" class="w-8 h-8"></i>
+                        <span class="text-[10px] font-bold">HARDPOINTS</span>
+                    </div>
+                    <button onclick="komut('cockpit-mode')"
+                        class="btn-glass btn-blue flex flex-col items-center justify-center gap-1">
+                        <i data-lucide="layout" class="w-8 h-8"></i>
+                        <span class="text-[10px] font-bold">HUD MODE</span>
+                    </button>
+                    <button onclick="switchPage('combat-utils')"
+                        class="btn-glass btn-orange flex flex-col items-center justify-center gap-1">
+                        <i data-lucide="wrench" class="w-8 h-8"></i>
+                        <span class="text-[10px] font-bold">UTILS</span>
+                    </button>
                 </div>
-                <button onclick="komut('cockpit-mode')"
-                    class="btn-glass btn-blue p-3 flex flex-col items-center justify-center gap-1">
-                    <i data-lucide="layout" class="w-6 h-6"></i><span class="text-[11px]">HUD MODE</span>
-                </button>
-                <div id="ind-silent" onclick="komut('silent-running')"
-                    class="btn-glass ind-off p-3 cursor-pointer transition-all flex flex-col items-center justify-center gap-1">
-                    <i data-lucide="ghost" class="w-6 h-6"></i><span class="text-[11px]">SILENT RUN</span>
-                </div>
-                <button onclick="document.getElementById('modal-targeting').style.display='flex'"
-                    class="btn-glass btn-red p-3 flex flex-col items-center justify-center gap-1">
-                    <i data-lucide="target" class="w-6 h-6"></i><span class="text-[11px]">TARGETING</span>
-                </button>
-            </div>
 
-            <div class="glass-panel p-4 mb-5">
-                <div class="grid grid-cols-3 gap-4">
-                    <div class="flex flex-col">
-                        <div class="text-ed-blue text-[11px] font-bold text-center mb-2 tracking-widest text-shadow">SYS
+                <div class="h-3/5 glass-panel p-4 flex items-center justify-center relative border-ed-blue/20">
+                    <div class="absolute top-2 left-4 text-[10px] text-ed-blue font-bold tracking-[0.3em] uppercase opacity-50">Power Management</div>
+                    <div class="grid grid-cols-3 grid-rows-2 gap-4 w-full h-full max-w-md">
+                        <button onclick="komut('pip-sys')"
+                            class="btn-glass btn-blue row-span-2 flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform">
+                            <i data-lucide="shield" class="w-12 h-12"></i>
+                            <span class="text-sm font-bold tracking-widest">SYS</span>
+                            <!-- PIP Indicators -->
+                            <div id="pips-sys" class="flex gap-0.5 h-1.5 w-16 bg-black/40 rounded-full overflow-hidden p-0.5 border border-white/5">
+                                <div class="flex-1 bg-ed-blue/20 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-blue/20 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-blue/20 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-blue/20 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-blue/20 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-blue/20 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-blue/20 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-blue/20 rounded-sm transition-all"></div>
+                            </div>
+                        </button>
+                        <button onclick="komut('pip-eng')"
+                            class="btn-glass btn-orange flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform">
+                            <i data-lucide="zap" class="w-10 h-10"></i>
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm font-bold tracking-widest">ENG</span>
+                                <!-- PIP Indicators -->
+                                <div id="pips-eng" class="flex gap-0.5 h-1.5 w-12 bg-black/40 rounded-full overflow-hidden p-0.5 border border-white/5">
+                                    <div class="flex-1 bg-ed-orange/20 rounded-sm transition-all"></div>
+                                    <div class="flex-1 bg-ed-orange/20 rounded-sm transition-all"></div>
+                                    <div class="flex-1 bg-ed-orange/20 rounded-sm transition-all"></div>
+                                    <div class="flex-1 bg-ed-orange/20 rounded-sm transition-all"></div>
+                                    <div class="flex-1 bg-ed-orange/20 rounded-sm transition-all"></div>
+                                    <div class="flex-1 bg-ed-orange/20 rounded-sm transition-all"></div>
+                                    <div class="flex-1 bg-ed-orange/20 rounded-sm transition-all"></div>
+                                    <div class="flex-1 bg-ed-orange/20 rounded-sm transition-all"></div>
+                                </div>
+                            </div>
+                        </button>
+                        <button onclick="komut('pip-wep')"
+                            class="btn-glass btn-red row-span-2 flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform">
+                            <i data-lucide="crosshair" class="w-12 h-12"></i>
+                            <span class="text-sm font-bold tracking-widest">WEP</span>
+                            <!-- PIP Indicators -->
+                            <div id="pips-wep" class="flex gap-0.5 h-1.5 w-16 bg-black/40 rounded-full overflow-hidden p-0.5 border border-white/5">
+                                <div class="flex-1 bg-ed-red/20 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-red/20 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-red/20 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-red/20 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-red/20 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-red/20 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-red/20 rounded-sm transition-all"></div>
+                                <div class="flex-1 bg-ed-red/20 rounded-sm transition-all"></div>
+                            </div>
+                        </button>
+                        <button onclick="komut('pip-rst')"
+                            class="btn-glass border-gray-500/30 text-gray-400 flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform">
+                            <i data-lucide="rotate-ccw" class="w-10 h-10"></i>
+                            <span class="text-xs font-bold tracking-widest">RST</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="h-1/5 glass-panel flex flex-col p-2 justify-center border-ed-orange/30">
+                    <div class="text-[9px] text-ed-orange font-bold tracking-widest uppercase mb-1 ml-2 opacity-60">Firegroup Selector</div>
+                    <div class="flex items-center gap-2 px-2">
+                        <button onclick="komut('fg-prev')"
+                            class="btn-glass px-5 h-12 text-lg font-bold text-gray-400 flex items-center justify-center"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
+                        <div class="flex-1 flex justify-around items-center bg-black/40 rounded-lg h-12 px-4 border border-white/5" id="fg-strip">
+                            <div id="fg-0" class="btn-glass w-8 h-8 flex items-center justify-center text-xs rounded fg-off transition-all">A</div>
+                            <div id="fg-1" class="btn-glass w-8 h-8 flex items-center justify-center text-xs rounded fg-off transition-all">B</div>
+                            <div id="fg-2" class="btn-glass w-8 h-8 flex items-center justify-center text-xs rounded fg-off transition-all">C</div>
+                            <div id="fg-3" class="btn-glass w-8 h-8 flex items-center justify-center text-xs rounded fg-off transition-all">D</div>
+                            <div id="fg-4" class="btn-glass w-8 h-8 flex items-center justify-center text-xs rounded fg-off transition-all">E</div>
+                            <div id="fg-5" class="btn-glass w-8 h-8 flex items-center justify-center text-xs rounded fg-off transition-all">F</div>
+                            <div id="fg-6" class="btn-glass w-8 h-8 flex items-center justify-center text-xs rounded fg-off transition-all">G</div>
+                            <div id="fg-7" class="btn-glass w-8 h-8 flex items-center justify-center text-xs rounded fg-off transition-all">H</div>
                         </div>
-                        <div class="flex justify-center gap-1 mb-3 min-h-[12px]" id="bar-sys"></div>
-                        <button onclick="komut('pip-sys')" class="btn-glass btn-blue py-3 text-xl font-bold">+</button>
-                    </div>
-                    <div class="flex flex-col">
-                        <div class="text-ed-green text-[11px] font-bold text-center mb-2 tracking-widest">ENG</div>
-                        <div class="flex justify-center gap-1 mb-3 min-h-[12px]" id="bar-eng"></div>
-                        <button onclick="komut('pip-eng')" class="btn-glass btn-green py-3 text-xl font-bold">+</button>
-                    </div>
-                    <div class="flex flex-col">
-                        <div class="text-ed-red text-[11px] font-bold text-center mb-2 tracking-widest">WEP</div>
-                        <div class="flex justify-center gap-1 mb-3 min-h-[12px]" id="bar-wep"></div>
-                        <button onclick="komut('pip-wep')" class="btn-glass btn-red py-3 text-xl font-bold">+</button>
+                        <button onclick="komut('fg-next')"
+                            class="btn-glass px-5 h-12 text-lg font-bold text-gray-400 flex items-center justify-center"><i data-lucide="chevron-right" class="w-6 h-6"></i></button>
                     </div>
                 </div>
-                <button onclick="komut('pip-rst')"
-                    class="btn-glass w-full mt-4 py-3 text-xs font-bold tracking-[0.3em] text-gray-400">↩ RESET
-                    PIPS</button>
             </div>
+        </div>
 
-            <div class="grid grid-cols-4 gap-3 mb-5">
+        <!-- PAGE COMBAT UTILS -->
+        <div id="page-combat-utils" class="page h-full">
+            <div class="flex-1 grid grid-cols-3 grid-rows-3 gap-3 h-full">
+                <button onclick="document.getElementById('modal-targeting').style.display='flex'"
+                    class="btn-glass btn-red flex flex-col items-center justify-center gap-2">
+                    <i data-lucide="target" class="w-12 h-12"></i>
+                    <span class="text-sm font-bold tracking-widest">TARGETING</span>
+                </button>
+                <div id="ind-silent-utils" onclick="komut('silent-running')"
+                    class="btn-glass ind-off flex flex-col items-center justify-center gap-2 cursor-pointer transition-all">
+                    <i data-lucide="ghost" class="w-12 h-12"></i>
+                    <span class="text-sm font-bold tracking-widest">SILENT RUN</span>
+                </div>
+                <button onclick="document.getElementById('modal-fighters').style.display='flex'"
+                    class="btn-glass btn-orange flex flex-col items-center justify-center gap-2">
+                    <i data-lucide="rocket" class="w-12 h-12"></i>
+                    <span class="text-sm font-bold tracking-widest">FIGHTERS</span>
+                </button>
+
                 <button onclick="komut('heatsink')"
-                    class="btn-glass btn-blue p-3 flex flex-col items-center justify-center gap-1">
-                    <i data-lucide="snowflake" class="w-6 h-6"></i><span class="text-[10px] font-bold">HEATSINK</span>
+                    class="btn-glass btn-blue flex flex-col items-center justify-center gap-2">
+                    <i data-lucide="snowflake" class="w-12 h-12"></i>
+                    <span class="text-sm font-bold tracking-widest">HEATSINK</span>
                 </button>
                 <button onclick="komut('chaff')"
-                    class="btn-glass p-3 flex flex-col items-center justify-center gap-1 border-yellow-500/40 text-yellow-500 hover:bg-yellow-500/20">
-                    <i data-lucide="sparkles" class="w-6 h-6"></i><span class="text-[10px] font-bold">CHAFF</span>
+                    class="btn-glass border-yellow-500/40 text-yellow-500 flex flex-col items-center justify-center gap-2">
+                    <i data-lucide="sparkles" class="w-12 h-12"></i>
+                    <span class="text-sm font-bold tracking-widest">CHAFF</span>
                 </button>
                 <button onclick="komut('scb')"
-                    class="btn-glass p-3 flex flex-col items-center justify-center gap-1 border-teal-400/40 text-teal-400 hover:bg-teal-400/20">
-                    <i data-lucide="shield-plus" class="w-6 h-6"></i><span class="text-[10px] font-bold">SHIELD CELL</span>
+                    class="btn-glass border-teal-400/40 text-teal-400 flex flex-col items-center justify-center gap-2">
+                    <i data-lucide="shield-plus" class="w-12 h-12"></i>
+                    <span class="text-sm font-bold tracking-widest">SHIELD CELL</span>
                 </button>
-                <button onclick="document.getElementById('modal-fighters').style.display='flex'"
-                    class="btn-glass btn-orange p-3 flex flex-col items-center justify-center gap-1">
-                    <i data-lucide="rocket" class="w-6 h-6"></i><span class="text-[10px] font-bold">FIGHTERS</span>
-                </button>
-            </div>
 
-            <div class="glass-panel p-3 mt-auto">
-                <div class="flex items-center justify-between gap-3">
-                    <button onclick="komut('fg-prev')"
-                        class="btn-glass px-4 py-2 text-lg font-bold text-gray-400">&lt;</button>
-                    <div class="flex flex-1 justify-between" id="fg-strip">
-                        <div id="fg-0"
-                            class="btn-glass w-7 h-7 flex items-center justify-center text-xs rounded fg-off transition-all">
-                            A</div>
-                        <div id="fg-1"
-                            class="btn-glass w-7 h-7 flex items-center justify-center text-xs rounded fg-off transition-all">
-                            B</div>
-                        <div id="fg-2"
-                            class="btn-glass w-7 h-7 flex items-center justify-center text-xs rounded fg-off transition-all">
-                            C</div>
-                        <div id="fg-3"
-                            class="btn-glass w-7 h-7 flex items-center justify-center text-xs rounded fg-off transition-all">
-                            D</div>
-                        <div id="fg-4"
-                            class="btn-glass w-7 h-7 flex items-center justify-center text-xs rounded fg-off transition-all">
-                            E</div>
-                        <div id="fg-5"
-                            class="btn-glass w-7 h-7 flex items-center justify-center text-xs rounded fg-off transition-all">
-                            F</div>
-                        <div id="fg-6"
-                            class="btn-glass w-7 h-7 flex items-center justify-center text-xs rounded fg-off transition-all">
-                            G</div>
-                        <div id="fg-7"
-                            class="btn-glass w-7 h-7 flex items-center justify-center text-xs rounded fg-off transition-all">
-                            H</div>
-                    </div>
-                    <button onclick="komut('fg-next')"
-                        class="btn-glass px-4 py-2 text-lg font-bold text-gray-400">&gt;</button>
-                </div>
+                <div></div>
+                <button onclick="switchPage('combat')"
+                    class="btn-glass text-gray-500 flex flex-col items-center justify-center gap-2">
+                    <i data-lucide="undo-2" class="w-10 h-10"></i>
+                    <span class="text-xs font-bold uppercase tracking-widest">Back to Combat</span>
+                </button>
+                <div></div>
             </div>
         </div>
 
         <!-- PAGE NAV -->
         <div id="page-nav" class="page h-full">
             <div class="flex-1 grid grid-cols-3 grid-rows-3 gap-3 h-full">
-                <!-- ROW 1 -->
                 <div class="glass-panel relative flex flex-col p-1 overflow-hidden">
-                    <div
-                        class="absolute top-0 left-2 px-1 bg-ed-darker text-[9px] text-ed-orange font-bold tracking-widest z-10 uppercase">
-                        FSD</div>
+                    <div class="absolute top-0 left-2 px-1 bg-ed-darker text-[9px] text-ed-orange font-bold tracking-widest z-10 uppercase">FSD</div>
                     <div class="grid grid-cols-2 gap-1 h-full pt-2">
-                        <button onclick="komut('fsd-jump')"
-                            class="btn-glass btn-orange text-[10px] font-bold flex flex-col items-center justify-center gap-0.5">
-                            <i data-lucide="rocket" class="w-4 h-4"></i>HYP</button>
-                        <button onclick="komut('fsd-sc')"
-                            class="btn-glass btn-orange text-[10px] font-bold flex flex-col items-center justify-center gap-0.5">
-                            <i data-lucide="zap" class="w-4 h-4"></i>SUP</button>
-                        <button onclick="komut('fsd')"
-                            class="btn-glass col-span-2 text-[11px] font-bold tracking-wider flex items-center justify-center gap-1 text-gray-300">
-                            <i data-lucide="wind" class="w-5 h-5"></i>FSD</button>
+                        <button onclick="komut('fsd-jump')" class="btn-glass btn-orange text-[10px] font-bold flex flex-col items-center justify-center gap-0.5"><i data-lucide="rocket" class="w-4 h-4"></i>HYP</button>
+                        <button onclick="komut('fsd-sc')" class="btn-glass btn-orange text-[10px] font-bold flex flex-col items-center justify-center gap-0.5"><i data-lucide="zap" class="w-4 h-4"></i>SUP</button>
+                        <button onclick="komut('fsd')" class="btn-glass col-span-2 text-[11px] font-bold tracking-wider flex items-center justify-center gap-1 text-gray-300"><i data-lucide="wind" class="w-5 h-5"></i>FSD</button>
                     </div>
                 </div>
 
-                <button onclick="komut('panel-comms')"
-                    class="btn-glass btn-blue rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-blue/5">
+                <button onclick="komut('panel-comms')" class="btn-glass btn-blue rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-blue/5">
                     <i data-lucide="radio" class="w-10 h-10"></i><span class="text-sm font-bold tracking-widest">COMMS</span>
                 </button>
 
-                <button onclick="switchPage('mapping')"
-                    class="btn-glass btn-blue rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-blue/10 border-ed-blue/40">
+                <button onclick="switchPage('mapping')" class="btn-glass btn-blue rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-blue/10 border-ed-blue/40">
                     <i data-lucide="map" class="w-10 h-10"></i><span class="text-sm font-bold tracking-widest text-ed-cyan">MAPPING</span>
                 </button>
 
-                <!-- ROW 2 -->
-                <button onclick="komut('panel-external')"
-                    class="btn-glass btn-orange rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-orange/5">
+                <button onclick="komut('panel-external')" class="btn-glass btn-orange rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-orange/5">
                     <i data-lucide="satellite" class="w-10 h-10"></i><span class="text-sm font-bold tracking-widest">EXTERNAL</span>
                 </button>
 
-                <button onclick="switchPage('panels')"
-                    class="btn-glass btn-blue border-ed-blue/40 bg-ed-blue/10 flex flex-col items-center justify-center gap-2">
+                <button onclick="switchPage('panels')" class="btn-glass btn-blue border-ed-blue/40 bg-ed-blue/10 flex flex-col items-center justify-center gap-2">
                     <i data-lucide="gamepad-2" class="w-10 h-10 text-ed-cyan"></i><span class="text-sm font-bold tracking-widest text-ed-cyan uppercase">Panels</span>
                 </button>
 
-                <button onclick="komut('panel-internal')"
-                    class="btn-glass btn-orange rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-orange/5">
+                <button onclick="komut('panel-internal')" class="btn-glass btn-orange rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-orange/5">
                     <i data-lucide="monitor" class="w-10 h-10"></i><span class="text-sm font-bold tracking-widest">INTERNAL</span>
                 </button>
 
-                <!-- ROW 3 -->
                 <div class="glass-panel border-dashed border-white/5 bg-transparent"></div>
 
-                <button onclick="komut('panel-role')"
-                    class="btn-glass btn-blue rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-blue/5">
+                <button onclick="komut('panel-role')" class="btn-glass btn-blue rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-blue/5">
                     <i data-lucide="users" class="w-10 h-10"></i><span class="text-sm font-bold tracking-widest uppercase">Role Panel</span>
                 </button>
 
-                <button onclick="switchPage('aux')"
-                    class="btn-glass rounded-xl flex flex-col items-center justify-center text-gray-400 gap-2 bg-white/5">
+                <button onclick="switchPage('aux')" class="btn-glass rounded-xl flex flex-col items-center justify-center text-gray-400 gap-2 bg-white/5">
                     <i data-lucide="wrench" class="w-10 h-10"></i>
                     <span class="text-[11px] font-bold uppercase tracking-widest">AUX SYSTEMS</span>
                 </button>
@@ -551,28 +582,23 @@
         <div id="page-mapping" class="page h-full">
             <div class="flex-1 flex flex-col gap-3">
                 <div class="grid grid-cols-2 gap-3 h-1/3">
-                    <button onclick="komut('target-sub-prev')"
-                        class="btn-glass flex flex-col items-center justify-center font-bold text-lg text-ed-blue/80">
+                    <button onclick="komut('target-sub-prev')" class="btn-glass flex flex-col items-center justify-center font-bold text-lg text-ed-blue/80">
                         <i data-lucide="target" class="w-8 h-8 mb-1"></i>PREV SUB
                     </button>
-                    <button onclick="komut('target-sub-next')"
-                        class="btn-glass flex flex-col items-center justify-center font-bold text-lg text-ed-blue/80">
+                    <button onclick="komut('target-sub-next')" class="btn-glass flex flex-col items-center justify-center font-bold text-lg text-ed-blue/80">
                         <i data-lucide="target" class="w-8 h-8 mb-1"></i>NEXT SUB
                     </button>
                 </div>
                 <div class="grid grid-cols-2 gap-3 h-1/3">
-                    <button onclick="komut('system-map')"
-                        class="btn-glass btn-blue flex flex-col items-center justify-center font-bold text-lg">
+                    <button onclick="komut('system-map')" class="btn-glass btn-blue flex flex-col items-center justify-center font-bold text-lg">
                         <i data-lucide="orbit" class="w-10 h-10 mb-1"></i>SYSTEM MAP
                     </button>
-                    <button onclick="komut('galaxy-map')"
-                        class="btn-glass btn-blue flex flex-col items-center justify-center font-bold text-lg">
+                    <button onclick="komut('galaxy-map')" class="btn-glass btn-blue flex flex-col items-center justify-center font-bold text-lg">
                         <i data-lucide="milky-way" class="w-10 h-10 mb-1"></i>GALAXY MAP
                     </button>
                 </div>
                 <div class="grid grid-cols-1 gap-3 flex-1">
-                    <button onclick="komut('target-route')"
-                        class="btn-glass btn-orange flex items-center justify-center font-bold text-xl gap-4">
+                    <button onclick="komut('target-route')" class="btn-glass btn-orange flex items-center justify-center font-bold text-xl gap-4">
                         <i data-lucide="flag" class="w-10 h-10"></i>TARGET ROUTE
                     </button>
                 </div>
@@ -582,37 +608,24 @@
         <!-- PAGE PANELS -->
         <div id="page-panels" class="page h-full">
             <div class="flex-1 grid grid-cols-3 grid-rows-3 gap-3">
-                <!-- ROW 1 -->
-                <button onclick="komut('tab-prev')"
-                    class="btn-glass flex items-center justify-center"><i data-lucide="chevron-left" class="w-10 h-10"></i></button>
-                <button onclick="komut('menu-up')"
-                    class="btn-glass flex items-center justify-center"><i data-lucide="chevron-up" class="w-10 h-10"></i></button>
-                <button onclick="komut('tab-next')"
-                    class="btn-glass flex items-center justify-center"><i data-lucide="chevron-right" class="w-10 h-10"></i></button>
+                <button onclick="komut('tab-prev')" class="btn-glass flex items-center justify-center"><i data-lucide="chevron-left" class="w-10 h-10"></i></button>
+                <button onclick="komut('menu-up')" class="btn-glass flex items-center justify-center"><i data-lucide="chevron-up" class="w-10 h-10"></i></button>
+                <button onclick="komut('tab-next')" class="btn-glass flex items-center justify-center"><i data-lucide="chevron-right" class="w-10 h-10"></i></button>
 
-                <!-- ROW 2 -->
-                <button onclick="komut('menu-left')"
-                    class="btn-glass flex items-center justify-center"><i data-lucide="chevron-left" class="w-10 h-10"></i></button>
-                <button onclick="komut('menu-select')"
-                    class="btn-glass btn-orange text-2xl font-bold flex items-center justify-center bg-ed-orange/10">OK</button>
-                <button onclick="komut('menu-right')"
-                    class="btn-glass flex items-center justify-center"><i data-lucide="chevron-right" class="w-10 h-10"></i></button>
+                <button onclick="komut('menu-left')" class="btn-glass flex items-center justify-center"><i data-lucide="chevron-left" class="w-10 h-10"></i></button>
+                <button onclick="komut('menu-select')" class="btn-glass btn-orange text-2xl font-bold flex items-center justify-center bg-ed-orange/10">OK</button>
+                <button onclick="komut('menu-right')" class="btn-glass flex items-center justify-center"><i data-lucide="chevron-right" class="w-10 h-10"></i></button>
 
-                <!-- ROW 3 -->
                 <div class="grid grid-cols-2 gap-2">
-                    <button onclick="komut('menu-back')"
-                        class="btn-glass text-gray-400 font-bold flex flex-col items-center justify-center">
+                    <button onclick="komut('menu-back')" class="btn-glass text-gray-400 font-bold flex flex-col items-center justify-center">
                         <i data-lucide="undo-2" class="w-6 h-6 mb-1"></i><span class="text-[9px]">BACK</span>
                     </button>
                     <div class="grid grid-rows-2 gap-1">
-                        <button onclick="komut('ui-page-prev')"
-                            class="btn-glass text-gray-300 font-bold flex items-center justify-center text-lg"><i data-lucide="chevrons-up" class="w-5 h-5"></i></button>
-                        <button onclick="komut('ui-page-next')"
-                            class="btn-glass text-gray-300 font-bold flex items-center justify-center text-lg"><i data-lucide="chevrons-down" class="w-5 h-5"></i></button>
+                        <button onclick="komut('ui-page-prev')" class="btn-glass text-gray-300 font-bold flex items-center justify-center text-lg"><i data-lucide="chevrons-up" class="w-5 h-5"></i></button>
+                        <button onclick="komut('ui-page-next')" class="btn-glass text-gray-300 font-bold flex items-center justify-center text-lg"><i data-lucide="chevrons-down" class="w-5 h-5"></i></button>
                     </div>
                 </div>
-                <button onclick="komut('menu-down')"
-                    class="btn-glass flex items-center justify-center"><i data-lucide="chevron-down" class="w-10 h-10"></i></button>
+                <button onclick="komut('menu-down')" class="btn-glass flex items-center justify-center"><i data-lucide="chevron-down" class="w-10 h-10"></i></button>
                 <div></div>
             </div>
         </div>
@@ -620,51 +633,36 @@
         <!-- PAGE AUX -->
         <div id="page-aux" class="page h-full">
             <div class="flex flex-row gap-4 h-full">
-                <!-- Buttons Area (2/3 of width) -->
                 <div class="flex-[2] grid grid-cols-2 grid-rows-3 gap-3">
-                    <div id="ind-cargo" onclick="komut('cargo-scoop')"
-                        class="btn-glass ind-off flex flex-col items-center justify-center cursor-pointer transition-all">
+                    <div id="ind-cargo" onclick="komut('cargo-scoop')" class="btn-glass ind-off flex flex-col items-center justify-center cursor-pointer transition-all">
                         <i data-lucide="package" class="w-8 h-8 mb-1"></i><span class="text-[11px] font-bold uppercase">Cargo Scoop</span>
                     </div>
-                    <div id="ind-gear" onclick="komut('landing-gear')"
-                        class="btn-glass ind-off flex flex-col items-center justify-center cursor-pointer transition-all">
+                    <div id="ind-gear" onclick="komut('landing-gear')" class="btn-glass ind-off flex flex-col items-center justify-center cursor-pointer transition-all">
                         <i data-lucide="anchor" class="w-8 h-8 mb-1"></i><span class="text-[11px] font-bold uppercase">Landing Gear</span>
                     </div>
-                    <div id="ind-light" onclick="komut('lights')"
-                        class="btn-glass ind-off flex flex-col items-center justify-center cursor-pointer transition-all">
+                    <div id="ind-light" onclick="komut('lights')" class="btn-glass ind-off flex flex-col items-center justify-center cursor-pointer transition-all">
                         <i data-lucide="lightbulb" class="w-8 h-8 mb-1"></i><span class="text-[11px] font-bold uppercase">Lights</span>
                     </div>
-                    <div id="ind-nv" onclick="komut('night-vision')"
-                        class="btn-glass ind-off flex flex-col items-center justify-center cursor-pointer transition-all">
+                    <div id="ind-nv" onclick="komut('night-vision')" class="btn-glass ind-off flex flex-col items-center justify-center cursor-pointer transition-all">
                         <i data-lucide="eye" class="w-8 h-8 mb-1"></i><span class="text-[11px] font-bold uppercase">Night Vision</span>
                     </div>
-                    <button onclick="komut('rot-corr')"
-                        class="btn-glass flex flex-col items-center justify-center text-xs font-bold uppercase text-gray-300">
+                    <button onclick="komut('rot-corr')" class="btn-glass flex flex-col items-center justify-center text-xs font-bold uppercase text-gray-300">
                         <i data-lucide="refresh-cw" class="w-6 h-6 mb-1"></i>ROT CORR
                     </button>
-                    <button onclick="komut('orbit-lines')"
-                        class="btn-glass flex flex-col items-center justify-center text-xs font-bold uppercase text-gray-300">
+                    <button onclick="komut('orbit-lines')" class="btn-glass flex flex-col items-center justify-center text-xs font-bold uppercase text-gray-300">
                         <i data-lucide="circle" class="w-6 h-6 mb-1"></i>ORBIT LINES
                     </button>
                 </div>
 
-                <!-- Sensor Zoom Slider (1/3 of width) -->
                 <div class="flex-1 glass-panel flex flex-col p-2 border-ed-blue/30 h-full">
                     <div class="text-[10px] text-ed-blue font-bold text-center uppercase tracking-widest mb-2">SENSOR ZOOM</div>
-                    <div class="flex-1 relative bg-black/50 border border-ed-blue/20 rounded-lg overflow-hidden cursor-ns-resize touch-none"
-                        id="zoom-pad">
+                    <div class="flex-1 relative bg-black/50 border border-ed-blue/20 rounded-lg overflow-hidden cursor-ns-resize touch-none" id="zoom-pad">
                         <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
                             <div class="w-full h-[1px] bg-ed-blue"></div>
                         </div>
-                        <div id="zoom-handle"
-                            class="absolute left-1/2 w-14 h-4 bg-ed-blue rounded shadow-[0_0_15px_rgba(0,179,255,0.8)] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-                            style="top: 50%;"></div>
-                        <div
-                            class="absolute top-2 left-1/2 -translate-x-1/2 text-[9px] text-ed-blue font-bold opacity-50 uppercase">
-                            MAX</div>
-                        <div
-                            class="absolute bottom-2 left-1/2 -translate-x-1/2 text-[9px] text-ed-blue font-bold opacity-50 uppercase">
-                            MIN</div>
+                        <div id="zoom-handle" class="absolute left-1/2 w-14 h-4 bg-ed-blue rounded shadow-[0_0_15px_rgba(0,179,255,0.8)] -translate-x-1/2 -translate-y-1/2 pointer-events-none" style="top: 50%;"></div>
+                        <div class="absolute top-2 left-1/2 -translate-x-1/2 text-[9px] text-ed-blue font-bold opacity-50 uppercase">MAX</div>
+                        <div class="absolute bottom-2 left-1/2 -translate-x-1/2 text-[9px] text-ed-blue font-bold opacity-50 uppercase">MIN</div>
                     </div>
                 </div>
             </div>
@@ -673,60 +671,45 @@
         <!-- PAGE INFO -->
         <div id="page-info" class="page h-full">
             <div class="grid grid-cols-2 gap-3 mb-4">
-                <div
-                    class="glass-panel p-4 text-center border-ed-orange/40 bg-gradient-to-t from-ed-orange/10 to-transparent">
-                    <div class="text-gray-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-1">Balance</div>
-                    <div id="txt-cr" class="ed-text text-xl font-bold tracking-wider">- CR</div>
+                <div class="glass-panel p-3 border-ed-orange/20">
+                    <div class="text-ed-orange text-[9px] font-bold uppercase tracking-widest mb-2 opacity-60">Status</div>
+                    <div class="flex flex-col gap-2">
+                        <div id="ind-fuel" class="h-1 bg-ed-orange/20 rounded-full overflow-hidden">
+                            <div class="h-full bg-ed-orange" style="width: 75%"></div>
+                        </div>
+                        <div class="flex justify-between text-[10px] font-mono">
+                            <span>FUEL</span>
+                            <span class="text-ed-orange">75%</span>
+                        </div>
+                    </div>
                 </div>
-                <div
-                    class="glass-panel p-4 text-center border-ed-orange/40 bg-gradient-to-t from-ed-orange/10 to-transparent">
-                    <div class="text-gray-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-1">Cargo</div>
-                    <div id="txt-cargo" class="ed-text text-xl font-bold tracking-wider">- T</div>
+                <div class="glass-panel p-3 border-ed-cyan/20">
+                    <div class="text-ed-cyan text-[9px] font-bold uppercase tracking-widest mb-2 opacity-60">Location</div>
+                    <div class="text-[11px] font-mono leading-tight">
+                        <div class="text-ed-cyan">SOL</div>
+                        <div class="text-gray-400">DAEDALUS</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4 text-xs font-bold tracking-wider mb-6">
-                <div class="glass-panel p-3">
-                    <div class="text-white font-bold mb-3 border-b border-white/10 pb-1 tracking-widest">FLIGHT DATA
-                    </div>
-                    <div class="flex justify-between mb-2"><span class="text-gray-500">DEST:</span><span id="txt-dest"
-                            class="ed-text">-</span></div>
-                    <div class="flex justify-between mb-2"><span class="text-gray-500">BODY:</span><span id="txt-body"
-                            class="ed-text">-</span></div>
-                    <div class="flex justify-between mb-2"><span class="text-gray-500">FOCUS:</span><span id="txt-gui"
-                            class="ed-text">-</span></div>
-                    <div class="flex justify-between"><span class="text-gray-500">FUEL:</span><span id="txt-fuel-main"
-                            class="ed-text">-</span></div>
-                </div>
-                <div class="glass-panel p-3">
-                    <div class="text-white font-bold mb-3 border-b border-white/10 pb-1 tracking-widest">SURFACE (SFC)
-                    </div>
-                    <div class="flex justify-between mb-2"><span class="text-gray-500">LAT:</span><span id="txt-lat"
-                            class="ed-text">-</span></div>
-                    <div class="flex justify-between mb-2"><span class="text-gray-500">LON:</span><span id="txt-lon"
-                            class="ed-text">-</span></div>
-                    <div class="flex justify-between mb-2"><span class="text-gray-500">ALT:</span><span id="txt-alt"
-                            class="ed-text">-</span></div>
-                    <div class="flex justify-between"><span class="text-gray-500">HDG:</span><span id="txt-hdg"
-                            class="ed-text">-</span></div>
+            <div class="flex-1 glass-panel p-4 relative mb-4 border-white/5">
+                <div class="absolute top-0 right-0 p-2 opacity-10"><i data-lucide="database" class="w-16 h-16"></i></div>
+                <div class="text-gray-500 text-[10px] font-bold tracking-widest mb-4">LOG DATA</div>
+                <div id="log-container" class="space-y-2 text-[10px] font-mono overflow-y-auto max-h-[150px] pr-2">
+                    <div class="flex gap-2"><span class="text-ed-orange">[OK]</span> SYSTEM CHECK COMPLETE</div>
+                    <div class="flex gap-2"><span class="text-ed-cyan">[INFO]</span> DOCKED AT DAEDALUS</div>
+                    <div class="flex gap-2"><span class="text-ed-blue">[NAV]</span> ROUTE SET: SOL -> ALPHA CENTAURI</div>
                 </div>
             </div>
-
-            <div class="text-center text-3xl font-bold text-gray-500 tracking-[0.2em] mb-6 drop-shadow-md"
-                id="sys-clock">00:00:00 LOC</div>
 
             <div class="grid grid-cols-4 gap-2 mt-auto">
-                <button onclick="komut('discovery')"
-                    class="btn-glass btn-orange py-3 font-bold flex flex-col items-center justify-center gap-1">
+                <button onclick="komut('discovery')" class="btn-glass btn-orange py-3 font-bold flex flex-col items-center justify-center gap-1">
                     <i data-lucide="telescope" class="w-6 h-6"></i><span class="text-[9px]">DISCOVERY</span></button>
-                <button onclick="komut('fss')"
-                    class="btn-glass btn-orange py-3 font-bold flex flex-col items-center justify-center gap-1">
+                <button onclick="komut('fss')" class="btn-glass btn-orange py-3 font-bold flex flex-col items-center justify-center gap-1">
                     <i data-lucide="radio" class="w-6 h-6"></i><span class="text-[9px]">FSS</span></button>
-                <button onclick="komut('menu-social')"
-                    class="btn-glass btn-blue py-3 font-bold flex flex-col items-center justify-center gap-1">
+                <button onclick="komut('menu-social')" class="btn-glass btn-blue py-3 font-bold flex flex-col items-center justify-center gap-1">
                     <i data-lucide="users" class="w-6 h-6"></i><span class="text-[9px]">FRIENDS</span></button>
-                <button onclick="komut('menu-game')"
-                    class="btn-glass btn-red py-3 font-bold flex flex-col items-center justify-center gap-1">
+                <button onclick="komut('menu-game')" class="btn-glass btn-red py-3 font-bold flex flex-col items-center justify-center gap-1">
                     <i data-lucide="settings" class="w-6 h-6"></i><span class="text-[9px]">MENU</span></button>
             </div>
         </div>
@@ -734,101 +717,57 @@
         <!-- PAGE ENGINES -->
         <div id="page-engines" class="page h-full">
             <div class="flex flex-row h-full gap-3">
-                <!-- Left Throttle (1/6) -->
                 <div class="flex-1 flex flex-col gap-1.5 h-full">
-                    <button onclick="komut('speed-0')"
-                        class="btn-glass flex-1 btn-red bg-ed-red/10 font-bold text-sm">0%</button>
-                    <button onclick="komut('speed-rev-25')"
-                        class="btn-glass flex-1 text-[11px] font-bold text-gray-400">-25%</button>
-                    <button onclick="komut('speed-rev-50')"
-                        class="btn-glass flex-1 text-[11px] font-bold text-purple-400 border-purple-400/40">-50%</button>
-                    <button onclick="komut('speed-rev-75')"
-                        class="btn-glass flex-1 text-[11px] font-bold text-purple-300 border-purple-300/40">-75%</button>
-                    <button onclick="komut('speed-rev-100')"
-                        class="btn-glass flex-1 text-[11px] font-bold text-pink-400 border-pink-400/40">-100%</button>
-                    <button onclick="komut('throttle-dec')"
-                        class="btn-glass flex-1 text-[11px] font-bold text-gray-500 uppercase">TH -</button>
+                    <button onclick="komut('speed-0')" class="btn-glass flex-1 border-gray-500/30 text-gray-400 font-bold text-sm">0%</button>
+                    <button onclick="komut('speed-neg-25')" class="btn-glass flex-1 btn-orange bg-ed-orange/5 font-bold text-sm">-25%</button>
+                    <button onclick="komut('speed-neg-50')" class="btn-glass flex-1 btn-orange bg-ed-orange/5 font-bold text-sm">-50%</button>
+                    <button onclick="komut('speed-neg-75')" class="btn-glass flex-1 btn-orange bg-ed-orange/5 font-bold text-sm">-75%</button>
+                    <button onclick="komut('speed-neg-100')" class="btn-glass flex-1 btn-orange bg-ed-orange/5 font-bold text-sm">-100%</button>
+                    <button onclick="komut('speed-minus')" class="btn-glass flex-1 text-gray-500 font-bold text-sm">TH-</button>
                 </div>
 
-                <!-- Middle: Thrust Controls (4/6) -->
-                <div class="flex-[4] flex gap-4 glass-panel p-4 relative border-ed-blue/30 h-full">
-                    <div
-                        class="absolute -top-3 left-6 px-2 bg-ed-darker text-[12px] text-ed-blue font-bold tracking-widest uppercase">
-                        Precision Thrust Control</div>
-
-                    <div class="flex flex-col gap-3 w-28">
-                        <div id="v-pad"
-                            class="relative flex-1 bg-black/50 border-2 border-ed-blue/30 rounded-xl overflow-hidden cursor-ns-resize touch-none">
-                            <div
-                                class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
-                                <div class="w-full h-[1px] bg-ed-blue"></div>
+                <div class="flex-[4] flex flex-col gap-3">
+                    <div class="flex-1 flex flex-row gap-3">
+                        <div class="flex-1 glass-panel flex flex-col p-2 border-ed-blue/30">
+                            <div class="text-[10px] text-ed-blue font-bold text-center uppercase tracking-widest mb-1">V-THRUST</div>
+                            <div class="flex-1 relative bg-black/50 border border-ed-blue/20 rounded-lg overflow-hidden cursor-move touch-none" id="v-pad">
+                                <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
+                                    <div class="w-full h-[1px] bg-ed-blue"></div>
+                                </div>
+                                <div id="v-handle" class="absolute left-1/2 w-8 h-8 bg-ed-blue rounded-full shadow-[0_0_15px_rgba(0,179,255,0.8)] -translate-x-1/2 -translate-y-1/2 pointer-events-none" style="top: 50%;"></div>
                             </div>
-                            <div id="v-handle"
-                                class="absolute left-1/2 w-20 h-4 bg-ed-blue rounded-full shadow-[0_0_15px_rgba(0,179,255,0.8)] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-                                style="top: 50%;"></div>
-                            <div
-                                class="absolute top-2 left-1/2 -translate-x-1/2 text-[10px] text-ed-blue font-bold opacity-50 uppercase">
-                                UP</div>
-                            <div
-                                class="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] text-ed-blue font-bold opacity-50 uppercase">
-                                DOWN</div>
                         </div>
-                        <button onclick="resetVertical()"
-                            class="py-3 btn-glass btn-red text-[11px] font-bold uppercase">RESET V</button>
-                    </div>
-
-                    <div class="flex flex-col gap-3 flex-1">
-                        <div id="lf-pad"
-                            class="relative flex-1 bg-black/50 border-2 border-ed-blue/30 rounded-xl overflow-hidden cursor-crosshair touch-none">
-                            <div
-                                class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
-                                <div class="w-full h-[1px] bg-ed-blue"></div>
-                                <div class="h-full w-[1px] bg-ed-blue"></div>
+                        <div class="flex-1 glass-panel flex flex-col p-2 border-ed-orange/30">
+                            <div class="text-[10px] text-ed-orange font-bold text-center uppercase tracking-widest mb-1">LF-THRUST</div>
+                            <div class="flex-1 relative bg-black/50 border border-ed-orange/20 rounded-lg overflow-hidden cursor-move touch-none" id="lf-pad">
+                                <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
+                                    <div class="w-[1px] h-full bg-ed-orange"></div>
+                                    <div class="absolute w-full h-[1px] bg-ed-orange"></div>
+                                </div>
+                                <div id="lf-handle" class="absolute left-1/2 top-1/2 w-8 h-8 bg-ed-orange rounded-full shadow-[0_0_15px_rgba(255,113,0,0.8)] -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
                             </div>
-                            <div id="lf-handle"
-                                class="absolute w-10 h-10 bg-ed-blue rounded-full shadow-[0_0_15px_rgba(0,179,255,0.9)] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-                                style="left: 50%; top: 50%;"></div>
-                            <div
-                                class="absolute top-2 left-1/2 -translate-x-1/2 text-[10px] text-ed-blue font-bold opacity-50 uppercase">
-                                FWD</div>
-                            <div
-                                class="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] text-ed-blue font-bold opacity-50 uppercase">
-                                BCK</div>
-                            <div
-                                class="absolute top-1/2 left-2 -translate-y-1/2 text-[10px] text-ed-blue font-bold opacity-50 uppercase -rotate-90">
-                                LEFT</div>
-                            <div
-                                class="absolute top-1/2 right-2 -translate-y-1/2 text-[10px] text-ed-blue font-bold opacity-50 uppercase rotate-90">
-                                RIGHT</div>
                         </div>
                     </div>
+                    <button onclick="resetLateralForward()" class="btn-glass py-3 text-xs font-bold tracking-[0.2em] text-gray-400">RESET THRUSTERS</button>
                 </div>
 
-                <!-- Right Throttle (1/6) -->
                 <div class="flex-1 flex flex-col gap-1.5 h-full">
-                <button onclick="komut('boost')"
-                        class="btn-glass flex-1 btn-blue bg-ed-cyan/10 font-bold text-xs text-ed-cyan border-ed-cyan/40">
+                    <button onclick="komut('boost')" class="btn-glass flex-1 btn-blue bg-ed-cyan/10 font-bold text-xs text-ed-cyan border-ed-cyan/40">
                         <i data-lucide="rocket" class="w-5 h-5 mx-auto mb-1"></i>BOOST
-                </button>
-                    <button onclick="komut('speed-100')"
-                        class="btn-glass flex-1 btn-green bg-ed-green/10 font-bold text-sm">100%</button>
-                    <button onclick="komut('speed-75')"
-                        class="btn-glass flex-1 btn-orange bg-ed-orange/10 font-bold text-sm">75%</button>
-                    <button onclick="komut('speed-50')"
-                        class="btn-glass flex-1 btn-blue bg-ed-blue/10 font-bold text-sm">50%</button>
-                    <button onclick="komut('speed-25')"
-                        class="btn-glass flex-1 text-gray-300 font-bold text-sm">25%</button>
-                    <button onclick="komut('throttle-inc')"
-                        class="btn-glass flex-1 text-[11px] font-bold text-gray-500 uppercase">TH +</button>
+                    </button>
+                    <button onclick="komut('speed-100')" class="btn-glass flex-1 btn-green bg-ed-green/10 font-bold text-sm">100%</button>
+                    <button onclick="komut('speed-75')" class="btn-glass flex-1 btn-green bg-ed-green/10 font-bold text-sm">75%</button>
+                    <button onclick="komut('speed-50')" class="btn-glass flex-1 btn-green bg-ed-green/10 font-bold text-sm">50%</button>
+                    <button onclick="komut('speed-25')" class="btn-glass flex-1 btn-green bg-ed-green/10 font-bold text-sm">25%</button>
+                    <button onclick="komut('speed-plus')" class="btn-glass flex-1 text-gray-500 font-bold text-sm">TH+</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- TAB BAR -->
-    <div
-        class="fixed bottom-0 left-0 right-0 glass-panel rounded-none border-x-0 border-b-0 border-t border-white/10 grid grid-cols-4 text-center z-50 bg-ed-dark/95">
-                <button onclick="switchPage('combat')" id="tab-combat" class="tab-btn active py-4">
+    <div class="fixed bottom-0 left-0 right-0 glass-panel rounded-none border-x-0 border-b-0 border-t border-white/10 grid grid-cols-4 text-center z-50 bg-ed-dark/95">
+        <button onclick="switchPage('combat')" id="tab-combat" class="tab-btn active py-4">
             <div class="tab-icon flex justify-center mb-1"><i data-lucide="swords" class="w-6 h-6"></i></div>
             <div class="text-[11px] font-bold tracking-widest">COMBAT</div>
         </button>
@@ -847,35 +786,102 @@
     </div>
 
     <script>
-        let lateral = 0, vertical = 0, forward = 0;
+        function komut(c) {
+            fetch('/komut/' + c).then(r => r.json()).then(d => {
+                if (d.status === 'ok') {
+                    const btn = event.currentTarget;
+                    if (btn && btn.classList.contains('btn-glass')) {
+                        btn.classList.add('scale-95', 'opacity-70');
+                        setTimeout(() => btn.classList.remove('scale-95', 'opacity-70'), 100);
+                    }
+                }
+            });
+        }
+
+        function switchPage(p) {
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+            document.getElementById('page-' + p).classList.add('active');
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.add('text-gray-500'));
+            const tabId = 'tab-' + p.split('-')[0];
+            const tab = document.getElementById(tabId);
+            if (tab) {
+                document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+                tab.classList.add('active');
+                tab.classList.remove('text-gray-500');
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function setInd(id, val, isSafe = false) {
+            const ids = [id, id + '-utils'];
+            ids.forEach(currentId => {
+                const el = document.getElementById(currentId);
+                if (el) {
+                    el.classList.remove('ind-on', 'ind-off', 'ind-safe');
+                    if (val) {
+                        el.classList.add(isSafe ? 'ind-safe' : 'ind-on');
+                    } else {
+                        el.classList.add('ind-off');
+                    }
+                }
+            });
+        }
+
+        function guncelle() {
+            fetch('/status').then(r => r.json()).then(d => {
+                const f = d.Flags;
+                setInd('ind-hardp', f & 64);
+                setInd('ind-silent', f & 1024);
+                setInd('ind-cargo', f & 4);
+                setInd('ind-gear', f & 16, true);
+                setInd('ind-light', f & 256);
+                setInd('ind-nv', d.Flags2 & 1);
+                
+                const fg = d.FireGroup || 0;
+                document.querySelectorAll('#fg-strip > div').forEach((el, i) => {
+                    el.classList.remove('fg-on', 'fg-off');
+                    el.classList.add(i === fg ? 'fg-on' : 'fg-off');
+                });
+
+                // Update PIPs
+                if (d.Pips) {
+                    const updatePips = (id, count, colorClass) => {
+                        const container = document.getElementById(id);
+                        if (!container) return;
+                        const segments = container.children;
+                        for (let i = 0; i < segments.length; i++) {
+                            segments[i].className = 'flex-1 rounded-sm transition-all ' + (i < count ? colorClass : colorClass + '/10');
+                        }
+                    };
+                    updatePips('pips-sys', d.Pips[0], 'bg-ed-blue');
+                    updatePips('pips-eng', d.Pips[1], 'bg-ed-orange');
+                    updatePips('pips-wep', d.Pips[2], 'bg-ed-red');
+                }
+            });
+        }
+
+        setInterval(guncelle, 1000);
+
+        function updatePad(handleId, x, y, is2D) {
+            const handle = document.getElementById(handleId);
+            if (is2D) {
+                handle.style.left = (50 + x * 40) + '%';
+                handle.style.top = (50 - y * 40) + '%';
+            } else {
+                handle.style.top = (50 - y * 40) + '%';
+            }
+        }
 
         function updateVertical(y) {
-            vertical = Math.max(-100, Math.min(100, y));
-            const handle = document.getElementById('v-handle');
-            if (handle) handle.style.top = ((100 - vertical) / 2) + '%';
-            fetch('/axis/vthrust/' + Math.round(vertical));
+            komut('thrust-v-' + y);
+            updatePad('v-handle', 0, y, false);
         }
 
         function updateLateralForward(x, y) {
-            lateral = Math.max(-100, Math.min(100, x));
-            forward = Math.max(-100, Math.min(100, y));
-            const handle = document.getElementById('lf-handle');
-            if (handle) {
-                handle.style.left = ((lateral + 100) / 2) + '%';
-                handle.style.top = ((100 - forward) / 2) + '%';
-            }
-            fetch('/axis/lthrust/' + Math.round(lateral));
-            fetch('/axis/fthrust/' + Math.round(forward));
+            komut('thrust-lf-' + x + '-' + y);
+            updatePad('lf-handle', x, y, true);
         }
 
-        function updateZoom(y) {
-            let val = Math.max(-100, Math.min(100, y));
-            const handle = document.getElementById('zoom-handle');
-            if (handle) handle.style.top = ((100 - val) / 2) + '%';
-            fetch('/axis/sensorzoom/' + Math.round(val));
-        }
-
-        function resetVertical() { updateVertical(0); }
         function resetLateralForward() { updateLateralForward(0, 0); }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -889,138 +895,38 @@
             const lfPad = document.getElementById('lf-pad');
             const setupPad = (el, updateFn, is2D, autoCenter, resetFn) => {
                 if (!el) return;
-                let isDragging = false;
-                const move = (e) => {
-                    if (!isDragging) return;
+                const handleMove = (e) => {
                     const rect = el.getBoundingClientRect();
                     const touch = e.touches ? e.touches[0] : e;
-                    let x = ((touch.clientX - rect.left) / rect.width) * 200 - 100;
-                    let y = 100 - ((touch.clientY - rect.top) / rect.height) * 200;
-                    if (is2D) updateFn(x, y); else updateFn(y);
+                    let x = (touch.clientX - rect.left) / rect.width * 2 - 1;
+                    let y = -((touch.clientY - rect.top) / rect.height * 2 - 1);
+                    x = Math.max(-1, Math.min(1, x));
+                    y = Math.max(-1, Math.min(1, y));
+                    updateFn(is2D ? x : 0, y);
                 };
-                el.addEventListener('mousedown', (e) => { isDragging = true; move(e); });
-                window.addEventListener('mousemove', move);
-                window.addEventListener('mouseup', () => { if (isDragging && autoCenter) resetFn(); isDragging = false; });
-                el.addEventListener('touchstart', (e) => { isDragging = true; move(e); }, { passive: false });
-                window.addEventListener('touchmove', (e) => { if (isDragging) { move(e); e.preventDefault(); } }, { passive: false });
-                window.addEventListener('touchend', () => { if (isDragging && autoCenter) resetFn(); isDragging = false; });
+                el.addEventListener('touchstart', handleMove);
+                el.addEventListener('touchmove', handleMove);
+                if (autoCenter) {
+                    el.addEventListener('touchend', resetFn);
+                }
             };
-
-            setupPad(vPad, updateVertical, false, false);
+            setupPad(vPad, (x, y) => updateVertical(y), false, true, () => updateVertical(0));
             setupPad(lfPad, updateLateralForward, true, true, resetLateralForward);
-            setupPad(document.getElementById('zoom-pad'), updateZoom, false, false);
+
+            const zoomPad = document.getElementById('zoom-pad');
+            if (zoomPad) {
+                const handleZoom = (e) => {
+                    const rect = zoomPad.getBoundingClientRect();
+                    const touch = e.touches ? e.touches[0] : e;
+                    let val = (touch.clientY - rect.top) / rect.height;
+                    val = Math.max(0, Math.min(1, val));
+                    document.getElementById('zoom-handle').style.top = (val * 100) + '%';
+                    komut('sensor-zoom-' + Math.round((1 - val) * 10));
+                };
+                zoomPad.addEventListener('touchstart', handleZoom);
+                zoomPad.addEventListener('touchmove', handleZoom);
+            }
         });
-
-        const guiFocusMap = { 0: "COCKPIT", 1: "LEFT PANEL", 2: "RIGHT PANEL", 3: "COMMS", 4: "ROLE PANEL", 5: "STATION", 6: "GALAXY MAP", 7: "SYSTEM MAP", 8: "ORION", 9: "FSS", 10: "SAA", 11: "CODEX" };
-
-        function switchPage(name) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(t => { t.classList.remove('active'); t.classList.add('text-gray-500'); });
-
-            const page = document.getElementById('page-' + name);
-            if (page) page.classList.add('active');
-
-            const tab = document.getElementById('tab-' + name);
-            if (tab) {
-                tab.classList.add('active');
-                tab.classList.remove('text-gray-500');
-            }
-            if (navigator.vibrate) navigator.vibrate(20);
-        }
-
-        function updateClock() {
-            const el = document.getElementById('sys-clock');
-            if (el) el.innerText = new Date().toLocaleTimeString('en-GB', { hour12: false }) + " LOC";
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        function komut(id) {
-            fetch('/action/' + id);
-            if (navigator.vibrate) navigator.vibrate(40);
-        }
-
-        function setInd(id, is_active, safe_mode = false) {
-            const el = document.getElementById(id);
-            if (!el) return;
-            el.className = el.className.replace(/ind-off|ind-on|ind-safe/g, '').trim() + ' ' + (is_active ? (safe_mode ? 'ind-safe' : 'ind-on') : 'ind-off');
-        }
-
-        function cizPips(pipsArray) {
-            const renkler = ['bg-ed-blue', 'bg-ed-green', 'bg-ed-red'];
-            const shadow = ['shadow-[0_0_10px_#00b3ff]', 'shadow-[0_0_10px_#00ff44]', 'shadow-[0_0_10px_#ff2a2a]'];
-            const idler = ['bar-sys', 'bar-eng', 'bar-wep'];
-
-            for (let i = 0; i < 3; i++) {
-                let html = '';
-                let tamKutu = Math.floor(pipsArray[i] / 2);
-                let yarimKutu = pipsArray[i] % 2 !== 0;
-
-                for (let j = 0; j < 4; j++) {
-                    if (j < tamKutu) html += `<div class="w-4 h-2.5 ${renkler[i]} ${shadow[i]} rounded-[2px]"></div>`;
-                    else if (j === tamKutu && yarimKutu) html += `<div class="w-4 h-2.5 bg-gray-800 rounded-[2px] relative overflow-hidden"><div class="absolute left-0 top-0 h-full w-1/2 ${renkler[i]} ${shadow[i]}"></div></div>`;
-                    else html += `<div class="w-4 h-2.5 bg-gray-800 rounded-[2px] shadow-inner border border-gray-700"></div>`;
-                }
-                document.getElementById(idler[i]).innerHTML = html;
-            }
-        }
-
-        function guncelle() {
-            fetch('/status').then(r => r.json()).then(d => {
-                if (d.hata) return;
-
-                if (d.Flags !== undefined) {
-                    const f = d.Flags;
-                    setInd('ind-shield', f & 8, true);
-                    setInd('ind-hardp', f & 64, false);
-                    setInd('ind-gear', f & 4, false);
-                    setInd('ind-cargo', f & 512, false);
-                    setInd('ind-light', f & 256, true);
-                    setInd('ind-nv', f & 8192, true);
-                    setInd('ind-silent', f & 1024, false);
-                }
-
-                if (d.Pips) cizPips(d.Pips);
-
-                if (d.Fuel) {
-                    const el = document.getElementById('txt-fuel-main');
-                    if (el) el.innerText = d.Fuel.FuelMain.toFixed(1) + ' T';
-                }
-
-                if (d.FireGroup !== undefined) {
-                    for (let i = 0; i < 8; i++) {
-                        let fgEl = document.getElementById('fg-' + i);
-                        if (fgEl) fgEl.className = `btn-glass w-7 h-7 flex items-center justify-center text-xs rounded transition-all ${d.FireGroup === i ? 'fg-on' : 'fg-off'}`;
-                    }
-                }
-
-                if (d.Balance !== undefined) {
-                    const el = document.getElementById('txt-cr');
-                    if (el) el.innerText = d.Balance.toLocaleString() + ' CR';
-                }
-                if (d.Cargo !== undefined) {
-                    const el = document.getElementById('txt-cargo');
-                    if (el) el.innerText = d.Cargo + ' T';
-                }
-
-                if (document.getElementById('txt-dest')) document.getElementById('txt-dest').innerText = d.Destination ? d.Destination.Name : 'NONE';
-                if (document.getElementById('txt-body')) document.getElementById('txt-body').innerText = d.BodyName || 'NONE';
-                if (document.getElementById('txt-gui')) document.getElementById('txt-gui').innerText = d.GuiFocus !== undefined ? (guiFocusMap[d.GuiFocus] || d.GuiFocus) : 'NONE';
-
-                if (d.Latitude !== undefined) {
-                    if (document.getElementById('txt-lat')) document.getElementById('txt-lat').innerText = d.Latitude.toFixed(4);
-                    if (document.getElementById('txt-lon')) document.getElementById('txt-lon').innerText = d.Longitude.toFixed(4);
-                    if (document.getElementById('txt-alt')) document.getElementById('txt-alt').innerText = Math.round(d.Altitude).toLocaleString();
-                    if (document.getElementById('txt-hdg')) document.getElementById('txt-hdg').innerText = Math.round(d.Heading) + '°';
-                } else {
-                    ['txt-lat', 'txt-lon', 'txt-alt', 'txt-hdg'].forEach(id => {
-                        if (document.getElementById(id)) document.getElementById(id).innerText = '-';
-                    });
-                }
-            }).catch(e => console.log('Status update error', e));
-        }
-        setInterval(guncelle, 1000);
-        guncelle();
     </script>
 </body>
 
