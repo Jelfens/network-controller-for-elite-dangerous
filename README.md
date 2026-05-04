@@ -12,7 +12,7 @@ A lightweight Python-based local network controller designed specifically for **
 | :---: | :---: |
 | ![Engines](screenshots/engines.png) | ![Info](screenshots/info.png) |
 
-| Utilities | External Panels |
+| Utilities | Navigation Buttons |
 | :---: | :---: |
 | ![Utils](screenshots/utils.png) | ![Panels](screenshots/panels.png) |
 
@@ -62,23 +62,8 @@ A lightweight Python-based local network controller designed specifically for **
 ### ⚠️ Important for Controls
 
 - **Focus:** Elite Dangerous must be the active/focused window for keyboard commands to work.
-- **vJoy:** If using vJoy, ensure Device 1 is available and configured.
+- **vJoy:** Make sure Device 1 is available and configured.
 
-## ⌨️ Default Keybindings
-
-Ensure your in-game settings match these keys (or edit the `KOMUTLAR` dictionary in the script):
-
-| Action | Key | Action | Key |
-| :--- | :--- | :--- | :--- |
-| Hardpoints | `U` | Heatsink | `V` |
-| Landing Gear | `L` | Chaff | `C` |
-| Cargo Scoop | `Home` | Shield Cell | `B` |
-| Lights | `Insert` | Galaxy Map | `M` |
-| Night Vision | `N` | System Map | `O` |
-| Silent Running | `Delete` | FSS Mode | `'` |
-| FSD / SC | `J` | HUD Mode | `\` |
-| PIPS Control | `Arrows` | Fire Groups | `[` and `]` |
-| Menu | `ESC` | | |
 
 ## ⚠️ Important Notes
 
