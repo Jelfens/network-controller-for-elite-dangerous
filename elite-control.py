@@ -2,23 +2,18 @@ from flask import Flask, jsonify, render_template, request as flask_request
 import json
 import os
 import sys
-import platform
-import subprocess
-import urllib.request
-import urllib.error
 
-# vJoy initialization (Windows only)
+# vJoy initialization
 has_gamepad = False
 gamepad = None
-if sys.platform == 'win32':
-    try:
-        import pyvjoy
-    except ImportError:
-        pyvjoy = None
+try:
+    import pyvjoy
+except ImportError:
+    pyvjoy = None
 
 def initialize_vjoy(debug=True):
     global has_gamepad, gamepad
-    if sys.platform != 'win32' or pyvjoy is None:
+    if pyvjoy is None:
         return
     
     if debug and os.environ.get('WERKZEUG_RUN_MAIN') != 'true':
@@ -49,22 +44,13 @@ def vjoy_button_press(button_id):
     except:
         pass
 
-# Platform-specific input handling
-if sys.platform == 'linux':
-    def press_key(key):
-        """Send keypress on Linux using xdotool"""
-        try:
-            subprocess.run(['xdotool', 'key', key], check=False)
-        except FileNotFoundError:
-            print("Error: xdotool not found.")
-else:
-    import pydirectinput
-    def press_key(key):
-        """Send keypress on Windows using pydirectinput"""
-        try:
-            pydirectinput.press(key)
-        except:
-            pass
+import pydirectinput
+def press_key(key):
+    """Send keypress on Windows using pydirectinput"""
+    try:
+        pydirectinput.press(key)
+    except:
+        pass
 
 app = Flask(__name__)
 
@@ -212,15 +198,9 @@ def get_latest_journal_info(path_dir):
 
 @app.route('/status')
 def get_status():
-    if sys.platform == 'linux':
-        possible_paths = [
-            os.path.expanduser("~/.steam/root/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous/"),
-            os.path.expanduser("~/.steamapps/compatdata/626690/pfx/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous/"),
-        ]
-    else:
-        possible_paths = [
-            os.path.expanduser(r"~\Saved Games\Frontier Developments\Elite Dangerous\\"),
-        ]
+    possible_paths = [
+        os.path.expanduser(r"~\Saved Games\Frontier Developments\Elite Dangerous\\"),
+    ]
     
     for path in possible_paths:
         if os.path.exists(path):

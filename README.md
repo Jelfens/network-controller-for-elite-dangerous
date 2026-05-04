@@ -14,65 +14,28 @@ A lightweight Python-based local network controller designed specifically for **
     * Cargo Capacity
     * Navigation Data (Destination, Body Focus, GUI Focus)
     * Planetary Surface Data (Latitude, Longitude, Altitude, Heading)
-* **Direct Control:** Send keystrokes to your PC directly from the web interface.
-* **Elite Dangerous Theme:** A custom dark and orange UI (`Tailwind CSS`) matching the in-game HUD.
-* **System Clock:** Integrated local time display for long sessions.
+* **Direct Control:** Send keystrokes and vJoy inputs to your PC directly from the web interface.
+* **Elite Dangerous Theme:** A custom dark and orange UI matching the in-game HUD.
+* **System Clock:** Integrated local time display.
 
 ## 🛠️ Requirements
 
-* **OS:** Windows or Linux (macOS not tested).
-* **Python:** 3.6 or higher.
+* **OS:** Windows 10/11.
+* **Python:** 3.8 or higher.
 * **Game:** Elite Dangerous (Odyssey or Horizons).
-* **For Linux:** `xdotool` for keyboard control.
+* **vJoy (Optional):** Required if you want to use axis controls (e.g., thrusters).
 
 ## 📦 Installation
 
-### Windows
-
-1.  **Install dependencies:**
+1.  **Clone or download** this repository.
+2.  **Install dependencies:**
     ```bash
-    pip install -r requirements.txt
-    ```
-
-### Linux
-
-1.  **Run the automated setup:**
-    ```bash
-    chmod +x setup-linux.sh
-    ./setup-linux.sh
-    ```
-
-    **Or manually:**
-    ```bash
-    # Install system dependencies
-    sudo apt update
-    sudo apt install xdotool python3-venv
-
-    # Create and activate virtual environment
-    python3 -m venv .venv
-    source .venv/bin/activate
-
-    # Install Python dependencies
     pip install -r requirements.txt
     ```
 
 ## 🎮 How to Use
 
-### Windows
-
 1.  **Run the script:**
-    ```bash
-    python elite-control.py
-    ```
-
-### Linux
-
-1.  **Activate virtual environment:**
-    ```bash
-    source .venv/bin/activate
-    ```
-
-2.  **Run the script:**
     ```bash
     python elite-control.py
     ```
@@ -82,10 +45,10 @@ A lightweight Python-based local network controller designed specifically for **
 * **Local:** Go to `http://localhost:5000`.
 * **Mobile/Remote:** Find your PC's local IP (e.g., `192.168.1.X`) and enter `http://192.168.1.X:5000`.
 
-### ⚠️ Important for Keyboard Control
+### ⚠️ Important for Controls
 
-- **Windows:** Elite Dangerous must be the active/focused window.
-- **Linux:** The game window must be active. For Proton/Steam games, ensure the game is running in focus.
+- **Focus:** Elite Dangerous must be the active/focused window for keyboard commands to work.
+- **vJoy:** If using vJoy, ensure Device 1 is available and configured.
 
 ## ⌨️ Default Keybindings
 
@@ -105,31 +68,9 @@ Ensure your in-game settings match these keys (or edit the `KOMUTLAR` dictionary
 
 ## ⚠️ Important Notes
 
-* **Status.json Location:**
-  - **Windows:** `~\Saved Games\Frontier Developments\Elite Dangerous\Status.json`
-  - **Linux (Proton/Steam):** `~/.steam/root/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous/Status.json`
-  - **Linux (Wine):** Check your Wine prefix location
-  
-  The script automatically searches for the file in common locations.
-
+* **Status.json Location:** The script automatically searches in `~\Saved Games\Frontier Developments\Elite Dangerous\`.
 * **Network:** Both your PC and mobile device must be on the same local network (Wi-Fi).
 * **Safety:** This is a development server for personal local use. Do not expose port 5000 to the public internet.
-* **Linux users:** Make sure `xdotool` is installed for keyboard control to work.
-
-## 🐧 Linux Troubleshooting
-
-### xdotool not sending keys
-
-If keyboard controls aren't working on Linux:
-1. Make sure the game window is focused/active
-2. Verify xdotool is installed: `which xdotool`
-3. Test xdotool manually: `xdotool key u` (should send 'u' key)
-
-### Status.json not found
-
-The script checks multiple common paths. If it still can't find your file:
-1. Find your Status.json: `find ~ -name "Status.json" 2>/dev/null`
-2. Update the `possible_paths` list in the script with your actual path
 
 ---
 *Fly Dangerously, Commander! o7*

@@ -5,10 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Elite Control Interface</title>
-    <link rel="manifest" href="/static/manifest.json">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <script src="https://cdn.tailwindcss.com"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap"
@@ -166,17 +162,9 @@
             display: none;
             opacity: 0;
             transition: opacity 0.3s ease;
-            flex: 1;
-            min-height: 100%;
-            overflow-y: auto;
+            height: 100%;
             flex-direction: column;
             animation: fadeIn 0.3s forwards;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        
-        .page::-webkit-scrollbar {
-            display: none;
         }
 
         .page.active {
@@ -209,15 +197,15 @@
             position: absolute;
             top: 0;
             left: 0;
-            bottom: 0;
-            width: 2px;
+            right: 0;
+            height: 2px;
             background: transparent;
             transition: all 0.3s;
         }
 
         .tab-btn.active {
             color: #ff7100;
-            background: linear-gradient(90deg, rgba(255, 113, 0, 0.05) 0%, transparent 100%);
+            background: linear-gradient(0deg, rgba(255, 113, 0, 0.05) 0%, transparent 100%);
         }
 
         .tab-btn.active::before {
@@ -265,17 +253,10 @@
     </style>
 </head>
 
-<body class="font-sans flex flex-row h-screen overflow-hidden text-lg bg-ed-darker select-none"
+<body class="font-sans flex flex-col h-screen overflow-hidden text-lg bg-ed-darker select-none"
     style="background: radial-gradient(circle at center, #1a0d00 0%, #050608 100%);">
 
-    <!-- FULLSCREEN POPUP -->
-    <div id="fullscreen-popup" class="fixed inset-0 bg-ed-darker/95 z-[9999] flex flex-col items-center justify-center backdrop-blur-md cursor-pointer transition-opacity" onclick="goFullscreen(); this.style.display='none'">
-        <i data-lucide="maximize" class="w-16 h-16 text-ed-orange mb-6 opacity-80 animate-pulse"></i>
-        <div class="text-ed-orange font-bold tracking-[0.3em] text-2xl mb-2 text-center">ELITE CONTROL</div>
-        <div class="text-gray-400 tracking-widest text-sm text-center">TAP ANYWHERE TO INITIALIZE</div>
-    </div>
-
-    <div class="flex-1 flex flex-col overflow-y-auto no-scrollbar p-3 relative">
+    <div class="flex-1 flex flex-col overflow-y-auto no-scrollbar p-3 pb-24 relative">
         <div class="scan-line"></div>
 
         <!-- TARGETING MODAL -->
@@ -439,7 +420,10 @@
                 </div>
 
                 <div class="h-3/5 glass-panel p-4 flex items-center justify-center relative border-ed-blue/20">
-                    <div class="grid grid-cols-4 gap-2 w-full h-full">
+                    <div
+                        class="absolute top-2 left-4 text-[12px] text-ed-blue font-bold tracking-[0.3em] uppercase opacity-50">
+                        Power Management</div>
+                    <div class="grid grid-cols-4 gap-2 w-full h-full pt-6">
                         <button onclick="komut('pip-sys')"
                             class="btn-glass btn-blue flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform px-1">
                             <i data-lucide="shield" class="w-8 h-8 opacity-70"></i>
@@ -500,27 +484,42 @@
                 </div>
 
                 <div class="h-1/5 glass-panel flex flex-col p-2 justify-center border-ed-orange/30">
-                    <div class="flex items-center gap-4 px-1">
+                    <div class="text-[13px] text-ed-orange font-bold tracking-widest uppercase mb-1 ml-2 opacity-60">
+                        Firegroup Selector</div>
+                    <div class="flex items-center gap-2 px-2">
                         <button onclick="komut('fg-prev')"
-                            class="btn-glass px-6 h-16 text-gray-400 flex items-center justify-center shrink-0 border-white/5 active:bg-ed-orange/20">
-                            <i data-lucide="chevron-left" class="w-8 h-8"></i>
-                        </button>
-                        
-                        <div class="flex-1 flex gap-1 h-10" id="fg-strip">
-                            <div class="flex-1 rounded-sm border border-white/5 transition-all fg-off flex items-center justify-center text-[10px] font-bold">A</div>
-                            <div class="flex-1 rounded-sm border border-white/5 transition-all fg-off flex items-center justify-center text-[10px] font-bold">B</div>
-                            <div class="flex-1 rounded-sm border border-white/5 transition-all fg-off flex items-center justify-center text-[10px] font-bold">C</div>
-                            <div class="flex-1 rounded-sm border border-white/5 transition-all fg-off flex items-center justify-center text-[10px] font-bold">D</div>
-                            <div class="flex-1 rounded-sm border border-white/5 transition-all fg-off flex items-center justify-center text-[10px] font-bold">E</div>
-                            <div class="flex-1 rounded-sm border border-white/5 transition-all fg-off flex items-center justify-center text-[10px] font-bold">F</div>
-                            <div class="flex-1 rounded-sm border border-white/5 transition-all fg-off flex items-center justify-center text-[10px] font-bold">G</div>
-                            <div class="flex-1 rounded-sm border border-white/5 transition-all fg-off flex items-center justify-center text-[10px] font-bold">H</div>
+                            class="btn-glass px-5 h-12 text-lg font-bold text-gray-400 flex items-center justify-center"><i
+                                data-lucide="chevron-left" class="w-6 h-6"></i></button>
+                        <div class="flex-1 flex justify-around items-center bg-black/40 rounded-lg h-12 px-4 border border-white/5"
+                            id="fg-strip">
+                            <div id="fg-0"
+                                class="btn-glass w-8 h-8 flex items-center justify-center text-lg rounded fg-off transition-all">
+                                A</div>
+                            <div id="fg-1"
+                                class="btn-glass w-8 h-8 flex items-center justify-center text-lg rounded fg-off transition-all">
+                                B</div>
+                            <div id="fg-2"
+                                class="btn-glass w-8 h-8 flex items-center justify-center text-lg rounded fg-off transition-all">
+                                C</div>
+                            <div id="fg-3"
+                                class="btn-glass w-8 h-8 flex items-center justify-center text-lg rounded fg-off transition-all">
+                                D</div>
+                            <div id="fg-4"
+                                class="btn-glass w-8 h-8 flex items-center justify-center text-lg rounded fg-off transition-all">
+                                E</div>
+                            <div id="fg-5"
+                                class="btn-glass w-8 h-8 flex items-center justify-center text-lg rounded fg-off transition-all">
+                                F</div>
+                            <div id="fg-6"
+                                class="btn-glass w-8 h-8 flex items-center justify-center text-lg rounded fg-off transition-all">
+                                G</div>
+                            <div id="fg-7"
+                                class="btn-glass w-8 h-8 flex items-center justify-center text-lg rounded fg-off transition-all">
+                                H</div>
                         </div>
-
                         <button onclick="komut('fg-next')"
-                            class="btn-glass px-6 h-16 text-gray-400 flex items-center justify-center shrink-0 border-white/5 active:bg-ed-orange/20">
-                            <i data-lucide="chevron-right" class="w-8 h-8"></i>
-                        </button>
+                            class="btn-glass px-5 h-12 text-lg font-bold text-gray-400 flex items-center justify-center"><i
+                                data-lucide="chevron-right" class="w-6 h-6"></i></button>
                     </div>
                 </div>
             </div>
@@ -573,11 +572,13 @@
 
         <!-- PAGE NAV -->
         <div id="page-nav" class="page h-full">
-            <div class="flex-1 grid grid-cols-3 grid-rows-3 gap-1.5 h-full pb-1">
+            <div class="flex-1 grid grid-cols-3 grid-rows-3 gap-3 h-full pb-2">
                 <!-- Row 1 -->
                 <div
-                    class="glass-panel flex flex-col items-center justify-center p-1 bg-black/40 overflow-hidden h-full">
-                    <div class="grid grid-cols-4 gap-1 w-full flex-1 place-items-center">
+                    class="glass-panel flex flex-col items-center justify-between p-1 bg-black/40 overflow-hidden h-full">
+                    <div class="text-[12px] font-bold text-ed-blue/60 tracking-[0.3em] uppercase mt-0.5">Ship Status
+                    </div>
+                    <div class="grid grid-cols-4 gap-1 w-full flex-1 place-items-center mb-1">
                         <i id="nav-mon-gear" data-lucide="arrow-down-circle" class="w-5 h-5 text-gray-700"></i>
                         <i id="nav-mon-cargo" data-lucide="package" class="w-5 h-5 text-gray-700"></i>
                         <i id="nav-mon-hardp" data-lucide="swords" class="w-5 h-5 text-gray-700"></i>
@@ -590,34 +591,34 @@
                 </div>
 
                 <button onclick="komut('panel-comms')"
-                    class="btn-glass btn-blue rounded-xl flex flex-col items-center justify-center gap-1 bg-ed-blue/5">
-                    <i data-lucide="radio" class="w-7 h-7"></i><span
-                        class="text-base font-bold tracking-widest">COMMS</span>
+                    class="btn-glass btn-blue rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-blue/5">
+                    <i data-lucide="radio" class="w-10 h-10"></i><span
+                        class="text-lg font-bold tracking-widest">COMMS</span>
                 </button>
 
                 <button onclick="switchPage('mapping')"
-                    class="btn-glass btn-blue rounded-xl flex flex-col items-center justify-center gap-1 bg-ed-blue/10 border-ed-blue/40">
-                    <i data-lucide="map" class="w-7 h-7"></i><span
-                        class="text-base font-bold tracking-widest text-ed-cyan">MAPPING</span>
+                    class="btn-glass btn-blue rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-blue/10 border-ed-blue/40">
+                    <i data-lucide="map" class="w-10 h-10"></i><span
+                        class="text-lg font-bold tracking-widest text-ed-cyan">MAPPING</span>
                 </button>
 
                 <!-- Row 2 -->
                 <button onclick="komut('panel-external')"
-                    class="btn-glass btn-orange rounded-xl flex flex-col items-center justify-center gap-1 bg-ed-orange/5">
-                    <i data-lucide="satellite" class="w-7 h-7"></i><span
-                        class="text-base font-bold tracking-widest">EXTERNAL</span>
+                    class="btn-glass btn-orange rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-orange/5">
+                    <i data-lucide="satellite" class="w-10 h-10"></i><span
+                        class="text-lg font-bold tracking-widest">EXTERNAL</span>
                 </button>
 
                 <button onclick="switchPage('panels')"
-                    class="btn-glass btn-blue border-ed-blue/40 bg-ed-blue/10 flex flex-col items-center justify-center gap-1">
-                    <i data-lucide="gamepad-2" class="w-7 h-7 text-ed-cyan"></i><span
-                        class="text-base font-bold tracking-widest text-ed-cyan uppercase">Panels</span>
+                    class="btn-glass btn-blue border-ed-blue/40 bg-ed-blue/10 flex flex-col items-center justify-center gap-2">
+                    <i data-lucide="gamepad-2" class="w-10 h-10 text-ed-cyan"></i><span
+                        class="text-lg font-bold tracking-widest text-ed-cyan uppercase">Panels</span>
                 </button>
 
                 <button onclick="komut('panel-internal')"
-                    class="btn-glass btn-orange rounded-xl flex flex-col items-center justify-center gap-1 bg-ed-orange/5">
-                    <i data-lucide="monitor" class="w-7 h-7"></i><span
-                        class="text-base font-bold tracking-widest">INTERNAL</span>
+                    class="btn-glass btn-orange rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-orange/5">
+                    <i data-lucide="monitor" class="w-10 h-10"></i><span
+                        class="text-lg font-bold tracking-widest">INTERNAL</span>
                 </button>
 
                 <!-- Row 3: Consolidated FSD Slot -->
@@ -642,15 +643,15 @@
                 </div>
 
                 <button onclick="komut('panel-role')"
-                    class="btn-glass btn-blue rounded-xl flex flex-col items-center justify-center gap-1 bg-ed-blue/5">
-                    <i data-lucide="users" class="w-7 h-7"></i><span
-                        class="text-base font-bold tracking-widest uppercase">Role Panel</span>
+                    class="btn-glass btn-blue rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-blue/5">
+                    <i data-lucide="users" class="w-10 h-10"></i><span
+                        class="text-lg font-bold tracking-widest uppercase">Role Panel</span>
                 </button>
 
                 <button onclick="switchPage('aux')"
-                    class="btn-glass rounded-xl flex flex-col items-center justify-center text-gray-400 gap-1 bg-white/5">
-                    <i data-lucide="wrench" class="w-7 h-7"></i>
-                    <span class="text-[11px] font-bold uppercase tracking-widest">AUX SYSTEMS</span>
+                    class="btn-glass rounded-xl flex flex-col items-center justify-center text-gray-400 gap-2 bg-white/5">
+                    <i data-lucide="wrench" class="w-10 h-10"></i>
+                    <span class="text-[13px] font-bold uppercase tracking-widest">AUX SYSTEMS</span>
                 </button>
             </div>
         </div>
@@ -906,40 +907,28 @@
         </div>
     </div>
 
-    <!-- TAB BAR (RIGHT SIDEBAR) -->
-    <div class="glass-panel rounded-none border-y-0 border-r-0 border-l border-white/10 flex flex-col w-[72px] text-center z-50 bg-ed-dark/95">
-        <button onclick="switchPage('combat')" id="tab-combat" class="tab-btn active flex-1 flex flex-col justify-center items-center">
-            <div class="tab-icon flex justify-center"><i data-lucide="swords" class="w-5 h-5"></i></div>
-            <div class="text-[10px] font-bold tracking-widest mt-1">COMBAT</div>
+    <!-- TAB BAR -->
+    <div
+        class="fixed bottom-0 left-0 right-0 glass-panel rounded-none border-x-0 border-b-0 border-t border-white/10 grid grid-cols-4 text-center z-50 bg-ed-dark/95">
+        <button onclick="switchPage('combat')" id="tab-combat" class="tab-btn active py-4">
+            <div class="tab-icon flex justify-center mb-1"><i data-lucide="swords" class="w-6 h-6"></i></div>
+            <div class="text-[13px] font-bold tracking-widest">COMBAT</div>
         </button>
-        <button onclick="switchPage('nav')" id="tab-nav" class="tab-btn flex-1 flex flex-col justify-center items-center text-gray-500">
-            <div class="tab-icon flex justify-center"><i data-lucide="compass" class="w-5 h-5"></i></div>
-            <div class="text-[10px] font-bold tracking-widest mt-1">NAV</div>
+        <button onclick="switchPage('nav')" id="tab-nav" class="tab-btn py-4 text-gray-500">
+            <div class="tab-icon flex justify-center mb-1"><i data-lucide="compass" class="w-6 h-6"></i></div>
+            <div class="text-[13px] font-bold tracking-widest">NAV</div>
         </button>
-        <button onclick="switchPage('engines')" id="tab-engines" class="tab-btn flex-1 flex flex-col justify-center items-center text-gray-500">
-            <div class="tab-icon flex justify-center"><i data-lucide="rocket" class="w-5 h-5"></i></div>
-            <div class="text-[10px] font-bold tracking-widest mt-1">ENGINES</div>
+        <button onclick="switchPage('engines')" id="tab-engines" class="tab-btn py-4 text-gray-500">
+            <div class="tab-icon flex justify-center mb-1"><i data-lucide="rocket" class="w-6 h-6"></i></div>
+            <div class="text-[13px] font-bold tracking-widest">ENGINES</div>
         </button>
-        <button onclick="switchPage('info')" id="tab-info" class="tab-btn flex-1 flex flex-col justify-center items-center text-gray-500">
-            <div class="tab-icon flex justify-center"><i data-lucide="info" class="w-5 h-5"></i></div>
-            <div class="text-[10px] font-bold tracking-widest mt-1">INFO</div>
+        <button onclick="switchPage('info')" id="tab-info" class="tab-btn py-4 text-gray-500">
+            <div class="tab-icon flex justify-center mb-1"><i data-lucide="info" class="w-6 h-6"></i></div>
+            <div class="text-[13px] font-bold tracking-widest">INFO</div>
         </button>
     </div>
 
     <script>
-        function goFullscreen() {
-            const doc = window.document;
-            const docEl = doc.documentElement;
-            const requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-            const cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
-
-            if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
-                requestFullScreen?.call(docEl);
-            } else {
-                cancelFullScreen?.call(doc);
-            }
-        }
-
         function komut(c) {
             fetch('/action/' + c).then(r => r.json()).then(d => {
                 if (d.status === 'ok') {
