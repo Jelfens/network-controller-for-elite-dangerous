@@ -1,8 +1,8 @@
 [Desktop Entry]
-Name=Elite Controller
+Name=E:D - NAV-COM
 Comment=Elite Dangerous Network Controller Launcher
-Exec=python3 /home/abdulkadir/Belgeler/network-controller-for-elite-dangerous/elite-launcher.py
-Icon=controller
+Exec=/home/abdulkadir/Belgeler/network-controller-for-elite-dangerous/dist/ED-NAV-COM
+Icon=/home/abdulkadir/Belgeler/network-controller-for-elite-dangerous/static/icon.png
 Terminal=false
 Type=Application
 Categories=Game;

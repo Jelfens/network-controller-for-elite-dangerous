@@ -10,7 +10,7 @@ import math
 class EliteLauncher:
     def __init__(self, root):
         self.root = root
-        self.root.title("Elite Control")
+        self.root.title("E:D - NAV-COM")
         
         # Sabit boyutu büyüttük (600x650)
         self.ww, self.wh = 600, 650
@@ -20,6 +20,17 @@ class EliteLauncher:
         y = (sh - self.wh) // 2
         self.root.geometry(f"{self.ww}x{self.wh}+{x}+{y}")
         self.root.resizable(False, False)
+        
+        # Uygulama Logosunu Yükle
+        try:
+            if getattr(sys, 'frozen', False):
+                icon_path = os.path.join(sys._MEIPASS, 'static', 'icon.png')
+            else:
+                icon_path = os.path.join(os.path.dirname(__file__), 'static', 'icon.png')
+            icon = tk.PhotoImage(file=icon_path)
+            self.root.iconphoto(True, icon)
+        except Exception as e:
+            print("Logo yüklenemedi:", e)
         
         # Performans / Animasyon
         self.pulse_val = 0
@@ -98,7 +109,7 @@ class EliteLauncher:
         content.place(x=35, y=35, width=self.ww-70, height=self.wh-70)
         
         # 1. Başlık
-        ttk.Label(content, text="ELITE CONTROL", style="Header.TLabel").pack(pady=(20, 5))
+        ttk.Label(content, text="E:D - NAV-COM", style="Header.TLabel").pack(pady=(20, 5))
         ttk.Label(content, text="NETWORK TELEMETRY LINK", style="Sub.TLabel").pack()
         
         ttk.Frame(content, height=1, style="Panel.TFrame").pack(fill="x", pady=20, padx=40)
