@@ -395,126 +395,106 @@
 
         <!-- PAGE COMBAT -->
         <div id="page-combat" class="page h-full active">
-            <div class="flex flex-col h-full gap-3">
-                <!-- Top Row: Indicators & Essential Toggles -->
-                <div class="grid grid-cols-3 gap-2">
-                    <div id="ind-hardp" onclick="komut('wg-hardpoints')"
-                        class="btn-glass ind-off flex flex-col items-center justify-center py-3 cursor-pointer transition-all">
-                        <i data-lucide="swords" class="w-6 h-6 mb-1"></i>
-                        <span class="text-[11px] font-bold">HARDPOINTS</span>
-                    </div>
+            <div class="flex flex-col h-full gap-2 p-1">
+                <!-- 3x3 Main Grid (Buttons & PIPs) -->
+                <div class="flex-1 grid grid-cols-3 gap-2">
+                    <!-- Row 1 -->
                     <button onclick="komut('cockpit-mode')"
-                        class="btn-glass btn-blue flex flex-col items-center justify-center py-3">
-                        <i data-lucide="layout" class="w-6 h-6 mb-1"></i>
-                        <span class="text-[11px] font-bold">HUD MODE</span>
+                        class="btn-glass btn-blue flex flex-col items-center justify-center">
+                        <i data-lucide="layout" class="w-10 h-10 mb-2"></i>
+                        <span class="text-xs font-bold">HUD MODE</span>
                     </button>
-                    <button id="ind-silent-utils" onclick="switchPage('silent-run')"
-                        class="btn-glass ind-off flex flex-col items-center justify-center py-3 cursor-pointer transition-all">
-                        <i data-lucide="ghost" class="w-6 h-6 mb-1"></i>
-                        <span class="text-[11px] font-bold">SILENT RUN</span>
-                    </button>
-                </div>
-
-                <!-- PIPs Section (Shorter) -->
-                <div class="glass-panel p-3 border-ed-blue/20">
-                    <div class="grid grid-cols-4 gap-2 w-full">
-                        <button onclick="komut('pip-sys')"
-                            class="btn-glass btn-blue flex flex-col items-center justify-center gap-1 active:scale-95 transition-transform px-1">
-                            <span class="text-md font-bold tracking-widest">SYS</span>
-                            <div id="pips-sys" class="flex gap-0.5 h-6 w-full bg-black/40 rounded-sm overflow-hidden p-0.5 border border-white/5">
-                                <div class="flex-1 bg-ed-blue rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-blue rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-blue rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-blue rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-blue/10 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-blue/10 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-blue/10 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-blue/10 rounded-sm transition-all"></div>
-                            </div>
-                        </button>
-                        <button onclick="komut('pip-eng')"
-                            class="btn-glass btn-orange flex flex-col items-center justify-center gap-1 active:scale-95 transition-transform px-1">
-                            <span class="text-md font-bold tracking-widest">ENG</span>
-                            <div id="pips-eng" class="flex gap-0.5 h-6 w-full bg-black/40 rounded-sm overflow-hidden p-0.5 border border-white/5">
-                                <div class="flex-1 bg-ed-orange rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-orange rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-orange rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-orange rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-orange/10 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-orange/10 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-orange/10 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-orange/10 rounded-sm transition-all"></div>
-                            </div>
-                        </button>
-                        <button onclick="komut('pip-wep')"
-                            class="btn-glass btn-red flex flex-col items-center justify-center gap-1 active:scale-95 transition-transform px-1">
-                            <span class="text-md font-bold tracking-widest">WEP</span>
-                            <div id="pips-wep" class="flex gap-0.5 h-6 w-full bg-black/40 rounded-sm overflow-hidden p-0.5 border border-white/5">
-                                <div class="flex-1 bg-ed-red rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-red rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-red rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-red rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-red/10 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-red/10 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-red/10 rounded-sm transition-all"></div>
-                                <div class="flex-1 bg-ed-red/10 rounded-sm transition-all"></div>
-                            </div>
-                        </button>
-                        <button onclick="komut('pip-rst')"
-                            class="btn-glass border-gray-500/30 text-gray-400 flex flex-col items-center justify-center gap-1 active:scale-95 transition-transform px-1">
-                            <span class="text-md font-bold tracking-widest">RST</span>
-                        </button>
+                    <div id="ind-hardp" onclick="komut('wg-hardpoints')"
+                        class="btn-glass ind-off flex flex-col items-center justify-center cursor-pointer transition-all">
+                        <i data-lucide="swords" class="w-10 h-10 mb-2"></i>
+                        <span class="text-xs font-bold">HARDPOINTS</span>
                     </div>
+                    <button id="ind-silent-utils" onclick="switchPage('silent-run')"
+                        class="btn-glass ind-off flex flex-col items-center justify-center cursor-pointer transition-all">
+                        <i data-lucide="ghost" class="w-10 h-10 mb-2"></i>
+                        <span class="text-xs font-bold">SILENT RUN</span>
+                    </button>
+
+                    <!-- Row 2 -->
+                    <button onclick="switchPage('targeting')" class="btn-glass btn-red flex flex-col items-center justify-center">
+                        <i data-lucide="crosshair" class="w-10 h-10 mb-2"></i>
+                        <span class="text-xs font-bold">TARGETING</span>
+                    </button>
+
+                    <!-- Compact PIP Indicator Slot (Center of 3x3) -->
+                    <div onclick="switchPage('pips')" class="flex flex-col items-center justify-center gap-2 p-3 cursor-pointer transition-all bg-transparent">
+                        <div id="pips-sys" class="flex gap-1 w-full h-4 bg-black/40 rounded-full overflow-hidden p-0.5 border border-white/5">
+                            <div class="flex-1 bg-ed-blue rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-blue rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-blue rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-blue rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-blue/10 rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-blue/10 rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-blue/10 rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-blue/10 rounded-sm transition-all"></div>
+                        </div>
+                        <div id="pips-eng" class="flex gap-1 w-full h-4 bg-black/40 rounded-full overflow-hidden p-0.5 border border-white/5">
+                            <div class="flex-1 bg-ed-orange rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-orange rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-orange rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-orange rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-orange/10 rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-orange/10 rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-orange/10 rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-orange/10 rounded-sm transition-all"></div>
+                        </div>
+                        <div id="pips-wep" class="flex gap-1 w-full h-4 bg-black/40 rounded-full overflow-hidden p-0.5 border border-white/5">
+                            <div class="flex-1 bg-ed-red rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-red rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-red rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-red rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-red/10 rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-red/10 rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-red/10 rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-red/10 rounded-sm transition-all"></div>
+                        </div>
+                    </div>
+
+                    <button onclick="switchPage('fighters')" class="btn-glass btn-orange flex flex-col items-center justify-center">
+                        <i data-lucide="rocket" class="w-10 h-10 mb-2"></i>
+                        <span class="text-xs font-bold">FIGHTERS</span>
+                    </button>
+
+                    <!-- Row 3 -->
+                    <button onclick="komut('chaff')" class="btn-glass border-yellow-500/40 text-yellow-500 flex flex-col items-center justify-center">
+                        <i data-lucide="sparkles" class="w-10 h-10 mb-2"></i>
+                        <span class="text-xs font-bold">CHAFF</span>
+                    </button>
+                    <button onclick="komut('scb')" class="btn-glass border-teal-400/40 text-teal-400 flex flex-col items-center justify-center">
+                        <i data-lucide="shield-plus" class="w-10 h-10 mb-2"></i>
+                        <span class="text-xs font-bold">S-CELL</span>
+                    </button>
+                    <button onclick="komut('heatsink')" class="btn-glass btn-blue flex flex-col items-center justify-center">
+                        <i data-lucide="snowflake" class="w-10 h-10 mb-2"></i>
+                        <span class="text-xs font-bold">HEATSINK</span>
+                    </button>
                 </div>
 
-                <!-- Utilities Grid (2x3) -->
-                <div class="grid grid-cols-3 gap-2">
-                    <button onclick="switchPage('targeting')" class="btn-glass btn-red py-4 flex flex-col items-center">
-                        <i data-lucide="crosshair" class="w-6 h-6 mb-1"></i>
-                        <span class="text-[11px] font-bold">TARGETING</span>
-                    </button>
-                    <button onclick="switchPage('fighters')" class="btn-glass btn-orange py-4 flex flex-col items-center">
-                        <i data-lucide="rocket" class="w-6 h-6 mb-1"></i>
-                        <span class="text-[11px] font-bold">FIGHTERS</span>
-                    </button>
-                    <button onclick="switchPage('wing-ops')" class="btn-glass btn-blue py-4 flex flex-col items-center">
-                        <i data-lucide="users" class="w-6 h-6 mb-1"></i>
-                        <span class="text-[11px] font-bold">WING OPS</span>
-                    </button>
-                    <button onclick="komut('chaff')" class="btn-glass border-yellow-500/40 text-yellow-500 py-4 flex flex-col items-center">
-                        <i data-lucide="sparkles" class="w-6 h-6 mb-1"></i>
-                        <span class="text-[11px] font-bold">CHAFF</span>
-                    </button>
-                    <button onclick="komut('scb')" class="btn-glass border-teal-400/40 text-teal-400 py-4 flex flex-col items-center">
-                        <i data-lucide="shield-plus" class="w-6 h-6 mb-1"></i>
-                        <span class="text-[11px] font-bold">S-CELL</span>
-                    </button>
-                    <button onclick="komut('heatsink')" class="btn-glass btn-blue py-4 flex flex-col items-center">
-                        <i data-lucide="snowflake" class="w-6 h-6 mb-1"></i>
-                        <span class="text-[11px] font-bold">HEATSINK</span>
-                    </button>
-                </div>
-
-                <!-- Firegroup Selector (Bottom) -->
-                <div class="glass-panel flex flex-col p-1.5 justify-center border-ed-orange/30">
+                <!-- Firegroup Selector (The "Bar" at the bottom) -->
+                <div class="h-20 glass-panel flex flex-col p-2 justify-center border-ed-orange/30">
                     <div class="flex items-center gap-2 px-1">
                         <button onclick="komut('fg-prev')"
-                            class="btn-glass px-3 h-10 text-lg font-bold text-gray-400 flex items-center justify-center"><i
-                                data-lucide="chevron-left" class="w-5 h-5"></i></button>
-                        <div class="flex-1 flex justify-around items-center bg-black/40 rounded-lg h-10 px-2 border border-white/5"
+                            class="btn-glass px-4 h-12 text-lg font-bold text-gray-400 flex items-center justify-center"><i
+                                data-lucide="chevron-left" class="w-6 h-6"></i></button>
+                        <div class="flex-1 flex justify-around items-center bg-black/40 rounded-lg h-12 px-2 border border-white/5"
                             id="fg-strip">
-                            <div id="fg-0" class="btn-glass w-7 h-7 flex items-center justify-center text-sm rounded fg-off transition-all">A</div>
-                            <div id="fg-1" class="btn-glass w-7 h-7 flex items-center justify-center text-sm rounded fg-off transition-all">B</div>
-                            <div id="fg-2" class="btn-glass w-7 h-7 flex items-center justify-center text-sm rounded fg-off transition-all">C</div>
-                            <div id="fg-3" class="btn-glass w-7 h-7 flex items-center justify-center text-sm rounded fg-off transition-all">D</div>
-                            <div id="fg-4" class="btn-glass w-7 h-7 flex items-center justify-center text-sm rounded fg-off transition-all">E</div>
-                            <div id="fg-5" class="btn-glass w-7 h-7 flex items-center justify-center text-sm rounded fg-off transition-all">F</div>
-                            <div id="fg-6" class="btn-glass w-7 h-7 flex items-center justify-center text-sm rounded fg-off transition-all">G</div>
-                            <div id="fg-7" class="btn-glass w-7 h-7 flex items-center justify-center text-sm rounded fg-off transition-all">H</div>
+                            <div id="fg-0" class="btn-glass w-8 h-8 flex items-center justify-center text-sm rounded fg-off transition-all">A</div>
+                            <div id="fg-1" class="btn-glass w-8 h-8 flex items-center justify-center text-sm rounded fg-off transition-all">B</div>
+                            <div id="fg-2" class="btn-glass w-8 h-8 flex items-center justify-center text-sm rounded fg-off transition-all">C</div>
+                            <div id="fg-3" class="btn-glass w-8 h-8 flex items-center justify-center text-sm rounded fg-off transition-all">D</div>
+                            <div id="fg-4" class="btn-glass w-8 h-8 flex items-center justify-center text-sm rounded fg-off transition-all">E</div>
+                            <div id="fg-5" class="btn-glass w-8 h-8 flex items-center justify-center text-sm rounded fg-off transition-all">F</div>
+                            <div id="fg-6" class="btn-glass w-8 h-8 flex items-center justify-center text-sm rounded fg-off transition-all">G</div>
+                            <div id="fg-7" class="btn-glass w-8 h-8 flex items-center justify-center text-sm rounded fg-off transition-all">H</div>
                         </div>
                         <button onclick="komut('fg-next')"
-                            class="btn-glass px-3 h-10 text-lg font-bold text-gray-400 flex items-center justify-center"><i
-                                data-lucide="chevron-right" class="w-5 h-5"></i></button>
+                            class="btn-glass px-4 h-12 text-lg font-bold text-gray-400 flex items-center justify-center"><i
+                                data-lucide="chevron-right" class="w-6 h-6"></i></button>
                     </div>
                 </div>
             </div>
@@ -522,7 +502,73 @@
 
 
 
+        <!-- PAGE PIPS (Original Interactive Layout) -->
+        <div id="page-pips" class="page h-full p-2">
+            <div class="flex flex-col h-full gap-4">
+                <div class="flex items-center gap-4 h-16">
+                    <button onclick="switchPage('combat')" class="btn-glass p-3 h-full aspect-square flex items-center justify-center">
+                        <i data-lucide="chevron-left" class="w-8 h-8"></i>
+                    </button>
+                    <h2 class="text-xl font-bold tracking-[0.2em] text-ed-blue">POWER MANAGEMENT</h2>
+                </div>
+
+                <div class="flex-1 grid grid-cols-4 gap-3 pb-2">
+                    <button onclick="komut('pip-sys')"
+                        class="btn-glass btn-blue flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform p-3">
+                        <i data-lucide="shield" class="w-10 h-10 opacity-70"></i>
+                        <span class="text-lg font-bold tracking-widest">SYS</span>
+                        <div id="pips-sys-large" class="flex flex-col-reverse gap-0.5 h-full w-full bg-black/40 rounded-sm overflow-hidden p-1 border border-white/5">
+                            <div class="flex-1 bg-ed-blue rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-blue rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-blue rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-blue rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-blue/10 rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-blue/10 rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-blue/10 rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-blue/10 rounded-sm transition-all"></div>
+                        </div>
+                    </button>
+                    <button onclick="komut('pip-eng')"
+                        class="btn-glass btn-orange flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform p-3">
+                        <i data-lucide="zap" class="w-10 h-10 opacity-70"></i>
+                        <span class="text-lg font-bold tracking-widest">ENG</span>
+                        <div id="pips-eng-large" class="flex flex-col-reverse gap-0.5 h-full w-full bg-black/40 rounded-sm overflow-hidden p-1 border border-white/5">
+                            <div class="flex-1 bg-ed-orange rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-orange rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-orange rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-orange rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-orange/10 rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-orange/10 rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-orange/10 rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-orange/10 rounded-sm transition-all"></div>
+                        </div>
+                    </button>
+                    <button onclick="komut('pip-wep')"
+                        class="btn-glass btn-red flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform p-3">
+                        <i data-lucide="crosshair" class="w-10 h-10 opacity-70"></i>
+                        <span class="text-lg font-bold tracking-widest">WEP</span>
+                        <div id="pips-wep-large" class="flex flex-col-reverse gap-0.5 h-full w-full bg-black/40 rounded-sm overflow-hidden p-1 border border-white/5">
+                            <div class="flex-1 bg-ed-red rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-red rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-red rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-red rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-red/10 rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-red/10 rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-red/10 rounded-sm transition-all"></div>
+                            <div class="flex-1 bg-ed-red/10 rounded-sm transition-all"></div>
+                        </div>
+                    </button>
+                    <button onclick="komut('pip-rst')"
+                        class="btn-glass border-gray-500/30 text-gray-400 flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform p-3">
+                        <i data-lucide="rotate-ccw" class="w-10 h-10 opacity-50"></i>
+                        <span class="text-lg font-bold tracking-widest">RST</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- PAGE SILENT RUN -->
+
         <div id="page-silent-run" class="page h-full">
             <div class="flex-1 flex flex-col gap-10 justify-center items-center h-full px-6">
                 
@@ -851,15 +897,15 @@
                 <div class="flex-1 flex flex-col gap-1.5 h-full">
                     <button onclick="komut('speed-0')"
                         class="btn-glass flex-1 border-gray-500/30 text-gray-400 font-bold text-lg">0%</button>
-                    <button onclick="komut('speed-neg-25')"
+                    <button onclick="komut('speed-rev-25')"
                         class="btn-glass flex-1 btn-orange bg-ed-orange/5 font-bold text-lg">-25%</button>
-                    <button onclick="komut('speed-neg-50')"
+                    <button onclick="komut('speed-rev-50')"
                         class="btn-glass flex-1 btn-orange bg-ed-orange/5 font-bold text-lg">-50%</button>
-                    <button onclick="komut('speed-neg-75')"
+                    <button onclick="komut('speed-rev-75')"
                         class="btn-glass flex-1 btn-orange bg-ed-orange/5 font-bold text-lg">-75%</button>
-                    <button onclick="komut('speed-neg-100')"
+                    <button onclick="komut('speed-rev-100')"
                         class="btn-glass flex-1 btn-orange bg-ed-orange/5 font-bold text-lg">-100%</button>
-                    <button onclick="komut('speed-minus')"
+                    <button onclick="komut('throttle-dec')"
                         class="btn-glass flex-1 text-gray-500 font-bold text-lg">TH-</button>
                 </div>
 
@@ -913,7 +959,7 @@
                         class="btn-glass flex-1 btn-green bg-ed-green/10 font-bold text-lg">50%</button>
                     <button onclick="komut('speed-25')"
                         class="btn-glass flex-1 btn-green bg-ed-green/10 font-bold text-lg">25%</button>
-                    <button onclick="komut('speed-plus')"
+                    <button onclick="komut('throttle-inc')"
                         class="btn-glass flex-1 text-gray-500 font-bold text-lg">TH+</button>
                 </div>
             </div>
@@ -1033,12 +1079,16 @@
                 // Update PIPs
                 const pips = d.Pips || [4, 4, 4];
                 const updatePips = (id, count, colorClass) => {
-                    const container = document.getElementById(id);
-                    if (!container) return;
-                    const segments = container.children;
-                    for (let i = 0; i < segments.length; i++) {
-                        segments[i].className = 'flex-1 rounded-sm transition-all ' + (i < count ? colorClass : colorClass + '/10');
-                    }
+                    const updateContainer = (containerId) => {
+                        const container = document.getElementById(containerId);
+                        if (!container) return;
+                        const segments = container.children;
+                        for (let i = 0; i < segments.length; i++) {
+                            segments[i].className = 'flex-1 rounded-sm transition-all ' + (i < count ? colorClass : colorClass + '/10');
+                        }
+                    };
+                    updateContainer(id);
+                    updateContainer(id + '-large');
                 };
                 updatePips('pips-sys', pips[0], 'bg-ed-blue');
                 updatePips('pips-eng', pips[1], 'bg-ed-orange');
@@ -1146,7 +1196,7 @@
             };
 
             setupPad(vPad, (x, y) => updateVertical(y), false, false, () => updateVertical(0));
-            setupPad(lfPad, updateLateralForward, true, true, resetThrusters);
+            setupPad(lfPad, updateLateralForward, true, true, () => updateLateralForward(0, 0));
 
             // FSS Controls
             const fssPad = document.getElementById('fss-pad');

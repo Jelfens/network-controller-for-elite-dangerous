@@ -14,6 +14,8 @@ class EliteLauncher:
         
         # Sabit boyutu büyüttük (600x650)
         self.ww, self.wh = 600, 650
+        self.root.geometry(f"{self.ww}x{self.wh}")
+        self.root.update_idletasks()
         sw = self.root.winfo_screenwidth()
         sh = self.root.winfo_screenheight()
         x = (sw - self.ww) // 2
