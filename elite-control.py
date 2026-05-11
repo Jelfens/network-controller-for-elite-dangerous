@@ -3,32 +3,39 @@ import json
 import os
 import sys
 
-# vJoy initialization
+# Linux vJoy initialization (evdev)
 has_gamepad = False
 gamepad = None
+
 try:
-    import pyvjoy
+    import evdev
 except ImportError:
-    pyvjoy = None
+    evdev = None
+    print("Error: evdev module not found. Please install it using 'pip install evdev'")
 
 def initialize_vjoy(debug=True):
     global has_gamepad, gamepad
-    if pyvjoy is None:
+    if evdev is None:
         return
-    
+        
     if debug and os.environ.get('WERKZEUG_RUN_MAIN') != 'true':
         return
 
     try:
-        gamepad = pyvjoy.VJoyDevice(1)
+        btn_codes = [0x100 + i for i in range(100)]
+        axis_codes = [(i, evdev.AbsInfo(value=0, min=-32768, max=32767, fuzz=0, flat=0, resolution=0)) for i in range(20)]
+
+        kapasite = {
+            evdev.ecodes.EV_KEY: btn_codes,
+            evdev.ecodes.EV_ABS: axis_codes
+        }
+
+        gamepad = evdev.UInput(kapasite, name="vJoy-Python", version=0x1)
         has_gamepad = True
-        print("vJoy (Device 1) successfully initialized.")
+        print("Linux Virtual Joystick successfully initialized.")
     except Exception as e:
-        if "VJD_STAT_FREE" in str(e):
-            print(f"vJoy error: Device 1 already in use.")
-        else:
-            print(f"vJoy error: {e}")
-            has_gamepad = False
+        print(f"Linux vJoy error: {e} (Maybe run with sudo?)")
+        has_gamepad = False
 
 import time
 import threading
@@ -38,19 +45,18 @@ def vjoy_button_press(button_id):
     if not has_gamepad or gamepad is None:
         return
     try:
-        gamepad.set_button(button_id, 1)
+        btn_code = 0x100 + button_id - 1
+        gamepad.write(evdev.ecodes.EV_KEY, btn_code, 1)
+        gamepad.syn()
         time.sleep(0.1)
-        gamepad.set_button(button_id, 0)
-    except:
-        pass
+        gamepad.write(evdev.ecodes.EV_KEY, btn_code, 0)
+        gamepad.syn()
+    except Exception as e:
+        print(f"Button error: {e}")
 
-import pydirectinput
 def press_key(key):
-    """Send keypress on Windows using pydirectinput"""
-    try:
-        pydirectinput.press(key)
-    except:
-        pass
+    """Fallback not fully implemented for Linux yet, using Joystick only."""
+    pass
 
 app = Flask(__name__)
 
@@ -128,13 +134,14 @@ def hold_action(komut_adi):
     if komut_adi in KOMUTLAR:
         btn_id = KOMUTLAR[komut_adi]
         if has_gamepad and gamepad:
-            gamepad.set_button(btn_id, 1)
+            btn_code = 0x100 + btn_id - 1
+            gamepad.write(evdev.ecodes.EV_KEY, btn_code, 1)
+            gamepad.syn()
             return "OK (vJoy Hold)"
         key = FALLBACK_KEYS.get(komut_adi)
         if key:
-            import pydirectinput
-            pydirectinput.keyDown(key)
-            return "OK (Keyboard Hold)"
+            # Keyboard fallback on Linux not implemented
+            return "OK (Keyboard Hold Not Supported)"
     return "Hata", 400
 
 @app.route('/release/<komut_adi>')
@@ -142,13 +149,14 @@ def release_action(komut_adi):
     if komut_adi in KOMUTLAR:
         btn_id = KOMUTLAR[komut_adi]
         if has_gamepad and gamepad:
-            gamepad.set_button(btn_id, 0)
+            btn_code = 0x100 + btn_id - 1
+            gamepad.write(evdev.ecodes.EV_KEY, btn_code, 0)
+            gamepad.syn()
             return "OK (vJoy Release)"
         key = FALLBACK_KEYS.get(komut_adi)
         if key:
-            import pydirectinput
-            pydirectinput.keyUp(key)
-            return "OK (Keyboard Release)"
+            # Keyboard fallback on Linux not implemented
+            return "OK (Keyboard Release Not Supported)"
     return "Hata", 400
 
 @app.route('/axis/<axis_name>/<value>')
@@ -156,29 +164,24 @@ def handle_axis(axis_name, value):
     if not has_gamepad: return "No vJoy Device", 500
     try:
         val = int(value)
-        # Convert -100...100 range to vJoy 0x0000...0x8000 (0 to 32768)
-        # -100 -> 0, 0 -> 16384, 100 -> 32768
-        axis_val = int(((val + 100) / 200.0) * 32768)
-        axis_val = max(0, min(32768, axis_val)) # clamp
+        # Convert -100...100 range to evdev -32768...32767
+        axis_val = int((val / 100.0) * 32767)
+        axis_val = max(-32768, min(32767, axis_val)) # clamp
         
-        if axis_name == 'vthrust':
-            gamepad.set_axis(pyvjoy.HID_USAGE_Y, axis_val)
-        elif axis_name == 'lthrust':
-            gamepad.set_axis(pyvjoy.HID_USAGE_X, axis_val)
-        elif axis_name == 'fthrust':
-            gamepad.set_axis(pyvjoy.HID_USAGE_Z, axis_val)
-        elif axis_name == 'sensorzoom':
-            gamepad.set_axis(pyvjoy.HID_USAGE_RX, axis_val)
-        elif axis_name == 'fsspitch':
-            gamepad.set_axis(pyvjoy.HID_USAGE_RY, axis_val)
-        elif axis_name == 'fssyaw':
-            gamepad.set_axis(pyvjoy.HID_USAGE_RZ, axis_val)
-        elif axis_name == 'fsstuning':
-            gamepad.set_axis(pyvjoy.HID_USAGE_SL0, axis_val)
-        elif axis_name == 'fssabstuning':
-            gamepad.set_axis(pyvjoy.HID_USAGE_SL1, axis_val)
-
-
+        axis_map = {
+            'lthrust': 0, # ABS_X
+            'vthrust': 1, # ABS_Y
+            'fthrust': 2, # ABS_Z
+            'sensorzoom': 3, # ABS_RX
+            'fsspitch': 4, # ABS_RY
+            'fssyaw': 5, # ABS_RZ
+            'fsstuning': 6, # ABS_THROTTLE
+            'fssabstuning': 7 # ABS_RUDDER
+        }
+        
+        if axis_name in axis_map:
+            gamepad.write(evdev.ecodes.EV_ABS, axis_map[axis_name], axis_val)
+            gamepad.syn()
             
     except Exception as e:
         print(f"Axis error: {e}")
@@ -236,6 +239,9 @@ def get_latest_journal_info(path_dir):
 def get_status():
     possible_paths = [
         os.path.expanduser(r"~\Saved Games\Frontier Developments\Elite Dangerous\\"),
+        os.path.expanduser(r"~/.local/share/Steam/steamapps/compatdata/359320/pfx/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous/"),
+        os.path.expanduser(r"~/.steam/steam/steamapps/compatdata/359320/pfx/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous/"),
+        os.path.expanduser(r"~/.steam/debian-installation/steamapps/compatdata/359320/pfx/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous/")
     ]
     
     for path in possible_paths:
