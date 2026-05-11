@@ -287,42 +287,56 @@
                         class="btn-glass btn-orange col-span-2 p-3 text-lg font-bold flex items-center justify-center gap-3">
                         <i data-lucide="focus" class="w-6 h-6"></i>TARGET AHEAD
                     </button>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-3">
                     <button onclick="komut('target-prev')"
-                        class="btn-glass btn-orange p-3 text-lg font-bold flex flex-col items-center justify-center gap-1">
+                        class="btn-glass btn-orange p-3 text-[14px] font-bold flex flex-col items-center justify-center gap-1 text-center">
                         <i data-lucide="chevron-left" class="w-5 h-5"></i>PREV TARGET
                     </button>
+                    <button onclick="switchPage('wing-ops')"
+                        class="btn-glass btn-blue p-3 text-[14px] font-bold flex flex-col items-center justify-center gap-1 text-center">
+                        <i data-lucide="users" class="w-5 h-5"></i>WING OPS
+                    </button>
                     <button onclick="komut('target-next')"
-                        class="btn-glass btn-orange p-3 text-lg font-bold flex flex-col items-center justify-center gap-1">
+                        class="btn-glass btn-orange p-3 text-[14px] font-bold flex flex-col items-center justify-center gap-1 text-center">
                         <i data-lucide="chevron-right" class="w-5 h-5"></i>NEXT TARGET
                     </button>
                 </div>
 
-                <div class="glass-panel p-4 relative mt-2 border-ed-blue/30">
-                    <div
-                        class="absolute -top-2 left-6 px-2 bg-ed-darker text-[12px] text-ed-blue font-bold tracking-widest">
-                        WING OPERATIONS</div>
-                    <div class="grid grid-cols-3 gap-2 mt-2">
+
+            </div>
+        </div>
+
+        <!-- PAGE WING OPS -->
+        <div id="page-wing-ops" class="page h-full">
+            <div class="flex-1 flex flex-col gap-5 overflow-y-auto no-scrollbar">
+                <div>
+                    <div class="text-[12px] text-ed-blue font-bold tracking-widest uppercase mb-2 ml-1">Wing Selection</div>
+                    <div class="grid grid-cols-3 gap-2">
                         <button onclick="komut('target-team-1')"
-                            class="btn-glass btn-blue py-3 text-[12px] font-bold flex flex-col items-center"><i
-                                data-lucide="user" class="w-5 h-5 mb-1"></i>WING 1</button>
+                            class="btn-glass btn-blue py-6 text-lg font-bold flex flex-col items-center"><i
+                                data-lucide="user" class="w-8 h-8 mb-2"></i>WING 1</button>
                         <button onclick="komut('target-team-2')"
-                            class="btn-glass btn-blue py-3 text-[12px] font-bold flex flex-col items-center"><i
-                                data-lucide="user" class="w-5 h-5 mb-1"></i>WING 2</button>
+                            class="btn-glass btn-blue py-6 text-lg font-bold flex flex-col items-center"><i
+                                data-lucide="user" class="w-8 h-8 mb-2"></i>WING 2</button>
                         <button onclick="komut('target-team-3')"
-                            class="btn-glass btn-blue py-3 text-[12px] font-bold flex flex-col items-center"><i
-                                data-lucide="user" class="w-5 h-5 mb-1"></i>WING 3</button>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 mt-2">
-                        <button onclick="komut('target-team-target')"
-                            class="btn-glass btn-blue py-3 text-[12px] font-bold tracking-wider flex items-center justify-center gap-2"><i
-                                data-lucide="crosshair" class="w-5 h-5"></i>WING TGT</button>
-                        <button onclick="komut('target-navlock')"
-                            class="btn-glass btn-cyan py-3 text-[12px] font-bold tracking-wider text-ed-cyan border-ed-cyan/40 flex items-center justify-center gap-2"><i
-                                data-lucide="lock" class="w-5 h-5"></i>NAV LOCK</button>
+                            class="btn-glass btn-blue py-6 text-lg font-bold flex flex-col items-center"><i
+                                data-lucide="user" class="w-8 h-8 mb-2"></i>WING 3</button>
                     </div>
                 </div>
-
-
+                
+                <div>
+                    <div class="text-[12px] text-ed-cyan font-bold tracking-widest uppercase mb-2 ml-1">Wing Actions</div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="komut('target-team-target')"
+                            class="btn-glass btn-blue py-6 text-lg font-bold tracking-wider flex flex-col items-center justify-center gap-2"><i
+                                data-lucide="crosshair" class="w-8 h-8"></i>WING TGT</button>
+                        <button onclick="komut('target-navlock')"
+                            class="btn-glass btn-cyan py-6 text-lg font-bold tracking-wider text-ed-cyan border-ed-cyan/40 flex flex-col items-center justify-center gap-2"><i
+                                data-lucide="lock" class="w-8 h-8"></i>NAV LOCK</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -511,11 +525,11 @@
                     <i data-lucide="target" class="w-12 h-12"></i>
                     <span class="text-lg font-bold tracking-widest">TARGETING</span>
                 </button>
-                <div id="ind-silent-utils" onclick="komut('silent-running')"
+                <button id="ind-silent-utils" onclick="switchPage('silent-run')"
                     class="btn-glass ind-off flex flex-col items-center justify-center gap-2 cursor-pointer transition-all">
                     <i data-lucide="ghost" class="w-12 h-12"></i>
                     <span class="text-lg font-bold tracking-widest">SILENT RUN</span>
-                </div>
+                </button>
                 <button onclick="switchPage('fighters')"
                     class="btn-glass btn-orange flex flex-col items-center justify-center gap-2">
                     <i data-lucide="rocket" class="w-12 h-12"></i>
@@ -538,6 +552,27 @@
                     <span class="text-lg font-bold tracking-widest">SHIELD CELL</span>
                 </button>
 
+
+            </div>
+        </div>
+
+        <!-- PAGE SILENT RUN -->
+        <div id="page-silent-run" class="page h-full">
+            <div class="flex-1 flex flex-col gap-10 justify-center items-center h-full px-6">
+                
+                <div class="animate-pulse text-center space-y-4">
+                    <i data-lucide="alert-triangle" class="w-24 h-24 text-ed-red mx-auto drop-shadow-[0_0_15px_rgba(255,42,42,0.8)]"></i>
+                    <div class="text-2xl font-bold text-ed-red tracking-[0.2em] uppercase drop-shadow-[0_0_10px_rgba(255,42,42,0.8)]">WARNING</div>
+                    <div class="text-[13px] text-ed-red/90 font-mono tracking-widest leading-relaxed">
+                        INITIATING THIS PROTOCOL WILL LOWER YOUR SHIELDS AND SUSPEND ALL HEAT DISPOSAL CAPABILITIES.
+                    </div>
+                </div>
+
+                <div id="ind-silent" onclick="komut('silent-running')"
+                    class="btn-glass ind-off w-48 h-48 rounded-full flex flex-col items-center justify-center gap-4 cursor-pointer transition-all border-2 shadow-[0_0_30px_rgba(0,0,0,0.8)] active:scale-95">
+                    <i data-lucide="ghost" class="w-16 h-16 opacity-80"></i>
+                    <span class="text-xl font-bold tracking-widest uppercase">TOGGLE</span>
+                </div>
 
             </div>
         </div>
@@ -755,20 +790,7 @@
 
         <!-- PAGE INFO -->
         <div id="page-info" class="page h-full">
-            <div class="grid grid-cols-2 gap-3 mb-4">
-                <div class="glass-panel p-3 border-ed-orange/20">
-                    <div class="text-ed-orange text-[13px] font-bold uppercase tracking-widest mb-2 opacity-60">Status
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <div class="h-1 bg-ed-orange/20 rounded-full overflow-hidden">
-                            <div id="fuel-bar" class="h-full bg-ed-orange transition-all" style="width: 0%"></div>
-                        </div>
-                        <div class="flex justify-between text-[12px] font-mono">
-                            <span>FUEL</span>
-                            <span id="fuel-text" class="text-ed-orange">--%</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="grid grid-cols-1 gap-3 mb-4">
                 <div class="glass-panel p-3 border-ed-cyan/20">
                     <div class="text-ed-cyan text-[13px] font-bold uppercase tracking-widest mb-2 opacity-60">Location
                     </div>
@@ -1063,12 +1085,7 @@
                 if (d.System) document.getElementById('info-system').textContent = d.System.toUpperCase();
                 if (d.Station) document.getElementById('info-station').textContent = d.Station.toUpperCase();
 
-                if (d.Fuel && d.FuelCapacity) {
-                    const current = (d.Fuel.FuelMain || 0) + (d.Fuel.FuelReservoir || 0);
-                    const pct = Math.round((current / d.FuelCapacity) * 100);
-                    document.getElementById('fuel-bar').style.width = pct + '%';
-                    document.getElementById('fuel-text').textContent = pct + '%';
-                }
+                // Fuel update removed
 
                 if (d.Logs) {
                     const logContainer = document.getElementById('log-container');
