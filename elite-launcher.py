@@ -163,11 +163,18 @@ class EliteLauncher:
             self.stop_server()
 
     def start_server(self):
-        script_path = os.path.join(os.path.dirname(__file__), "elite-control.py")
         self.log("ENGAGING FSD... (STARTING SERVER)")
         
+        # PyInstaller ile derlenip derlenmediğini kontrol et
+        if getattr(sys, 'frozen', False):
+            # Derlenmişse (tek bir binary ise), kendisini --run-server argümanıyla tekrar çalıştır
+            cmd = [sys.executable, '--run-server']
+        else:
+            # Geliştirme aşamasındaysa, scripti python ile tekrar çalıştır
+            cmd = [sys.executable, sys.argv[0], '--run-server']
+            
         self.process = subprocess.Popen(
-            [sys.executable, script_path],
+            cmd,
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
             text=True, bufsize=1
         )
@@ -197,6 +204,17 @@ class EliteLauncher:
         self.root.destroy()
 
 if __name__ == "__main__":
+    import multiprocessing
+    multiprocessing.freeze_support() # PyInstaller uyumluluğu için kritik
+    
+    # Eğer --run-server argümanı geldiyse sadece sunucuyu çalıştır ve çık.
+    # (GUI açılmasına gerek yok, arka planda Flask sunucusu çalışacak)
+    if len(sys.argv) > 1 and sys.argv[1] == '--run-server':
+        import elite_control
+        elite_control.run_server()
+        sys.exit(0)
+
+    # Değilse normal Launcher arayüzünü aç
     root = tk.Tk()
     app = EliteLauncher(root)
     root.mainloop()
