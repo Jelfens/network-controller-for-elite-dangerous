@@ -1,6 +1,6 @@
-# Network Controller for Elite Dangerous
+# E:D - NAV-COM
 
-A lightweight Python-based local network controller designed specifically for **Elite Dangerous**. This script hosts a responsive, Elite Dangerous-themed web interface on your local network, allowing you to control your ship's systems and monitor live telemetry directly from your smartphone, tablet, or another monitor.
+A high-performance, Linux-native network controller designed specifically for **Elite Dangerous**. This application provides a responsive, immersive Elite Dangerous-themed interface to control your ship's systems and monitor live telemetry directly from your smartphone or tablet.
 
 ## 📸 Screenshots
 
@@ -12,64 +12,64 @@ A lightweight Python-based local network controller designed specifically for **
 | :---: | :---: |
 | ![Engines](screenshots/engines.png) | ![Info](screenshots/info.png) |
 
-| Utilities | Navigation Buttons |
-| :---: | :---: |
-| ![Utils](screenshots/utils.png) | ![Panels](screenshots/panels.png) |
-
 ## 🚀 Features
 
-* **Real-time Telemetry:** Reads data directly from Elite Dangerous's `Status.json` file.
-* **Live Cockpit Indicators:** Visual feedback for Shields, Hardpoints, Landing Gear, Cargo Scoop, Lights, Night Vision, Silent Running, and FSD.
-* **Dynamic Information Displays:** Real-time updates for:
-    * Fuel (Main Tank)
-    * Power Distributor (PIPS) status with graphical bars
-    * Active Fire Group (A-H)
-    * Credit Balance
-    * Cargo Capacity
-    * Navigation Data (Destination, Body Focus, GUI Focus)
-    * Planetary Surface Data (Latitude, Longitude, Altitude, Heading)
-* **Direct Control:** Send keystrokes and vJoy inputs to your PC directly from the web interface.
-* **Elite Dangerous Theme:** A custom dark and orange UI matching the in-game HUD.
-* **System Clock:** Integrated local time display.
+* **Linux Native:** Built for Linux using `evdev/uinput` for high-performance virtual joystick and keyboard emulation.
+* **Dedicated Launcher:** Aesthetic Tkinter-based desktop launcher with real-time server logging.
+* **Real-time Telemetry:** Direct integration with Elite Dangerous's `Status.json`.
+* **Immersive Control Pages:**
+    * **Silent Running Protocol:** Dedicated warning page with pulsing animations and thermal management alerts.
+    * **Targeting & Wing Ops:** Streamlined targeting controls with a dedicated Wing Operations sub-page.
+    * **Fighter Command:** Complete fighter control interface with localized button groups.
+* **Live Cockpit Indicators:** Visual feedback for Shields, Hardpoints, Landing Gear, Cargo Scoop, Lights, Night Vision, and FSD.
+* **Power Management:** Real-time PIPS (Power Distributor) status and active Fire Group tracking.
+* **Navigation & Surface Data:** Destination info, credit balance, cargo capacity, and planetary coordinates.
 
 ## 🛠️ Requirements
 
-* **OS:** Windows 10/11.
-* **Python:** 3.8 or higher.
-* **Game:** Elite Dangerous (Odyssey or Horizons).
-* **vJoy (Optional):** Required if you want to use axis controls (e.g., thrusters).
+* **OS:** Linux (X11 or Wayland supported).
+* **Game:** Elite Dangerous (via Proton/Steam).
+* **Permissions:** Access to `/dev/uinput` (see [Udev Configuration](#-udev-configuration)).
 
-## 📦 Installation
+## 📦 Installation & Usage
 
-1.  **Clone or download** this repository.
-2.  **Install dependencies:**
+1.  **Download** the `ED-NAV-COM` standalone binary from the releases page.
+2.  **Make it executable:**
     ```bash
-    pip install -r requirements.txt
+    chmod +x ED-NAV-COM
     ```
+3.  **Install Shortcut (Optional):**
+    Copy the provided `.desktop` file to `~/.local/share/applications/` to see the app in your system menu with its custom icon.
 
-## 🎮 How to Use
+4.  **Run the App:**
+    Launch `ED-NAV-COM` from your menu or terminal. The launcher will show your local IP address.
 
-1.  **Run the script:**
-    ```bash
-    python elite-control.py
-    ```
+5.  **Connect:**
+    Open your smartphone/tablet browser and navigate to the IP shown (e.g., `http://192.168.1.X:5000`).
 
-### Connect via Browser
+## ⚙️ Udev Configuration
 
-* **Local:** Go to `http://localhost:5000`.
-* **Mobile/Remote:** Find your PC's local IP (e.g., `192.168.1.X`) and enter `http://192.168.1.X:5000`.
+Since the app creates a virtual joystick, it requires permission to access `/dev/uinput`. To run without root, create a udev rule:
 
-### ⚠️ Important for Controls
-
-- **Focus:** Elite Dangerous must be the active/focused window for keyboard commands to work.
-- **vJoy:** Make sure Device 1 is available and configured.
-
+1. Create a file `/etc/udev/rules.d/99-uinput.rules`:
+   ```bash
+   KERNEL=="uinput", MODE="0660", GROUP="uinput", OPTIONS+="static_node=uinput"
+   ```
+2. Add your user to the `uinput` group:
+   ```bash
+   sudo groupadd uinput
+   sudo usermod -aG uinput $USER
+   ```
+3. Restart your system or reload rules:
+   ```bash
+   sudo udevadm control --reload-rules && sudo udevadm trigger
+   ```
 
 ## ⚠️ Important Notes
 
-* **Status.json Location:** The script automatically searches in `~\Saved Games\Frontier Developments\Elite Dangerous\`.
-* **Network:** Both your PC and mobile device must be on the same local network (Wi-Fi).
-* **Safety:** This is a development server for personal local use. Do not expose port 5000 to the public internet.
+* **Focus:** The game must be the active window for virtual keyboard commands to be processed.
+* **Network:** Both your PC and mobile device must be on the same local network.
+* **Safety:** This is a local network tool. Do not expose port 5000 to the public internet.
 
 ---
 *Fly Dangerously, Commander! o7*

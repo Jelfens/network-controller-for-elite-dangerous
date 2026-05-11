@@ -7,3 +7,4 @@ Terminal=false
 Type=Application
 Categories=Game;
 Path=/home/abdulkadir/Belgeler/network-controller-for-elite-dangerous
+StartupWMClass=EliteController
