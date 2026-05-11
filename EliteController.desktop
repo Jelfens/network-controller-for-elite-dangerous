@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Elite Controller
+Comment=Elite Dangerous Network Controller Launcher
+Exec=python3 /home/abdulkadir/Belgeler/network-controller-for-elite-dangerous/elite-launcher.py
+Icon=controller
+Terminal=false
+Type=Application
+Categories=Game;
+Path=/home/abdulkadir/Belgeler/network-controller-for-elite-dangerous
