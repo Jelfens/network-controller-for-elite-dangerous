@@ -169,6 +169,7 @@
             height: 100%;
             flex-direction: column;
             animation: fadeIn 0.3s forwards;
+            padding: 0.25rem;
         }
 
         .page.active {
@@ -194,32 +195,36 @@
         .tab-btn {
             position: relative;
             transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .tab-btn::before {
             content: '';
             position: absolute;
             top: 0;
+            bottom: 0;
             left: 0;
-            right: 0;
-            height: 2px;
+            width: 3px;
             background: transparent;
             transition: all 0.3s;
         }
 
         .tab-btn.active {
             color: #ff7100;
-            background: linear-gradient(0deg, rgba(255, 113, 0, 0.05) 0%, transparent 100%);
+            background: linear-gradient(90deg, rgba(255, 113, 0, 0.05) 0%, transparent 100%);
         }
 
         .tab-btn.active::before {
             background: #ff7100;
-            box-shadow: 0 2px 10px rgba(255, 113, 0, 0.8);
+            box-shadow: 2px 0 10px rgba(255, 113, 0, 0.8);
         }
 
         .tab-btn.active .tab-icon {
             filter: drop-shadow(0 0 8px rgba(255, 113, 0, 0.8));
-            transform: translateY(-2px);
+            transform: translateX(2px);
         }
 
         .no-scrollbar::-webkit-scrollbar {
@@ -260,145 +265,153 @@
 <body class="font-sans flex flex-col h-screen overflow-hidden text-lg bg-ed-darker select-none"
     style="background: radial-gradient(circle at center, #1a0d00 0%, #050608 100%);">
 
-    <div class="flex-1 flex flex-col overflow-y-auto no-scrollbar p-3 pb-24 relative">
+    <div class="flex-1 flex flex-col overflow-y-auto no-scrollbar p-3 pr-24 relative">
         <div class="scan-line"></div>
 
         <!-- PAGE TARGETING -->
         <div id="page-targeting" class="page h-full">
-            <div class="flex-1 flex flex-col gap-4 overflow-y-auto no-scrollbar">
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="komut('target-highest')"
-                        class="btn-glass btn-red col-span-2 p-4 text-lg font-bold tracking-widest flex items-center justify-center gap-3">
-                        <i data-lucide="alert-triangle" class="w-6 h-6"></i>
-                        <div class="text-left">
-                            <div class="text-[12px] text-ed-red/70 mb-0.5">PRIORITY</div>
-                            <div>HIGHEST THREAT</div>
-                        </div>
-                    </button>
+            <div class="flex-1 flex flex-col gap-2 h-full">
+                <!-- Row 1: Priority Threat -->
+                <button onclick="komut('target-highest')"
+                    class="btn-glass btn-red flex-1 p-2 text-lg font-bold tracking-widest flex items-center justify-center gap-4">
+                    <i data-lucide="alert-triangle" class="w-10 h-10"></i>
+                    <div class="text-left">
+                        <div class="text-[10px] text-ed-red/70 mb-0.5 uppercase tracking-tighter">Priority</div>
+                        <div class="text-2xl leading-tight">HIGHEST THREAT</div>
+                    </div>
+                </button>
+
+                <!-- Row 2: Hostile Cycling -->
+                <div class="flex-1 grid grid-cols-2 gap-2">
                     <button onclick="komut('target-hostile-prev')"
-                        class="btn-glass btn-red p-4 text-lg font-bold tracking-widest flex flex-col items-center justify-center gap-1">
-                        <i data-lucide="chevron-left" class="w-5 h-5"></i>
-                        <div class="text-[12px] text-ed-red/70">PREV HOSTILE</div>
+                        class="btn-glass btn-red p-2 font-bold tracking-widest flex flex-col items-center justify-center gap-1">
+                        <i data-lucide="chevron-left" class="w-8 h-8"></i>
+                        <div class="text-[11px] text-ed-red/70 uppercase">Prev Hostile</div>
                     </button>
                     <button onclick="komut('target-hostile-next')"
-                        class="btn-glass btn-red p-4 text-lg font-bold tracking-widest flex flex-col items-center justify-center gap-1">
-                        <i data-lucide="chevron-right" class="w-5 h-5"></i>
-                        <div class="text-[12px] text-ed-red/70">NEXT HOSTILE</div>
-                    </button>
-
-                    <button onclick="komut('target-ahead')"
-                        class="btn-glass btn-orange col-span-2 p-3 text-lg font-bold flex items-center justify-center gap-3">
-                        <i data-lucide="focus" class="w-6 h-6"></i>TARGET AHEAD
+                        class="btn-glass btn-red p-2 font-bold tracking-widest flex flex-col items-center justify-center gap-1">
+                        <i data-lucide="chevron-right" class="w-8 h-8"></i>
+                        <div class="text-[11px] text-ed-red/70 uppercase">Next Hostile</div>
                     </button>
                 </div>
+
+                <!-- Row 3: Target Ahead -->
+                <button onclick="komut('target-ahead')"
+                    class="btn-glass btn-orange flex-1 p-2 text-xl font-bold flex items-center justify-center gap-4">
+                    <i data-lucide="focus" class="w-10 h-10"></i>TARGET AHEAD
+                </button>
                 
-                <div class="grid grid-cols-3 gap-3">
+                <!-- Row 4: Target Cycling & Wing -->
+                <div class="flex-1 grid grid-cols-3 gap-2">
                     <button onclick="komut('target-prev')"
-                        class="btn-glass btn-orange p-3 text-[14px] font-bold flex flex-col items-center justify-center gap-1 text-center">
-                        <i data-lucide="chevron-left" class="w-5 h-5"></i>PREV TARGET
+                        class="btn-glass btn-orange p-2 text-sm font-bold flex flex-col items-center justify-center gap-1 text-center">
+                        <i data-lucide="chevron-left" class="w-7 h-7"></i>
+                        <span class="leading-none text-[11px]">PREV<br>TARGET</span>
                     </button>
                     <button onclick="switchPage('wing-ops')"
-                        class="btn-glass btn-blue p-3 text-[14px] font-bold flex flex-col items-center justify-center gap-1 text-center">
-                        <i data-lucide="users" class="w-5 h-5"></i>WING OPS
+                        class="btn-glass btn-blue p-2 text-sm font-bold flex flex-col items-center justify-center gap-1 text-center">
+                        <i data-lucide="users" class="w-7 h-7"></i>
+                        <span class="leading-none text-[11px]">WING<br>OPS</span>
                     </button>
                     <button onclick="komut('target-next')"
-                        class="btn-glass btn-orange p-3 text-[14px] font-bold flex flex-col items-center justify-center gap-1 text-center">
-                        <i data-lucide="chevron-right" class="w-5 h-5"></i>NEXT TARGET
+                        class="btn-glass btn-orange p-2 text-sm font-bold flex flex-col items-center justify-center gap-1 text-center">
+                        <i data-lucide="chevron-right" class="w-7 h-7"></i>
+                        <span class="leading-none text-[11px]">NEXT<br>TARGET</span>
                     </button>
                 </div>
-
-
             </div>
         </div>
 
         <!-- PAGE WING OPS -->
         <div id="page-wing-ops" class="page h-full">
-            <div class="flex-1 flex flex-col gap-5 overflow-y-auto no-scrollbar">
-                <div>
-                    <div class="text-[12px] text-ed-blue font-bold tracking-widest uppercase mb-2 ml-1">Wing Selection</div>
-                    <div class="grid grid-cols-3 gap-2">
+            <div class="flex-1 flex flex-col gap-4 h-full">
+                <!-- Wing Selection -->
+                <div class="flex-1 flex flex-col">
+                    <div class="text-[10px] text-ed-blue font-bold tracking-widest uppercase mb-1 ml-1 opacity-70">Wing Selection</div>
+                    <div class="flex-1 grid grid-cols-3 gap-2">
                         <button onclick="komut('target-team-1')"
-                            class="btn-glass btn-blue py-6 text-lg font-bold flex flex-col items-center"><i
-                                data-lucide="user" class="w-8 h-8 mb-2"></i>WING 1</button>
+                            class="btn-glass btn-blue p-2 text-lg font-bold flex flex-col items-center justify-center gap-2">
+                            <i data-lucide="user" class="w-10 h-10"></i>WING 1
+                        </button>
                         <button onclick="komut('target-team-2')"
-                            class="btn-glass btn-blue py-6 text-lg font-bold flex flex-col items-center"><i
-                                data-lucide="user" class="w-8 h-8 mb-2"></i>WING 2</button>
+                            class="btn-glass btn-blue p-2 text-lg font-bold flex flex-col items-center justify-center gap-2">
+                            <i data-lucide="user" class="w-10 h-10"></i>WING 2
+                        </button>
                         <button onclick="komut('target-team-3')"
-                            class="btn-glass btn-blue py-6 text-lg font-bold flex flex-col items-center"><i
-                                data-lucide="user" class="w-8 h-8 mb-2"></i>WING 3</button>
+                            class="btn-glass btn-blue p-2 text-lg font-bold flex flex-col items-center justify-center gap-2">
+                            <i data-lucide="user" class="w-10 h-10"></i>WING 3
+                        </button>
                     </div>
                 </div>
                 
-                <div>
-                    <div class="text-[12px] text-ed-cyan font-bold tracking-widest uppercase mb-2 ml-1">Wing Actions</div>
-                    <div class="grid grid-cols-2 gap-3">
+                <!-- Wing Actions -->
+                <div class="flex-1 flex flex-col">
+                    <div class="text-[10px] text-ed-cyan font-bold tracking-widest uppercase mb-1 ml-1 opacity-70">Wing Actions</div>
+                    <div class="flex-1 grid grid-cols-2 gap-3">
                         <button onclick="komut('target-team-target')"
-                            class="btn-glass btn-blue py-6 text-lg font-bold tracking-wider flex flex-col items-center justify-center gap-2"><i
-                                data-lucide="crosshair" class="w-8 h-8"></i>WING TGT</button>
+                            class="btn-glass btn-blue p-2 text-lg font-bold tracking-wider flex flex-col items-center justify-center gap-2">
+                            <i data-lucide="crosshair" class="w-10 h-10"></i>WING TGT
+                        </button>
                         <button onclick="komut('target-navlock')"
-                            class="btn-glass btn-cyan py-6 text-lg font-bold tracking-wider text-ed-cyan border-ed-cyan/40 flex flex-col items-center justify-center gap-2"><i
-                                data-lucide="lock" class="w-8 h-8"></i>NAV LOCK</button>
+                            class="btn-glass btn-cyan p-2 text-lg font-bold tracking-wider text-ed-cyan border-ed-cyan/40 flex flex-col items-center justify-center gap-2">
+                            <i data-lucide="lock" class="w-10 h-10"></i>NAV LOCK
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- PAGE FIGHTERS -->
-        <div id="page-fighters" class="page h-full">
-            <div class="flex-1 flex flex-col gap-5 overflow-y-auto no-scrollbar">
-                <div>
-                    <div class="text-[12px] text-ed-red font-bold tracking-widest uppercase mb-2 ml-1">Combat Operations
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <button
-                            onclick="komut('fighter-engage')"
-                            class="btn-glass btn-red bg-ed-red/20 py-5 text-lg font-bold tracking-widest flex flex-col items-center gap-2"><i
-                                data-lucide="swords" class="w-6 h-6"></i>ENGAGE</button>
-                        <button
-                            onclick="komut('fighter-attack')"
-                            class="btn-glass btn-red py-5 text-lg font-bold tracking-widest flex flex-col items-center gap-2"><i
-                                data-lucide="target" class="w-6 h-6"></i>ATTACK</button>
-                    </div>
+        <div id="page-fighters" class="page h-full overflow-hidden">
+            <div class="flex-1 flex flex-col gap-2 h-full">
+                <!-- Combat Operations -->
+                <div class="flex-1 grid grid-cols-2 gap-2">
+                    <button onclick="komut('fighter-engage')"
+                        class="btn-glass btn-red bg-ed-red/10 p-2 text-xl font-bold tracking-widest flex flex-col items-center justify-center gap-2">
+                        <i data-lucide="swords" class="w-10 h-10"></i>ENGAGE
+                    </button>
+                    <button onclick="komut('fighter-attack')"
+                        class="btn-glass btn-red p-2 text-xl font-bold tracking-widest flex flex-col items-center justify-center gap-2">
+                        <i data-lucide="target" class="w-10 h-10"></i>ATTACK
+                    </button>
                 </div>
 
-                <div>
-                    <div class="text-[12px] text-ed-blue font-bold tracking-widest uppercase mb-2 ml-1">Positioning
-                    </div>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button
-                            onclick="komut('fighter-follow')"
-                            class="btn-glass btn-blue py-4 text-lg font-bold">FOLLOW</button>
-                        <button
-                            onclick="komut('fighter-hold')"
-                            class="btn-glass btn-blue py-4 text-lg font-bold">HOLD</button>
-                        <button
-                            onclick="komut('fighter-formation')"
-                            class="btn-glass btn-blue py-4 text-lg font-bold">STAY</button>
-                    </div>
+                <!-- Positioning -->
+                <div class="flex-1 grid grid-cols-3 gap-2">
+                    <button onclick="komut('fighter-follow')"
+                        class="btn-glass btn-blue p-2 text-lg font-bold flex flex-col items-center justify-center gap-2">
+                        <i data-lucide="navigation" class="w-7 h-7"></i>FOLLOW
+                    </button>
+                    <button onclick="komut('fighter-hold')"
+                        class="btn-glass btn-blue p-2 text-lg font-bold flex flex-col items-center justify-center gap-2">
+                        <i data-lucide="pause-circle" class="w-7 h-7"></i>HOLD
+                    </button>
+                    <button onclick="komut('fighter-formation')"
+                        class="btn-glass btn-blue p-2 text-lg font-bold flex flex-col items-center justify-center gap-2">
+                        <i data-lucide="layout-grid" class="w-7 h-7"></i>STAY
+                    </button>
                 </div>
 
-                <div>
-                    <div class="text-[12px] text-ed-green font-bold tracking-widest uppercase mb-2 ml-1">Support</div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <button
-                            onclick="komut('fighter-defend')"
-                            class="btn-glass btn-green py-4 text-lg font-bold">DEFEND</button>
-                        <button
-                            onclick="komut('fighter-recall')"
-                            class="btn-glass btn-orange py-4 text-lg font-bold">RECALL</button>
-                    </div>
+                <!-- Support -->
+                <div class="flex-1 grid grid-cols-2 gap-2">
+                    <button onclick="komut('fighter-defend')"
+                        class="btn-glass btn-green p-2 text-lg font-bold flex flex-col items-center justify-center gap-2">
+                        <i data-lucide="shield-check" class="w-8 h-8"></i>DEFEND
+                    </button>
+                    <button onclick="komut('fighter-recall')"
+                        class="btn-glass btn-orange p-2 text-lg font-bold flex flex-col items-center justify-center gap-2">
+                        <i data-lucide="arrow-down-to-line" class="w-8 h-8"></i>RECALL
+                    </button>
                 </div>
-
-
             </div>
         </div>
 
         <!-- PAGE COMBAT -->
-        <div id="page-combat" class="page h-full active">
-            <div class="flex flex-col h-full gap-2 p-1">
-                <!-- 3x3 Main Grid (Buttons & PIPs) -->
+        <div id="page-combat" class="page h-full active overflow-hidden">
+            <div class="flex flex-col h-full gap-2">
+
+                <!-- Row 1 -->
                 <div class="flex-1 grid grid-cols-3 gap-2">
-                    <!-- Row 1 -->
                     <button onclick="komut('cockpit-mode')"
                         class="btn-glass btn-blue flex flex-col items-center justify-center">
                         <i data-lucide="layout" class="w-10 h-10 mb-2"></i>
@@ -414,8 +427,10 @@
                         <i data-lucide="ghost" class="w-10 h-10 mb-2"></i>
                         <span class="text-xs font-bold">SILENT RUN</span>
                     </button>
+                </div>
 
-                    <!-- Row 2 -->
+                <!-- Row 2 -->
+                <div class="flex-1 grid grid-cols-3 gap-2">
                     <button onclick="switchPage('targeting')" class="btn-glass btn-red flex flex-col items-center justify-center">
                         <i data-lucide="crosshair" class="w-10 h-10 mb-2"></i>
                         <span class="text-xs font-bold">TARGETING</span>
@@ -459,8 +474,10 @@
                         <i data-lucide="rocket" class="w-10 h-10 mb-2"></i>
                         <span class="text-xs font-bold">FIGHTERS</span>
                     </button>
+                </div>
 
-                    <!-- Row 3 -->
+                <!-- Row 3 -->
+                <div class="flex-1 grid grid-cols-3 gap-2">
                     <button onclick="komut('chaff')" class="btn-glass border-yellow-500/40 text-yellow-500 flex flex-col items-center justify-center">
                         <i data-lucide="sparkles" class="w-10 h-10 mb-2"></i>
                         <span class="text-xs font-bold">CHAFF</span>
@@ -475,40 +492,38 @@
                     </button>
                 </div>
 
-                <!-- Firegroup Selector (The "Bar" at the bottom) -->
-                <div class="h-20 glass-panel flex flex-col p-2 justify-center border-ed-orange/30">
+                <!-- Firegroup Selector -->
+                <div class="h-16 glass-panel flex flex-col p-2 justify-center border-ed-orange/30 flex-none">
                     <div class="flex items-center gap-2 px-1">
                         <button onclick="komut('fg-prev')"
-                            class="btn-glass px-4 h-12 text-lg font-bold text-gray-400 flex items-center justify-center"><i
+                            class="btn-glass px-4 h-10 text-lg font-bold text-gray-400 flex items-center justify-center"><i
                                 data-lucide="chevron-left" class="w-6 h-6"></i></button>
-                        <div class="flex-1 flex justify-around items-center bg-black/40 rounded-lg h-12 px-2 border border-white/5"
+                        <div class="flex-1 flex justify-around items-center bg-black/40 rounded-lg h-10 px-2 border border-white/5"
                             id="fg-strip">
-                            <div id="fg-0" class="btn-glass w-8 h-8 flex items-center justify-center text-sm rounded fg-off transition-all">A</div>
-                            <div id="fg-1" class="btn-glass w-8 h-8 flex items-center justify-center text-sm rounded fg-off transition-all">B</div>
-                            <div id="fg-2" class="btn-glass w-8 h-8 flex items-center justify-center text-sm rounded fg-off transition-all">C</div>
-                            <div id="fg-3" class="btn-glass w-8 h-8 flex items-center justify-center text-sm rounded fg-off transition-all">D</div>
-                            <div id="fg-4" class="btn-glass w-8 h-8 flex items-center justify-center text-sm rounded fg-off transition-all">E</div>
-                            <div id="fg-5" class="btn-glass w-8 h-8 flex items-center justify-center text-sm rounded fg-off transition-all">F</div>
-                            <div id="fg-6" class="btn-glass w-8 h-8 flex items-center justify-center text-sm rounded fg-off transition-all">G</div>
-                            <div id="fg-7" class="btn-glass w-8 h-8 flex items-center justify-center text-sm rounded fg-off transition-all">H</div>
+                            <div id="fg-0" class="btn-glass w-7 h-7 flex items-center justify-center text-sm rounded fg-off transition-all">A</div>
+                            <div id="fg-1" class="btn-glass w-7 h-7 flex items-center justify-center text-sm rounded fg-off transition-all">B</div>
+                            <div id="fg-2" class="btn-glass w-7 h-7 flex items-center justify-center text-sm rounded fg-off transition-all">C</div>
+                            <div id="fg-3" class="btn-glass w-7 h-7 flex items-center justify-center text-sm rounded fg-off transition-all">D</div>
+                            <div id="fg-4" class="btn-glass w-7 h-7 flex items-center justify-center text-sm rounded fg-off transition-all">E</div>
+                            <div id="fg-5" class="btn-glass w-7 h-7 flex items-center justify-center text-sm rounded fg-off transition-all">F</div>
+                            <div id="fg-6" class="btn-glass w-7 h-7 flex items-center justify-center text-sm rounded fg-off transition-all">G</div>
+                            <div id="fg-7" class="btn-glass w-7 h-7 flex items-center justify-center text-sm rounded fg-off transition-all">H</div>
                         </div>
                         <button onclick="komut('fg-next')"
-                            class="btn-glass px-4 h-12 text-lg font-bold text-gray-400 flex items-center justify-center"><i
+                            class="btn-glass px-4 h-10 text-lg font-bold text-gray-400 flex items-center justify-center"><i
                                 data-lucide="chevron-right" class="w-6 h-6"></i></button>
                     </div>
                 </div>
+
             </div>
         </div>
 
 
 
         <!-- PAGE PIPS (Original Interactive Layout) -->
-        <div id="page-pips" class="page h-full p-2">
+        <div id="page-pips" class="page h-full">
             <div class="flex flex-col h-full gap-4">
                 <div class="flex items-center gap-4 h-16">
-                    <button onclick="switchPage('combat')" class="btn-glass p-3 h-full aspect-square flex items-center justify-center">
-                        <i data-lucide="chevron-left" class="w-8 h-8"></i>
-                    </button>
                     <h2 class="text-xl font-bold tracking-[0.2em] text-ed-blue">POWER MANAGEMENT</h2>
                 </div>
 
@@ -590,116 +605,124 @@
         </div>
 
         <!-- PAGE NAV -->
-        <div id="page-nav" class="page h-full">
-            <div class="flex-1 grid grid-cols-3 grid-rows-3 gap-3 h-full pb-2">
+        <div id="page-nav" class="page h-full overflow-hidden">
+            <div class="flex-1 flex flex-col gap-2 h-full">
+
                 <!-- Row 1 -->
-                <div
-                    class="glass-panel flex flex-col items-center justify-between p-1 bg-black/40 overflow-hidden h-full">
-                    <div class="grid grid-cols-4 gap-1 w-full flex-1 place-items-center mb-1">
-                        <i id="nav-mon-gear" data-lucide="arrow-down-circle" class="w-9 h-9 text-gray-700"></i>
-                        <i id="nav-mon-cargo" data-lucide="package" class="w-9 h-9 text-gray-700"></i>
-                        <i id="nav-mon-hardp" data-lucide="swords" class="w-9 h-9 text-gray-700"></i>
-                        <i id="nav-mon-light" data-lucide="sun" class="w-9 h-9 text-gray-700"></i>
-
-                        <i id="nav-mon-silent" data-lucide="ghost" class="w-9 h-9 text-gray-700"></i>
-                        <i id="nav-mon-shields" data-lucide="shield-check" class="w-9 h-9 text-gray-700"></i>
-                        <i id="nav-mon-fsd" data-lucide="fast-forward" class="w-9 h-9 text-gray-700"></i>
+                <div class="flex-1 grid grid-cols-3 gap-2">
+                    <div class="glass-panel flex flex-col items-center justify-center p-1 bg-black/40 overflow-hidden">
+                        <div class="grid grid-cols-4 gap-1 w-full place-items-center">
+                            <i id="nav-mon-gear" data-lucide="arrow-down-circle" class="w-8 h-8 text-gray-700"></i>
+                            <i id="nav-mon-cargo" data-lucide="package" class="w-8 h-8 text-gray-700"></i>
+                            <i id="nav-mon-hardp" data-lucide="swords" class="w-8 h-8 text-gray-700"></i>
+                            <i id="nav-mon-light" data-lucide="sun" class="w-8 h-8 text-gray-700"></i>
+                            <i id="nav-mon-silent" data-lucide="ghost" class="w-8 h-8 text-gray-700"></i>
+                            <i id="nav-mon-shields" data-lucide="shield-check" class="w-8 h-8 text-gray-700"></i>
+                            <i id="nav-mon-fsd" data-lucide="fast-forward" class="w-8 h-8 text-gray-700"></i>
+                            <div></div>
+                        </div>
                     </div>
+
+                    <button onclick="komut('panel-comms')"
+                        class="btn-glass btn-blue flex flex-col items-center justify-center gap-2 bg-ed-blue/5">
+                        <i data-lucide="radio" class="w-10 h-10"></i>
+                        <span class="text-lg font-bold tracking-widest">COMMS</span>
+                    </button>
+
+                    <button onclick="switchPage('mapping')"
+                        class="btn-glass btn-blue flex flex-col items-center justify-center gap-2 bg-ed-blue/10 border-ed-blue/40">
+                        <i data-lucide="map" class="w-10 h-10"></i>
+                        <span class="text-lg font-bold tracking-widest text-ed-cyan">MAPPING</span>
+                    </button>
                 </div>
-
-                <button onclick="komut('panel-comms')"
-                    class="btn-glass btn-blue rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-blue/5">
-                    <i data-lucide="radio" class="w-10 h-10"></i><span
-                        class="text-lg font-bold tracking-widest">COMMS</span>
-                </button>
-
-                <button onclick="switchPage('mapping')"
-                    class="btn-glass btn-blue rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-blue/10 border-ed-blue/40">
-                    <i data-lucide="map" class="w-10 h-10"></i><span
-                        class="text-lg font-bold tracking-widest text-ed-cyan">MAPPING</span>
-                </button>
 
                 <!-- Row 2 -->
-                <button onclick="komut('panel-external')"
-                    class="btn-glass btn-orange rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-orange/5">
-                    <i data-lucide="satellite" class="w-10 h-10"></i><span
-                        class="text-lg font-bold tracking-widest">EXTERNAL</span>
-                </button>
-
-                <button onclick="switchPage('panels')"
-                    class="btn-glass btn-blue border-ed-blue/40 bg-ed-blue/10 flex flex-col items-center justify-center gap-2">
-                    <i data-lucide="gamepad-2" class="w-10 h-10 text-ed-cyan"></i><span
-                        class="text-lg font-bold tracking-widest text-ed-cyan uppercase">Panels</span>
-                </button>
-
-                <button onclick="komut('panel-internal')"
-                    class="btn-glass btn-orange rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-orange/5">
-                    <i data-lucide="monitor" class="w-10 h-10"></i><span
-                        class="text-lg font-bold tracking-widest">INTERNAL</span>
-                </button>
-
-                <!-- Row 3: Consolidated FSD Slot -->
-                <div class="flex flex-col gap-1.5">
-                    <button onclick="komut('fsd')"
-                        class="btn-glass btn-orange flex-1 flex flex-col items-center justify-center p-1 text-center leading-tight">
-                        <i data-lucide="wind" class="w-5 h-5 mb-1"></i>
-                        <span class="text-[13px] font-bold tracking-tighter uppercase">Frame Shift Drive</span>
+                <div class="flex-1 grid grid-cols-3 gap-2">
+                    <button onclick="komut('panel-external')"
+                        class="btn-glass btn-orange flex flex-col items-center justify-center gap-2 bg-ed-orange/5">
+                        <i data-lucide="satellite" class="w-10 h-10"></i>
+                        <span class="text-lg font-bold tracking-widest">EXTERNAL</span>
                     </button>
-                    <div class="flex gap-1.5 h-1/2">
-                        <button onclick="komut('fsd-sc')"
-                            class="btn-glass btn-orange flex-1 flex flex-col items-center justify-center p-1 text-center leading-tight">
-                            <i data-lucide="zap" class="w-5 h-5 mb-0.5"></i>
-                            <span class="text-[12px] font-bold tracking-tighter uppercase">Supercruise</span>
-                        </button>
-                        <button onclick="komut('fsd-jump')"
-                            class="btn-glass btn-orange flex-1 flex flex-col items-center justify-center p-1 text-center leading-tight">
-                            <i data-lucide="rocket" class="w-5 h-5 mb-0.5"></i>
-                            <span class="text-[12px] font-bold tracking-tighter uppercase">Hyperspace Jump</span>
-                        </button>
-                    </div>
+
+                    <button onclick="switchPage('panels')"
+                        class="btn-glass btn-blue border-ed-blue/40 bg-ed-blue/10 flex flex-col items-center justify-center gap-2">
+                        <i data-lucide="gamepad-2" class="w-10 h-10 text-ed-cyan"></i>
+                        <span class="text-lg font-bold tracking-widest text-ed-cyan uppercase">PANELS</span>
+                    </button>
+
+                    <button onclick="komut('panel-internal')"
+                        class="btn-glass btn-orange flex flex-col items-center justify-center gap-2 bg-ed-orange/5">
+                        <i data-lucide="monitor" class="w-10 h-10"></i>
+                        <span class="text-lg font-bold tracking-widest">INTERNAL</span>
+                    </button>
                 </div>
 
-                <button onclick="komut('panel-role')"
-                    class="btn-glass btn-blue rounded-xl flex flex-col items-center justify-center gap-2 bg-ed-blue/5">
-                    <i data-lucide="users" class="w-10 h-10"></i><span
-                        class="text-lg font-bold tracking-widest uppercase">Role Panel</span>
-                </button>
+                <!-- Row 3: FSD + Role + Aux -->
+                <div class="flex-1 grid grid-cols-3 gap-2">
+                    <!-- FSD compound slot -->
+                    <div class="flex flex-col gap-1.5">
+                        <button onclick="komut('fsd')"
+                            class="btn-glass btn-orange flex-1 flex flex-col items-center justify-center p-1 text-center leading-tight">
+                            <i data-lucide="wind" class="w-6 h-6 mb-1"></i>
+                            <span class="text-[13px] font-bold tracking-tighter uppercase">Frame Shift Drive</span>
+                        </button>
+                        <div class="flex gap-1.5 flex-1">
+                            <button onclick="komut('fsd-sc')"
+                                class="btn-glass btn-orange flex-1 flex flex-col items-center justify-center p-1 text-center leading-tight">
+                                <i data-lucide="zap" class="w-5 h-5 mb-0.5"></i>
+                                <span class="text-[12px] font-bold tracking-tighter uppercase">Supercruise</span>
+                            </button>
+                            <button onclick="komut('fsd-jump')"
+                                class="btn-glass btn-orange flex-1 flex flex-col items-center justify-center p-1 text-center leading-tight">
+                                <i data-lucide="rocket" class="w-5 h-5 mb-0.5"></i>
+                                <span class="text-[12px] font-bold tracking-tighter uppercase">Hyperspace Jump</span>
+                            </button>
+                        </div>
+                    </div>
 
-                <button onclick="switchPage('aux')"
-                    class="btn-glass rounded-xl flex flex-col items-center justify-center text-gray-400 gap-2 bg-white/5">
-                    <i data-lucide="wrench" class="w-10 h-10"></i>
-                    <span class="text-[13px] font-bold uppercase tracking-widest">AUX SYSTEMS</span>
-                </button>
+                    <button onclick="komut('panel-role')"
+                        class="btn-glass btn-blue flex flex-col items-center justify-center gap-2 bg-ed-blue/5">
+                        <i data-lucide="users" class="w-10 h-10"></i>
+                        <span class="text-lg font-bold tracking-widest uppercase">Role Panel</span>
+                    </button>
+
+                    <button onclick="switchPage('aux')"
+                        class="btn-glass flex flex-col items-center justify-center text-gray-400 gap-2 bg-white/5">
+                        <i data-lucide="wrench" class="w-10 h-10"></i>
+                        <span class="text-[13px] font-bold uppercase tracking-widest">AUX SYSTEMS</span>
+                    </button>
+                </div>
+
             </div>
         </div>
 
         <!-- PAGE MAPPING -->
         <div id="page-mapping" class="page h-full">
-            <div class="flex-1 flex flex-col gap-3">
-                <div class="grid grid-cols-2 gap-3 h-1/3">
+            <div class="flex-1 flex flex-col gap-3 h-full">
+                <div class="flex-1 grid grid-cols-2 gap-3">
                     <button onclick="komut('target-sub-prev')"
-                        class="btn-glass flex flex-col items-center justify-center font-bold text-lg text-ed-blue/80 text-center leading-tight">
-                        <i data-lucide="target" class="w-8 h-8 mb-1"></i>PREVIOUS SUB SYSTEM
+                        class="btn-glass flex flex-col items-center justify-center font-bold text-lg text-ed-blue/80 text-center leading-tight p-2">
+                        <i data-lucide="target" class="w-10 h-10 mb-1"></i>PREVIOUS SUB SYSTEM
                     </button>
                     <button onclick="komut('target-sub-next')"
-                        class="btn-glass flex flex-col items-center justify-center font-bold text-lg text-ed-blue/80 text-center leading-tight">
-                        <i data-lucide="target" class="w-8 h-8 mb-1"></i>NEXT SUB SYSTEM
+                        class="btn-glass flex flex-col items-center justify-center font-bold text-lg text-ed-blue/80 text-center leading-tight p-2">
+                        <i data-lucide="target" class="w-10 h-10 mb-1"></i>NEXT SUB SYSTEM
                     </button>
                 </div>
-                <div class="grid grid-cols-2 gap-3 h-1/3">
+                <div class="flex-1 grid grid-cols-2 gap-3">
                     <button onclick="komut('system-map')"
-                        class="btn-glass btn-blue flex flex-col items-center justify-center font-bold text-lg">
-                        <i data-lucide="orbit" class="w-10 h-10 mb-1"></i>SYSTEM MAP
+                        class="btn-glass btn-blue flex flex-col items-center justify-center font-bold text-lg p-2">
+                        <i data-lucide="orbit" class="w-12 h-12 mb-1"></i>SYSTEM MAP
                     </button>
                     <button onclick="komut('galaxy-map')"
-                        class="btn-glass btn-blue flex flex-col items-center justify-center font-bold text-lg">
-                        <i data-lucide="milky-way" class="w-10 h-10 mb-1"></i>GALAXY MAP
+                        class="btn-glass btn-blue flex flex-col items-center justify-center font-bold text-lg p-2">
+                        <i data-lucide="milky-way" class="w-12 h-12 mb-1"></i>GALAXY MAP
                     </button>
                 </div>
-                <div class="grid grid-cols-1 gap-3 flex-1">
+                <div class="flex-1 grid grid-cols-1 gap-3">
                     <button onclick="komut('target-route')"
-                        class="btn-glass btn-orange flex items-center justify-center font-bold text-lg gap-4">
-                        <i data-lucide="flag" class="w-10 h-10"></i>NEXT SYSTEM ON ROUTE
+                        class="btn-glass btn-orange flex items-center justify-center font-bold text-lg gap-4 p-2">
+                        <i data-lucide="flag" class="w-12 h-12"></i>NEXT SYSTEM ON ROUTE
                     </button>
                 </div>
             </div>
@@ -800,39 +823,39 @@
 
         <!-- PAGE INFO -->
         <div id="page-info" class="page h-full">
-            <div class="grid grid-cols-1 gap-3 mb-4">
-                <div class="glass-panel p-3 border-ed-cyan/20">
-                    <div class="text-ed-cyan text-[13px] font-bold uppercase tracking-widest mb-2 opacity-60">Location
+            <div class="flex-1 flex flex-col gap-3 h-full pb-2">
+                <div class="flex-none">
+                    <div class="glass-panel p-3 border-ed-cyan/20">
+                        <div class="text-ed-cyan text-[10px] font-bold uppercase tracking-widest mb-1 opacity-60">Location</div>
+                        <div class="text-[13px] font-mono leading-tight">
+                            <div id="info-system" class="text-ed-cyan truncate">SYNCING...</div>
+                            <div id="info-station" class="text-gray-400 truncate">CHECKING JOURNAL</div>
+                        </div>
                     </div>
-                    <div class="text-[13px] font-mono leading-tight">
-                        <div id="info-system" class="text-ed-cyan truncate">SYNCING...</div>
-                        <div id="info-station" class="text-gray-400 truncate">CHECKING JOURNAL</div>
+                </div>
+
+                <div class="flex-1 glass-panel p-4 relative border-white/5 overflow-hidden flex flex-col">
+                    <div class="absolute top-0 right-0 p-2 opacity-10"><i data-lucide="database" class="w-16 h-16"></i></div>
+                    <div class="text-gray-500 text-[10px] font-bold tracking-widest mb-2 uppercase">Log Data</div>
+                    <div id="log-container" class="flex-1 space-y-2 text-[12px] font-mono overflow-y-auto pr-2">
+                        <div class="text-gray-600 italic">WAITING FOR GAME DATA...</div>
                     </div>
                 </div>
-            </div>
 
-            <div class="flex-1 glass-panel p-4 relative mb-4 border-white/5">
-                <div class="absolute top-0 right-0 p-2 opacity-10"><i data-lucide="database" class="w-16 h-16"></i>
+                <div class="flex-none grid grid-cols-4 gap-2">
+                    <button onclick="komut('discovery')"
+                        class="btn-glass btn-orange py-4 font-bold flex flex-col items-center justify-center gap-1">
+                        <i data-lucide="telescope" class="w-7 h-7"></i><span class="text-[11px]">DISCOVERY</span></button>
+                    <button onclick="switchPage('fss')"
+                        class="btn-glass btn-orange py-4 font-bold flex flex-col items-center justify-center gap-1">
+                        <i data-lucide="radio" class="w-7 h-7"></i><span class="text-[11px]">FSS</span></button>
+                    <button onclick="komut('menu-social')"
+                        class="btn-glass btn-blue py-4 font-bold flex flex-col items-center justify-center gap-1">
+                        <i data-lucide="users" class="w-7 h-7"></i><span class="text-[11px]">FRIENDS</span></button>
+                    <button onclick="komut('menu-game')"
+                        class="btn-glass btn-red py-4 font-bold flex flex-col items-center justify-center gap-1">
+                        <i data-lucide="settings" class="w-7 h-7"></i><span class="text-[11px]">MENU</span></button>
                 </div>
-                <div class="text-gray-500 text-[12px] font-bold tracking-widest mb-4">LOG DATA</div>
-                <div id="log-container" class="space-y-2 text-[12px] font-mono overflow-y-auto max-h-[150px] pr-2">
-                    <div class="text-gray-600 italic">WAITING FOR GAME DATA...</div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-4 gap-2 mt-auto">
-                <button onclick="komut('discovery')"
-                    class="btn-glass btn-orange py-3 font-bold flex flex-col items-center justify-center gap-1">
-                    <i data-lucide="telescope" class="w-6 h-6"></i><span class="text-[13px]">DISCOVERY</span></button>
-                <button onclick="switchPage('fss')"
-                    class="btn-glass btn-orange py-3 font-bold flex flex-col items-center justify-center gap-1">
-                    <i data-lucide="radio" class="w-6 h-6"></i><span class="text-[13px]">FSS</span></button>
-                <button onclick="komut('menu-social')"
-                    class="btn-glass btn-blue py-3 font-bold flex flex-col items-center justify-center gap-1">
-                    <i data-lucide="users" class="w-6 h-6"></i><span class="text-[13px]">FRIENDS</span></button>
-                <button onclick="komut('menu-game')"
-                    class="btn-glass btn-red py-3 font-bold flex flex-col items-center justify-center gap-1">
-                    <i data-lucide="settings" class="w-6 h-6"></i><span class="text-[13px]">MENU</span></button>
             </div>
         </div>
 
@@ -968,22 +991,22 @@
 
     <!-- TAB BAR -->
     <div
-        class="fixed bottom-0 left-0 right-0 glass-panel rounded-none border-x-0 border-b-0 border-t border-white/10 grid grid-cols-4 text-center z-50 bg-ed-dark/95">
-        <button onclick="switchPage('combat')" id="tab-combat" class="tab-btn active py-4">
-            <div class="tab-icon flex justify-center mb-1"><i data-lucide="swords" class="w-6 h-6"></i></div>
-            <div class="text-[13px] font-bold tracking-widest">COMBAT</div>
+        class="fixed top-0 right-0 bottom-0 w-24 glass-panel rounded-none border-y-0 border-r-0 border-l border-white/10 flex flex-col text-center z-50 bg-ed-dark/95">
+        <button onclick="switchPage('combat')" id="tab-combat" class="tab-btn active flex-1">
+            <div class="tab-icon flex justify-center mb-1"><i data-lucide="swords" class="w-8 h-8"></i></div>
+            <div class="text-[11px] font-bold tracking-widest leading-tight">COMBAT</div>
         </button>
-        <button onclick="switchPage('nav')" id="tab-nav" class="tab-btn py-4 text-gray-500">
-            <div class="tab-icon flex justify-center mb-1"><i data-lucide="compass" class="w-6 h-6"></i></div>
-            <div class="text-[13px] font-bold tracking-widest">NAV</div>
+        <button onclick="switchPage('nav')" id="tab-nav" class="tab-btn flex-1 text-gray-500">
+            <div class="tab-icon flex justify-center mb-1"><i data-lucide="compass" class="w-8 h-8"></i></div>
+            <div class="text-[11px] font-bold tracking-widest leading-tight">NAV</div>
         </button>
-        <button onclick="switchPage('engines')" id="tab-engines" class="tab-btn py-4 text-gray-500">
-            <div class="tab-icon flex justify-center mb-1"><i data-lucide="rocket" class="w-6 h-6"></i></div>
-            <div class="text-[13px] font-bold tracking-widest">ENGINES</div>
+        <button onclick="switchPage('engines')" id="tab-engines" class="tab-btn flex-1 text-gray-500">
+            <div class="tab-icon flex justify-center mb-1"><i data-lucide="rocket" class="w-8 h-8"></i></div>
+            <div class="text-[11px] font-bold tracking-widest leading-tight">ENGINES</div>
         </button>
-        <button onclick="switchPage('info')" id="tab-info" class="tab-btn py-4 text-gray-500">
-            <div class="tab-icon flex justify-center mb-1"><i data-lucide="info" class="w-6 h-6"></i></div>
-            <div class="text-[13px] font-bold tracking-widest">INFO</div>
+        <button onclick="switchPage('info')" id="tab-info" class="tab-btn flex-1 text-gray-500">
+            <div class="tab-icon flex justify-center mb-1"><i data-lucide="info" class="w-8 h-8"></i></div>
+            <div class="text-[11px] font-bold tracking-widest leading-tight">INFO</div>
         </button>
     </div>
 

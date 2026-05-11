@@ -12,14 +12,24 @@ A high-performance, Linux-native network controller designed specifically for **
 | :---: | :---: |
 | ![Engines](screenshots/engines.png) | ![Info](screenshots/info.png) |
 
+| Fighters Control | Targeting System |
+| :---: | :---: |
+| ![Fighters](screenshots/fighters.png) | ![Targeting](screenshots/targeting.png) |
+
+| Sub-Panels | Wing Operations |
+| :---: | :---: |
+| ![Panels](screenshots/panels.png) | ![Wing](screenshots/wing.png) |
+
 ## 🚀 Features
 
+* **Full-Scale Responsive Design:** Optimized UI that dynamically scales to fill any screen size and aspect ratio without scrolling.
+* **Touch-Optimized Layouts:** Large, glass-morphism style buttons designed for reliable interaction on smartphones and tablets.
 * **Linux Native:** Built for Linux using `evdev/uinput` for high-performance virtual joystick and keyboard emulation.
 * **Dedicated Launcher:** Aesthetic Tkinter-based desktop launcher with real-time server logging.
 * **Real-time Telemetry:** Direct integration with Elite Dangerous's `Status.json`.
 * **Immersive Control Pages:**
     * **Silent Running Protocol:** Dedicated warning page with pulsing animations and thermal management alerts.
-    * **Combat Controls:** Integrated grid for Targeting, Fighters, Heatsink, Chaff, and Shield Cells.
+    * **Combat Controls:** Integrated 3x3 scaling grid for Targeting, Fighters, Heatsink, Chaff, and Shield Cells.
 * **Live Cockpit Indicators:** Visual feedback for Shields, Hardpoints, Landing Gear, Cargo Scoop, Lights, and FSD.
 * **Power Management:** Real-time PIPS (Power Distributor) status and active Fire Group tracking.
 * **Navigation & Surface Data:** Destination info, credit balance, cargo capacity, and planetary coordinates.
