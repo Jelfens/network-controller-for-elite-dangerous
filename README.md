@@ -19,9 +19,8 @@ A high-performance, Linux-native network controller designed specifically for **
 * **Real-time Telemetry:** Direct integration with Elite Dangerous's `Status.json`.
 * **Immersive Control Pages:**
     * **Silent Running Protocol:** Dedicated warning page with pulsing animations and thermal management alerts.
-    * **Targeting & Wing Ops:** Streamlined targeting controls with a dedicated Wing Operations sub-page.
-    * **Fighter Command:** Complete fighter control interface with localized button groups.
-* **Live Cockpit Indicators:** Visual feedback for Shields, Hardpoints, Landing Gear, Cargo Scoop, Lights, Night Vision, and FSD.
+    * **Combat Controls:** Integrated grid for Targeting, Fighters, Heatsink, Chaff, and Shield Cells.
+* **Live Cockpit Indicators:** Visual feedback for Shields, Hardpoints, Landing Gear, Cargo Scoop, Lights, and FSD.
 * **Power Management:** Real-time PIPS (Power Distributor) status and active Fire Group tracking.
 * **Navigation & Surface Data:** Destination info, credit balance, cargo capacity, and planetary coordinates.
 
